@@ -27,9 +27,6 @@ public class DatabaseDocConfig {
     private List<String> ignoreColumnRegexes = Collections.emptyList();
 
     @Builder.Default
-    private DatabaseDocFactory databaseDocFactory = new JdbcDatabaseDocFactory();
-
-    @Builder.Default
     private TableDocFactory tableDocFactory = new JdbcTableDocFactory();
 
     @Builder.Default

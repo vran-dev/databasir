@@ -25,14 +25,14 @@ public class App {
 
         // generate doc model
         var config = DatabaseDocConfig.builder()
-                .databaseName("patient")
+                .databaseName("user")
                 .connection(connection)
                 .tableTriggerDocFactory(new MysqlTableTriggerDocFactory())
                 .build();
         DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
 
         // render as markdown
-        try (FileOutputStream out = new FileOutputStream("doc.md")) {
+        try (FileOutputStream out = new FileOutputStream("user.md")) {
             RenderConfig renderConfig = new RenderConfig();
             renderConfig.setRenderTriggers(true);
             Render.markdownRender(renderConfig).rendering(doc, out);
