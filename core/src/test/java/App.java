@@ -1,4 +1,5 @@
 import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.extension.mysql.MysqlTableTriggerDocFactory;
 import com.databasir.core.doc.factory.jdbc.JdbcDatabaseDocFactory;
 import com.databasir.core.doc.model.DatabaseDoc;
 import com.databasir.core.doc.render.Render;
@@ -26,12 +27,15 @@ public class App {
         var config = DatabaseDocConfiguration.builder()
                 .databaseName("patient")
                 .connection(connection)
+                .tableTriggerDocFactory(new MysqlTableTriggerDocFactory())
                 .build();
         DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
 
         // render as markdown
         try (FileOutputStream out = new FileOutputStream("doc.md")) {
-            Render.markdownRender(new RenderConfiguration()).rendering(doc, out);
+            RenderConfiguration renderConfig = new RenderConfiguration();
+            renderConfig.setRenderTriggers(true);
+            Render.markdownRender(renderConfig).rendering(doc, out);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

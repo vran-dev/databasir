@@ -13,10 +13,14 @@ public class TriggerDoc {
     private String name;
 
     /**
-     * example 1: BEFORE UPDATE
-     * example 2: AFTER INSERT
+     * example: BEFORE, AFTER
      */
     private String timing;
+
+    /**
+     * example: INSERT, UPDATE
+     */
+    private String manipulation;
 
     private String statement;
 

@@ -39,6 +39,9 @@ public class MarkdownRender implements Render {
                 if (config.getRenderIndexes()) {
                     buildIndexes(contentBuilder, table);
                 }
+                if (config.getRenderTriggers()) {
+                    buildTriggers(contentBuilder, table);
+                }
             }
         }
         outputStream.write(contentBuilder.build().getBytes(StandardCharsets.UTF_8));
@@ -79,11 +82,31 @@ public class MarkdownRender implements Render {
         contentBuilder.table(indexTitles(), allIndexRows);
     }
 
+    private void buildTriggers(MarkdownBuilder contentBuilder, TableDoc table) {
+        if (table.getTriggers() == null || table.getTriggers().isEmpty()) {
+            return;
+        }
+
+        contentBuilder.unorderedList(Collections.singletonList("triggers"));
+        List<List<String>> allRows = table.getTriggers().stream()
+                .map(trigger -> config.getTriggerTitleAndValueMapping()
+                        .values()
+                        .stream()
+                        .map(mapping -> mapping.apply(trigger))
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+        contentBuilder.table(triggerTitles(), allRows);
+    }
+
     private List<String> tableTitles() {
         return new ArrayList<>(config.getColumnTitleAndValueMapping().keySet());
     }
 
     private List<String> indexTitles() {
         return new ArrayList<>(config.getIndexTitleAndValueMapping().keySet());
+    }
+
+    private List<String> triggerTitles() {
+        return new ArrayList<>(config.getTriggerTitleAndValueMapping().keySet());
     }
 }
