@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TableIndexDocFactory extends Sortable<TableIndexDocFactory> {
 
-    List<IndexDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfiguration configuration);
+    List<IndexDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfig configuration);
 
 }

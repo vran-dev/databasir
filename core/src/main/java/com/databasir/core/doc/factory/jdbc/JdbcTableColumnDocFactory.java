@@ -1,6 +1,6 @@
 package com.databasir.core.doc.factory.jdbc;
 
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.TableColumnDocFactory;
 import com.databasir.core.doc.model.ColumnDoc;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class JdbcTableColumnDocFactory implements TableColumnDocFactory {
     @Override
     public List<ColumnDoc> create(String tableName,
                                   DatabaseMetaData metaData,
-                                  DatabaseDocConfiguration configuration) {
+                                  DatabaseDocConfig configuration) {
         try {
             return doCreate(tableName, metaData, configuration);
         } catch (SQLException e) {
@@ -28,20 +28,20 @@ public class JdbcTableColumnDocFactory implements TableColumnDocFactory {
 
     private List<ColumnDoc> doCreate(String tableName,
                                      DatabaseMetaData metaData,
-                                     DatabaseDocConfiguration configuration) throws SQLException {
+                                     DatabaseDocConfig configuration) throws SQLException {
         List<ColumnDoc> columnDocs = new ArrayList<>();
         String database = configuration.getDatabaseName();
         ResultSet columnsResult;
         try {
             columnsResult = metaData.getColumns(database, null, tableName, null);
         } catch (SQLException e) {
-            log.warn("warn: ignore " + database + "." + tableName);
+            log.warn("warn: ignore columns in " + database + "." + tableName);
             return columnDocs;
         }
         while (columnsResult.next()) {
             String columnName = columnsResult.getString("COLUMN_NAME");
-            if (configuration.ignoredColumn(columnName)) {
-                if (log.isDebugEnabled()) {
+            if (configuration.columnIsIgnored(columnName)) {
+                if (log.isWarnEnabled()) {
                     log.warn("ignore column: " + columnName);
                 }
             } else {

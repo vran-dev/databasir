@@ -10,7 +10,7 @@ public interface Render {
 
     void rendering(DatabaseDoc doc, OutputStream outputStream) throws IOException;
 
-    static Render markdownRender(RenderConfiguration configuration) {
+    static Render markdownRender(RenderConfig configuration) {
         return MarkdownRender.of(configuration);
     }
 }

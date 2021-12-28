@@ -1,9 +1,9 @@
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.extension.mysql.MysqlTableTriggerDocFactory;
 import com.databasir.core.doc.factory.jdbc.JdbcDatabaseDocFactory;
 import com.databasir.core.doc.model.DatabaseDoc;
 import com.databasir.core.doc.render.Render;
-import com.databasir.core.doc.render.RenderConfiguration;
+import com.databasir.core.doc.render.RenderConfig;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class App {
         var connection = DriverManager.getConnection(url, info);
 
         // generate doc model
-        var config = DatabaseDocConfiguration.builder()
+        var config = DatabaseDocConfig.builder()
                 .databaseName("patient")
                 .connection(connection)
                 .tableTriggerDocFactory(new MysqlTableTriggerDocFactory())
@@ -33,7 +33,7 @@ public class App {
 
         // render as markdown
         try (FileOutputStream out = new FileOutputStream("doc.md")) {
-            RenderConfiguration renderConfig = new RenderConfiguration();
+            RenderConfig renderConfig = new RenderConfig();
             renderConfig.setRenderTriggers(true);
             Render.markdownRender(renderConfig).rendering(doc, out);
         } catch (IOException e) {

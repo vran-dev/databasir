@@ -1,6 +1,6 @@
 package com.databasir.core.doc.factory.jdbc;
 
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.*;
 import com.databasir.core.doc.model.TableDoc;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ public class JdbcTableDocFactory implements TableDocFactory {
 
     @Override
     public List<TableDoc> create(DatabaseMetaData metaData,
-                                 DatabaseDocConfiguration configuration) {
+                                 DatabaseDocConfig configuration) {
         try {
             return doCreateTableDoc(metaData, configuration);
         } catch (SQLException e) {
@@ -25,7 +25,7 @@ public class JdbcTableDocFactory implements TableDocFactory {
     }
 
     private List<TableDoc> doCreateTableDoc(DatabaseMetaData metaData,
-                                            DatabaseDocConfiguration configuration) throws SQLException {
+                                            DatabaseDocConfig configuration) throws SQLException {
         List<TableDoc> tableDocs = new ArrayList<>();
         if (metaData == null) {
             return tableDocs;
@@ -35,9 +35,9 @@ public class JdbcTableDocFactory implements TableDocFactory {
         ResultSet tablesResult = metaData.getTables(databaseName, null, null, null);
         while (tablesResult.next()) {
             String tableName = tablesResult.getString("TABLE_NAME");
-            if (configuration.ignoredTable(tableName)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("ignore table: " + tableName);
+            if (configuration.tableIsIgnored(tableName)) {
+                if (log.isWarnEnabled()) {
+                    log.warn("ignore table: " + configuration.getDatabaseName() + "." + tableName);
                 }
             } else {
                 String tableType = tablesResult.getString("TABLE_TYPE");

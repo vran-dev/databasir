@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface DatabaseDocFactory extends Sortable<DatabaseDocFactory> {
 
-    Optional<DatabaseDoc> create(DatabaseDocConfiguration configuration);
+    Optional<DatabaseDoc> create(DatabaseDocConfig configuration);
 
 }

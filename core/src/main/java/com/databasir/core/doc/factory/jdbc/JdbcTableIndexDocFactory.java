@@ -1,6 +1,6 @@
 package com.databasir.core.doc.factory.jdbc;
 
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.TableIndexDocFactory;
 import com.databasir.core.doc.model.IndexDoc;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.*;
 public class JdbcTableIndexDocFactory implements TableIndexDocFactory {
 
     @Override
-    public List<IndexDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfiguration configuration) {
+    public List<IndexDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfig configuration) {
         try {
             return doCreateIndexDocs(tableName, metaData, configuration);
         } catch (SQLException e) {
@@ -24,11 +24,11 @@ public class JdbcTableIndexDocFactory implements TableIndexDocFactory {
 
     private List<IndexDoc> doCreateIndexDocs(String tableName,
                                              DatabaseMetaData metaData,
-                                             DatabaseDocConfiguration configuration)
+                                             DatabaseDocConfig configuration)
             throws SQLException {
         List<IndexDoc> indexDocs = new ArrayList<>();
         String databaseName = configuration.getDatabaseName();
-        if (databaseName == null || tableName == null || metaData == null) {
+        if (tableName == null || metaData == null) {
             return indexDocs;
         }
         ResultSet indexResults;

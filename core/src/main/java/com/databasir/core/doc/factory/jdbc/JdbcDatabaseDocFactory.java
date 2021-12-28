@@ -1,6 +1,6 @@
 package com.databasir.core.doc.factory.jdbc;
 
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.*;
 import com.databasir.core.doc.model.DatabaseDoc;
 import com.databasir.core.doc.model.TableDoc;
@@ -19,7 +19,7 @@ public class JdbcDatabaseDocFactory implements DatabaseDocFactory {
     }
 
     @Override
-    public Optional<DatabaseDoc> create(DatabaseDocConfiguration configuration) {
+    public Optional<DatabaseDoc> create(DatabaseDocConfig configuration) {
         try {
             DatabaseMetaData metaData = configuration.getConnection().getMetaData();
             ResultSet catalogs = metaData.getCatalogs();

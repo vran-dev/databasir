@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.function.Function;
 
 @Data
-public class RenderConfiguration {
+public class RenderConfig {
 
     private Boolean renderTables = true;
 

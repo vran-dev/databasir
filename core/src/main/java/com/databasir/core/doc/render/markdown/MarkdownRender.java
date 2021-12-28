@@ -3,7 +3,7 @@ package com.databasir.core.doc.render.markdown;
 import com.databasir.core.doc.model.DatabaseDoc;
 import com.databasir.core.doc.model.TableDoc;
 import com.databasir.core.doc.render.Render;
-import com.databasir.core.doc.render.RenderConfiguration;
+import com.databasir.core.doc.render.RenderConfig;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 public class MarkdownRender implements Render {
 
     @Getter
-    private final RenderConfiguration config;
+    private final RenderConfig config;
 
-    protected MarkdownRender(RenderConfiguration config) {
+    protected MarkdownRender(RenderConfig config) {
         this.config = config;
     }
 
-    public static MarkdownRender of(RenderConfiguration config) {
+    public static MarkdownRender of(RenderConfig config) {
         return new MarkdownRender(config);
     }
 

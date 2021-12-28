@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TableTriggerDocFactory extends Sortable<TableTriggerDocFactory> {
 
-    List<TriggerDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfiguration configuration);
+    List<TriggerDoc> create(String tableName, DatabaseMetaData metaData, DatabaseDocConfig configuration);
 }

@@ -1,6 +1,6 @@
 package com.databasir.core.doc.factory.extension.mysql;
 
-import com.databasir.core.doc.factory.DatabaseDocConfiguration;
+import com.databasir.core.doc.factory.DatabaseDocConfig;
 import com.databasir.core.doc.factory.TableTriggerDocFactory;
 import com.databasir.core.doc.model.TriggerDoc;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class MysqlTableTriggerDocFactory implements TableTriggerDocFactory {
     @Override
     public List<TriggerDoc> create(String tableName,
                                    DatabaseMetaData metaData,
-                                   DatabaseDocConfiguration configuration) {
+                                   DatabaseDocConfig configuration) {
         String sql = "SELECT TRIGGER_CATALOG,\n" +
                 "       TRIGGER_SCHEMA,\n" +
                 "       TRIGGER_NAME,\n" +
