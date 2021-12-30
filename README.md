@@ -10,20 +10,20 @@ you could use `databasir` to generate database meta model, or render it as markd
 
 ```java
 java.sql.Connection connection=...;
-        DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
+DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
 ```
 
 ## Render as Markdown
 
 ```java
 try(FileOutputStream out=new FileOutputStream("user.md")){
-        java.sql.Connection connection=...;
-        Databasir databasir=Databasir.of();
-        DatabaseMeta meta=databasir.get(connection,"user").orElseThrow();
-        databasir.renderAsMarkdown(doc,out);
-        }catch(IOException e){
-        throw new IllegalStateException(e);
-        }
+    java.sql.Connection connection=...;
+    Databasir databasir=Databasir.of();
+    DatabaseMeta meta=databasir.get(connection,"user").orElseThrow();
+    databasir.renderAsMarkdown(doc,out);
+}catch(IOException e){
+    throw new IllegalStateException(e);
+}
 ```
 
 - Markdown Example
@@ -37,10 +37,10 @@ support regex pattern to ignore table or column
 
 ```java
 java.sql.Connection connection=...;
-        DatabasirConfig config=new DatabasirConfig();
-        config.ignoreColumn("id*");
-        config.ignoreTable("flyway.*");
-        DatabaseMeta meta=Databasir.of(config).get(connection,"user").orElseThrow();
+DatabasirConfig config=new DatabasirConfig();
+config.ignoreColumn("id*");
+config.ignoreTable("flyway.*");
+DatabaseMeta meta=Databasir.of(config).get(connection,"user").orElseThrow();
 ```
 
 ## Extension
@@ -49,13 +49,13 @@ Custom configuration
 
 ```java
 java.sql.Connection connection=...;
-        DatabasirConfig config=new DatabasirConfig();
-        config.setDatabaseMetaRepository(...); // your custom repository
-        config.setTableMetaRepository(...); // your custom repository
-        config.setColumnMetaRepository(...); // your custom repository
-        config.setTriggerMetaRepository(...); // your custom repository
-        config.setIndexMetaRepository(...); // your custom repository
-        DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
+DatabasirConfig config=new DatabasirConfig();
+config.setDatabaseMetaRepository(...); // your custom repository
+config.setTableMetaRepository(...); // your custom repository
+config.setColumnMetaRepository(...); // your custom repository
+config.setTriggerMetaRepository(...); // your custom repository
+config.setIndexMetaRepository(...); // your custom repository
+DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
 ```
 
 Default Repository Is
