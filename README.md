@@ -9,31 +9,24 @@ you could use `databasir` to generate database meta model, or render it as markd
 ## Database Meta to Java Model
 
 ```java
-java.sql.Connection connection = ...;
-DatabaseDocConfig config = DatabaseDocConfig.builder()
-        .databaseName("Demo")
-        .connection(connection)
-        .build();
-DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
+java.sql.Connection connection=...;
+        DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
 ```
 
 ## Render as Markdown
+
 ```java
-java.sql.Connection connection = ...;
-DatabaseDocConfig config = DatabaseDocConfig.builder()
-        .databaseName("Demo")
-        .connection(connection)
-        .build();
-DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
-try (FileOutputStream out = new FileOutputStream("doc.md")) {
-    RenderConfig renderConfig = new RenderConfig();
-    Render.markdownRender(renderConfig).rendering(doc, out);
-} catch (IOException e) {
-    throw new IllegalStateException(e);
-}
+try(FileOutputStream out=new FileOutputStream("user.md")){
+        java.sql.Connection connection=...;
+        Databasir databasir=Databasir.of();
+        DatabaseMeta meta=databasir.get(connection,"user").orElseThrow();
+        databasir.renderAsMarkdown(doc,out);
+        }catch(IOException e){
+        throw new IllegalStateException(e);
+        }
 ```
 
-- Example
+- Markdown Example
 
 ![](README/table-doc.png)
 
@@ -43,37 +36,32 @@ try (FileOutputStream out = new FileOutputStream("doc.md")) {
 support regex pattern to ignore table or column
 
 ```java
-java.sql.Connection connection = ...;
-DatabaseDocConfig config = DatabaseDocConfig.builder()
-        .databaseName("Demo")
-        .connection(connection)
-        .ignoreTableRegexes(Arrays.asList("mysql_*"))
-        .ignoreColumnRegexes(Arrays.asList("id"))
-        .build();
-DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
+java.sql.Connection connection=...;
+        DatabasirConfig config=new DatabasirConfig();
+        config.ignoreColumn("id*");
+        config.ignoreTable("flyway.*");
+        DatabaseMeta meta=Databasir.of(config).get(connection,"user").orElseThrow();
 ```
 
 ## Extension
 
-Default factory
-
-- tableDocFactory ->  `com.databasir.core.doc.factory.jdbc.JdbcTableDocFactory`
-- columnDocFactory -> `com.databasir.core.doc.factory.jdbc.JdbcTableColumnDocFactory`
-- indexDocFactory -> `com.databasir.core.doc.factory.jdbc.JdbcTableIndexDocFactory`
-- triggerDocFactory -> `com.databasir.core.doc.factory.jdbc.JdbcTableTriggerDocFactory`
-
 Custom configuration
+
 ```java
-java.sql.Connection connection = ...;
-DatabaseDocConfig config = DatabaseDocConfig.builder()
-        .databaseName("Demo")
-        .connection(connection)
-        .tableDocFactory(...) // your custom table doc factory
-        .tableColumnDocFactory(...) // your custom column doc factory
-        .tableIndexDocFactory(...) // your custom index doc factory
-        .tableTriggerDocFactory(...) // your custom trigger doc factory
-        .build();
-DatabaseDoc doc = JdbcDatabaseDocFactory.of().create(config).orElseThrow();
+java.sql.Connection connection=...;
+        DatabasirConfig config=new DatabasirConfig();
+        config.setDatabaseMetaRepository(...); // your custom repository
+        config.setTableMetaRepository(...); // your custom repository
+        config.setColumnMetaRepository(...); // your custom repository
+        config.setTriggerMetaRepository(...); // your custom repository
+        config.setIndexMetaRepository(...); // your custom repository
+        DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
 ```
 
+Default Repository Is
 
+- com.databasir.core.meta.repository.impl.jdbc.JdbcDatabaseMetaRepository
+- com.databasir.core.meta.repository.impl.jdbc.JdbcTableMetaRepository
+- com.databasir.core.meta.repository.impl.jdbc.JdbcColumnMetaRepository
+- com.databasir.core.meta.repository.impl.jdbc.JdbcIndexMetaRepository
+- com.databasir.core.meta.repository.impl.jdbc.JdbcTriggerMetaRepository

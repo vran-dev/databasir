@@ -6,7 +6,7 @@ subprojects {
 
     apply plugin: 'java'
 
-    group 'cc.cc1234'
+    group 'com.databasir'
     version '1.0-SNAPSHOT'
 
     repositories {
