@@ -13,6 +13,9 @@ public class ColumnMeta {
 
     private String type;
 
+    /**
+     * if default value is empty string, will be converted to ''.
+     */
     private String defaultValue;
 
     private Integer size;

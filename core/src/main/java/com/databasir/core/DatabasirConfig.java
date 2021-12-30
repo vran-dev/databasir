@@ -1,7 +1,6 @@
 package com.databasir.core;
 
 import com.databasir.core.meta.repository.*;
-import com.databasir.core.meta.repository.impl.jdbc.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,16 +11,15 @@ import java.util.HashSet;
 @Setter
 public class DatabasirConfig {
 
-    private IndexMetaRepository indexMetaRepository = new JdbcIndexMetaRepository();
+    private IndexMetaRepository indexMetaRepository;
 
-    private TriggerMetaRepository triggerMetaRepository = new JdbcTriggerMetaRepository();
+    private TriggerMetaRepository triggerMetaRepository;
 
-    private ColumnMetaRepository columnMetaRepository = new JdbcColumnMetaRepository();
+    private ColumnMetaRepository columnMetaRepository;
 
-    private TableMetaRepository tableMetaRepository =
-            new JdbcTableMetaRepository(columnMetaRepository, indexMetaRepository, triggerMetaRepository);
+    private TableMetaRepository tableMetaRepository;
 
-    private DatabaseMetaRepository databaseMetaRepository = new JdbcDatabaseMetaRepository(tableMetaRepository);
+    private DatabaseMetaRepository databaseMetaRepository;
 
     private Collection<String> ignoreTableNameRegex = new HashSet<>();
 

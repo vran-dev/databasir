@@ -51,6 +51,9 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                 boolean isNullable = Objects.equals("YES", columnsResult.getString("IS_NULLABLE"));
                 boolean isAutoIncrement = Objects.equals("YES", columnsResult.getString("IS_AUTOINCREMENT"));
                 String columnComment = columnsResult.getString("REMARKS");
+                if (defaultValue != null && defaultValue.trim().equals("")) {
+                    defaultValue = "'" + defaultValue + "'";
+                }
                 ColumnMeta columnMeta = ColumnMeta.builder()
                         .name(columnName)
                         .type(columnType)

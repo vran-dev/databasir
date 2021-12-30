@@ -1,5 +1,6 @@
 import com.databasir.core.Databasir;
 import com.databasir.core.meta.pojo.DatabaseMeta;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,7 +10,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class App {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+
+    @Test
+    public void testRenderAsMarkdown() throws SQLException, ClassNotFoundException {
         try (FileOutputStream out = new FileOutputStream("user.md")) {
             Connection connection = getJdbcConnection();
             Databasir databasir = Databasir.of();
