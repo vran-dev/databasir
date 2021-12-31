@@ -50,9 +50,9 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
                 String tableComment = tablesResult.getString("REMARKS");
                 TableCondition tableCondition = TableCondition.of(condition, tableName);
                 TableMeta tableMeta = TableMeta.builder()
-                        .tableName(tableName)
-                        .tableType(tableType)
-                        .tableComment(tableComment)
+                        .name(tableName)
+                        .type(tableType)
+                        .comment(tableComment)
                         .columns(columnMetaRepository.selectColumns(connection, tableCondition))
                         .indexes(indexMetaRepository.selectIndexes(connection, tableCondition))
                         .triggers(triggerMetaRepository.selectTriggers(connection, tableCondition))

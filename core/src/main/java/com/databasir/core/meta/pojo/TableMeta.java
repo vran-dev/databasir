@@ -10,11 +10,11 @@ import java.util.List;
 @Builder
 public class TableMeta {
 
-    private String tableName;
+    private String name;
 
-    private String tableType;
+    private String type;
 
-    private String tableComment;
+    private String comment;
 
     @Builder.Default
     private List<ColumnMeta> columns = Collections.emptyList();

@@ -51,10 +51,10 @@ public class MarkdownRender implements Render {
 
     private void buildTableName(MarkdownBuilder contentBuilder, TableMeta table) {
         String tableName;
-        if (table.getTableComment() == null || table.getTableComment().trim().isEmpty()) {
-            tableName = table.getTableName();
+        if (table.getComment() == null || table.getComment().trim().isEmpty()) {
+            tableName = table.getName();
         } else {
-            tableName = table.getTableName() + "(" + table.getTableComment() + ")";
+            tableName = table.getName() + "(" + table.getComment() + ")";
         }
         contentBuilder.secondTitle(tableName);
     }

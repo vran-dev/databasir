@@ -45,7 +45,7 @@ public class JdbcIndexMetaRepository implements IndexMetaRepository {
                 List<String> columns = new ArrayList<>();
                 columns.add(columnName);
                 IndexMeta indexMeta = IndexMeta.builder()
-                        .indexName(indexName)
+                        .name(indexName)
                         .columnNames(columns)
                         .isPrimaryKey(Objects.equals("PRIMARY", indexName))
                         .isUniqueKey(Objects.equals(nonUnique, false))

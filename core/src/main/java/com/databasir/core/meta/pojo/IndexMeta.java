@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class IndexMeta {
 
-    private String indexName;
+    private String name;
 
     @Builder.Default
     private List<String> columnNames = Collections.emptyList();
