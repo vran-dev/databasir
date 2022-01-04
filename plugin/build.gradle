@@ -1,0 +1,5 @@
+dependencies {
+    testImplementation 'mysql:mysql-connector-java:8.0.27'
+    implementation 'org.commonmark:commonmark:0.18.1'
+    implementation 'org.freemarker:freemarker:2.3.31'
+}

@@ -1,23 +1,38 @@
 plugins {
     id 'java'
+    id 'idea'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.5.8' apply false
+    id 'nu.studer.jooq' version '6.0.1' apply false
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }
 
 subprojects {
-
     apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'nu.studer.jooq'
 
     group 'com.databasir'
-    version '1.0-SNAPSHOT'
-
-    repositories {
-        mavenCentral()
-    }
+    version '1.0.0'
 
     ext {
         lombokVersion = '1.18.22'
         mapstructVersion = '1.4.2.Final'
         junitVersion = '5.7.0'
         slf4jVersion = '1.7.32'
+        jooqVersion = '3.15.5'
+        mysqlConnectorVersion = '8.0.27'
+        postgresqlConnectorVersion = '42.3.1'
+        hikariVersion = '5.0.0'
+        jacksonVersion = '2.13.1'
     }
 
     dependencies {
@@ -28,10 +43,9 @@ subprojects {
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
         implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-        annotationProcessor "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
         implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-
     }
 
     test {

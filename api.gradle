@@ -1,0 +1,5 @@
+rootProject.name = 'api'
+include 'plugin'
+include 'common'
+include 'dao'
+include 'core'
