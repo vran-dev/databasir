@@ -1,0 +1,41 @@
+plugins {
+    id 'io.spring.dependency-management'
+    id 'org.springframework.boot' apply false
+}
+
+bootJar {
+    archiveBaseName = 'databasir'
+    archiveVersion = ''
+    enabled = true
+}
+
+bootBuildImage {
+    imageName = "${project.group}/databasir:${project.version}"
+    publish = false
+}
+
+dependencies {
+    implementation project(":common")
+    implementation project(":plugin")
+    implementation project(":core")
+    implementation project(":dao")
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.flywaydb:flyway-core'
+
+}
+
+/**
+ * Docker
+ */
+task copyDockerfile(type: Copy) {
+    from("Dockerfile")
+    into("build/libs")
+}
+
+bootJar.finalizedBy copyDockerfile
+assemble.finalizedBy copyDockerfile

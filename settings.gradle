@@ -1,3 +1,15 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'databasir'
+include 'plugin'
+include 'api'
+include 'common'
+include 'dao'
 include 'core'
 

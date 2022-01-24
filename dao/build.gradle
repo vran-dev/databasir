@@ -1,0 +1,77 @@
+plugins {
+    id 'nu.studer.jooq'
+    id 'io.spring.dependency-management'
+    id 'org.springframework.boot' apply false
+}
+
+dependencies {
+    implementation "org.jooq:jooq:${jooqVersion}"
+    implementation "org.jooq:jooq-codegen:${jooqVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    jooqGenerator "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+    // include self to use strategy
+    jooqGenerator project(':dao')
+}
+
+sourceSets {
+    main {
+        java.srcDirs += 'generated-src/jooq/main/java'
+    }
+}
+
+jooq {
+    version = "${jooqVersion}"
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS
+
+    configurations {
+        databasir {
+            generateSchemaSourceOnCompilation = true
+            generationTool {
+                jdbc {
+                    driver = 'com.mysql.cj.jdbc.Driver'
+                    url = 'jdbc:mysql://localhost:3306/databasir'
+                    user = 'root'
+                    password = '123456'
+                    properties {
+                        property {
+                            key = 'useSSL'
+                            value = 'false'
+                        }
+                        property {
+                            key = 'allowPublicKeyRetrieval'
+                            value = 'true'
+                        }
+                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.mysql.MySQLDatabase'
+                        inputSchema = 'databasir'
+                        excludes = 'flyway.*'
+                        forcedTypes {
+                            forcedType {
+                                name = 'BOOLEAN'
+                                includeExpression = 'deleted|enabled|is.*'
+                                includeTypes = '.*'
+                            }
+                            forcedType {
+                                name = 'varchar'
+                                includeExpression = '.*'
+                                includeTypes = 'INET'
+                            }
+                        }
+                    }
+                    generate {
+                        pojos = true
+                    }
+                    target {
+                        packageName = 'com.databasir.dao'
+                        directory = 'generated-src/jooq/main/java'
+                    }
+                    strategy.name = 'com.databasir.dao.strategy.DatabasirPojoNamingStrategy'
+                }
+            }
+        }
+    }
+}

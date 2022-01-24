@@ -1,5 +1,37 @@
+plugins {
+    id 'io.spring.dependency-management'
+    id 'org.springframework.boot' apply false
+}
+
 dependencies {
-    testImplementation 'mysql:mysql-connector-java:8.0.27'
+    // internal module
+    implementation project(":common")
+    implementation project(":dao")
+    implementation project(":plugin")
+
+    // spring boot
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // datasource
+    implementation "com.zaxxer:HikariCP:${hikariVersion}"
+    // jdbc driver
+    implementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+    implementation "org.postgresql:postgresql:${postgresqlConnectorVersion}"
+
+    // jackson
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+
+    // others
+    implementation 'com.auth0:java-jwt:3.18.3'
     implementation 'org.commonmark:commonmark:0.18.1'
     implementation 'org.freemarker:freemarker:2.3.31'
+
+    // test
+    testImplementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
 }
+
