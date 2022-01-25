@@ -78,11 +78,13 @@ CREATE TABLE `project`
 CREATE TABLE `project_sync_rule`
 (
     id                             INT PRIMARY KEY AUTO_INCREMENT,
-    project_id                     INT       NOT NULL,
-    ignore_table_name_regex_array  JSON      NOT NULL,
-    ignore_column_name_regex_array JSON      NOT NULL,
-    update_at                      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    create_at                      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    project_id                     INT          NOT NULL,
+    ignore_table_name_regex_array  JSON         NOT NULL,
+    ignore_column_name_regex_array JSON         NOT NULL,
+    is_auto_sync                   BOOLEAN      NOT NULL DEFAULT FALSE,
+    auto_sync_cron                 VARCHAR(128) NOT NULL DEFAULT '',
+    update_at                      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at                      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT UNIQUE uk_project_id (project_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;

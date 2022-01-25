@@ -28,20 +28,38 @@ Databasir 采用了前后端分离的模式进行开发和部署，前端和后�
 
 ## 展示
 
+- 首页
+
 ![](README/home.jpg)
+
+- 项目中心
 
 ![](README/group-projects.jpg)
 
+- 项目创建
+
 ![](README/group-project-create.jpg)
+
+- 项目文档
 
 ![](README/group-project-document.jpg)
 
+- 分组成员
+
 ![](README/group-member-list.jpg)
+
+- 添加成员
 
 ![](README/group-member-add.jpg)
 
+- 用户中心
+
 ![](README/user.jpg)
 
+- 个人中心
+
 ![](README/user-profile.jpg)
+
+- 系统邮件
 
 ![](README/sys-mail.jpg)

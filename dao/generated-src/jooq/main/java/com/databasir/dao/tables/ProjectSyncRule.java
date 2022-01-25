@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -71,6 +71,16 @@ public class ProjectSyncRule extends TableImpl<ProjectSyncRuleRecord> {
      * <code>databasir.project_sync_rule.ignore_column_name_regex_array</code>.
      */
     public final TableField<ProjectSyncRuleRecord, JSON> IGNORE_COLUMN_NAME_REGEX_ARRAY = createField(DSL.name("ignore_column_name_regex_array"), SQLDataType.JSON.nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.project_sync_rule.is_auto_sync</code>.
+     */
+    public final TableField<ProjectSyncRuleRecord, Boolean> IS_AUTO_SYNC = createField(DSL.name("is_auto_sync"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>databasir.project_sync_rule.auto_sync_cron</code>.
+     */
+    public final TableField<ProjectSyncRuleRecord, String> AUTO_SYNC_CRON = createField(DSL.name("auto_sync_cron"), SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>databasir.project_sync_rule.update_at</code>.
@@ -164,11 +174,11 @@ public class ProjectSyncRule extends TableImpl<ProjectSyncRuleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Integer, JSON, JSON, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, Integer, JSON, JSON, Boolean, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

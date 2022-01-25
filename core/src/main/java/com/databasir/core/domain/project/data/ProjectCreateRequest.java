@@ -54,6 +54,10 @@ public class ProjectCreateRequest {
 
         private List<String> ignoreColumnNameRegexes = new ArrayList<>();
 
+        private Boolean isAutoSync = false;
+
+        private String autoSyncCron;
+
     }
 
 }

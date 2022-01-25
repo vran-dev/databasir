@@ -17,6 +17,10 @@ public class ProjectSimpleResponse {
 
     private String databaseType;
 
+    private Boolean isAutoSync;
+
+    private String autoSyncCron;
+
     private LocalDateTime createAt;
 
 }
