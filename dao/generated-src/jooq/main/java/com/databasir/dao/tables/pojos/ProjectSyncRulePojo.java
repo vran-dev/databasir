@@ -22,6 +22,8 @@ public class ProjectSyncRulePojo implements Serializable {
     private Integer       projectId;
     private JSON          ignoreTableNameRegexArray;
     private JSON          ignoreColumnNameRegexArray;
+    private Boolean       isAutoSync;
+    private String        autoSyncCron;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -32,6 +34,8 @@ public class ProjectSyncRulePojo implements Serializable {
         this.projectId = value.projectId;
         this.ignoreTableNameRegexArray = value.ignoreTableNameRegexArray;
         this.ignoreColumnNameRegexArray = value.ignoreColumnNameRegexArray;
+        this.isAutoSync = value.isAutoSync;
+        this.autoSyncCron = value.autoSyncCron;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -41,6 +45,8 @@ public class ProjectSyncRulePojo implements Serializable {
         Integer       projectId,
         JSON          ignoreTableNameRegexArray,
         JSON          ignoreColumnNameRegexArray,
+        Boolean       isAutoSync,
+        String        autoSyncCron,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -48,6 +54,8 @@ public class ProjectSyncRulePojo implements Serializable {
         this.projectId = projectId;
         this.ignoreTableNameRegexArray = ignoreTableNameRegexArray;
         this.ignoreColumnNameRegexArray = ignoreColumnNameRegexArray;
+        this.isAutoSync = isAutoSync;
+        this.autoSyncCron = autoSyncCron;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -113,6 +121,34 @@ public class ProjectSyncRulePojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.project_sync_rule.is_auto_sync</code>.
+     */
+    public Boolean getIsAutoSync() {
+        return this.isAutoSync;
+    }
+
+    /**
+     * Setter for <code>databasir.project_sync_rule.is_auto_sync</code>.
+     */
+    public void setIsAutoSync(Boolean isAutoSync) {
+        this.isAutoSync = isAutoSync;
+    }
+
+    /**
+     * Getter for <code>databasir.project_sync_rule.auto_sync_cron</code>.
+     */
+    public String getAutoSyncCron() {
+        return this.autoSyncCron;
+    }
+
+    /**
+     * Setter for <code>databasir.project_sync_rule.auto_sync_cron</code>.
+     */
+    public void setAutoSyncCron(String autoSyncCron) {
+        this.autoSyncCron = autoSyncCron;
+    }
+
+    /**
      * Getter for <code>databasir.project_sync_rule.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
@@ -148,6 +184,8 @@ public class ProjectSyncRulePojo implements Serializable {
         sb.append(", ").append(projectId);
         sb.append(", ").append(ignoreTableNameRegexArray);
         sb.append(", ").append(ignoreColumnNameRegexArray);
+        sb.append(", ").append(isAutoSync);
+        sb.append(", ").append(autoSyncCron);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 

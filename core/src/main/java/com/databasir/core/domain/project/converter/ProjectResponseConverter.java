@@ -31,5 +31,7 @@ public interface ProjectResponseConverter {
 
     @Mapping(target = "id", source = "project.id")
     @Mapping(target = "createAt", source = "project.createAt")
-    ProjectSimpleResponse toSimple(ProjectPojo project, DataSourcePojo dataSource);
+    ProjectSimpleResponse toSimple(ProjectPojo project,
+                                   DataSourcePojo dataSource,
+                                   ProjectSyncRulePojo syncRule);
 }

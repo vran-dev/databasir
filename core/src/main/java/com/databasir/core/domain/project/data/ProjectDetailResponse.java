@@ -15,6 +15,8 @@ public class ProjectDetailResponse {
 
     private String description;
 
+    private Integer groupId;
+
     private DataSourceResponse dataSource;
 
     private ProjectSyncRuleResponse projectSyncRule;
@@ -50,6 +52,10 @@ public class ProjectDetailResponse {
         private List<String> ignoreTableNameRegexes = new ArrayList<>();
 
         private List<String> ignoreColumnNameRegexes = new ArrayList<>();
+
+        private Boolean isAutoSync;
+
+        private String autoSyncCron;
 
         private LocalDateTime createAt;
     }

@@ -52,5 +52,10 @@ public class ProjectUpdateRequest {
 
         private List<String> ignoreColumnNameRegexes = new ArrayList<>();
 
+        @NotNull
+        private Boolean isAutoSync;
+
+        private String autoSyncCron;
+
     }
 }

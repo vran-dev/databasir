@@ -72,12 +72,12 @@ public class Login extends TableImpl<LoginRecord> {
     /**
      * The column <code>databasir.login.access_token_expire_at</code>.
      */
-    public final TableField<LoginRecord, LocalDateTime> ACCESS_TOKEN_EXPIRE_AT = createField(DSL.name("access_token_expire_at"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
+    public final TableField<LoginRecord, LocalDateTime> ACCESS_TOKEN_EXPIRE_AT = createField(DSL.name("access_token_expire_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>databasir.login.refresh_token_expire_at</code>.
      */
-    public final TableField<LoginRecord, LocalDateTime> REFRESH_TOKEN_EXPIRE_AT = createField(DSL.name("refresh_token_expire_at"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
+    public final TableField<LoginRecord, LocalDateTime> REFRESH_TOKEN_EXPIRE_AT = createField(DSL.name("refresh_token_expire_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>databasir.login.update_at</code>.

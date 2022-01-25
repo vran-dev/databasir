@@ -73,7 +73,6 @@ public class ProjectService {
         List<DataSourcePropertyPojo> properties = dataSourcePojoConverter.of(propertyValues, dataSourceId);
         dataSourcePropertyDao.batchInsert(properties);
 
-        // TODO redesign it
         ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
         projectSyncRuleDao.insertAndReturnId(syncRule);
     }
@@ -98,9 +97,10 @@ public class ProjectService {
                 dataSourcePropertyDao.batchInsert(properties);
             }
 
-            // update project sync rule TODO redesign it
+            // update project sync rule
             ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
-            projectSyncRuleDao.updateByProjectId(syncRule);
+            projectSyncRuleDao.deleteByProjectId(projectId);
+            projectSyncRuleDao.insertAndReturnId(syncRule);
 
             // update project info
             ProjectPojo project = projectPojoConverter.of(request);
@@ -132,9 +132,13 @@ public class ProjectService {
         Map<Integer, DataSourcePojo> dataSourceMapByProjectId = dataSourceDao.selectInProjectIds(projectIds)
                 .stream()
                 .collect(Collectors.toMap(DataSourcePojo::getProjectId, Function.identity()));
+        Map<Integer, ProjectSyncRulePojo> syncRuleMapByProjectId = projectSyncRuleDao.selectInProjectIds(projectIds)
+                .stream()
+                .collect(Collectors.toMap(ProjectSyncRulePojo::getProjectId, Function.identity()));
         return pageData.map(project -> {
             DataSourcePojo dataSource = dataSourceMapByProjectId.get(project.getId());
-            return projectResponseConverter.toSimple(project, dataSource);
+            ProjectSyncRulePojo syncRule = syncRuleMapByProjectId.get(project.getId());
+            return projectResponseConverter.toSimple(project, dataSource, syncRule);
         });
     }
 

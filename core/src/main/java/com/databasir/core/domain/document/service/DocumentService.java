@@ -176,7 +176,7 @@ public class DocumentService {
 
     public Page<DatabaseDocumentVersionResponse> getVersionsBySchemaSourceId(Integer projectId, Pageable page) {
         return databaseDocumentDao.selectOptionalByProjectId(projectId)
-                .map(schemaMeta -> databaseDocumentHistoryDao.selectPageByDatabaseDocumentId(page, schemaMeta.getId())
+                .map(schemaMeta -> databaseDocumentHistoryDao.selectVersionPageByDatabaseDocumentId(page, schemaMeta.getId())
                         .map(history -> DatabaseDocumentVersionResponse.builder()
                                 .version(history.getVersion())
                                 .createAt(history.getCreateAt())
