@@ -1,67 +1,47 @@
 # Databasir
+## 规划
+项目目前还属于 MVP （可行性验证）阶段，功能、文档等尚未完备，功能也处于随时调整的阶段
 
-Database document generator
+以下功能尚在开发中
 
-you could use `databasir` to generate database meta model, or render it as markdown / pdf (TODO) / html (TODO)
+- [ ] 定时文档同步
+- [ ] 表字段协同注释
+- [ ] 操作审计日志
+- [x] 容器化部署
 
-# How to use
+## 简介
 
-## Database Meta to Java Model
+**Databasir** 是一款在线数据库文档管理工具，为企业开发中最核心的数据库结构提供文档化管理支撑能力
 
-```java
-java.sql.Connection connection=...;
-DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
-```
+1. 自动化：定时、手动同步数据库结构并生成文档
+2. 版本化：历史变更版本皆可查看
+3. 精细化：团队成员可以协同为文档做更精细化的注释
+4. 扁平化：权限管理扁平，减少冗余流程，价值最大化
 
-## Render as Markdown
+## 部署 TODO
 
-```java
-try(FileOutputStream out=new FileOutputStream("user.md")){
-    java.sql.Connection connection=...;
-    Databasir databasir=Databasir.of();
-    DatabaseMeta meta=databasir.get(connection,"user").orElseThrow();
-    databasir.renderAsMarkdown(doc,out);
-}catch(IOException e){
-    throw new IllegalStateException(e);
-}
-```
+Databasir 采用了前后端分离的模式进行开发和部署，前端和后端需要独立部署
 
-- Markdown Example
-
-![](README/table-doc.png)
+- 后端应用： https://github.com/vran-dev/databasir
+- 前端应用： https://github.com/vran-dev/databasir-frontend
 
 
-## Ignore tables or columns
+## 展示
 
-support regex pattern to ignore table or column
+![](README/home.jpg)
 
-```java
-java.sql.Connection connection=...;
-DatabasirConfig config=new DatabasirConfig();
-config.ignoreColumn("id*");
-config.ignoreTable("flyway.*");
-DatabaseMeta meta=Databasir.of(config).get(connection,"user").orElseThrow();
-```
+![](README/group-projects.jpg)
 
-## Extension
+![](README/group-project-create.jpg)
 
-Custom configuration
+![](README/group-project-document.jpg)
 
-```java
-java.sql.Connection connection=...;
-DatabasirConfig config=new DatabasirConfig();
-config.setDatabaseMetaRepository(...); // your custom repository
-config.setTableMetaRepository(...); // your custom repository
-config.setColumnMetaRepository(...); // your custom repository
-config.setTriggerMetaRepository(...); // your custom repository
-config.setIndexMetaRepository(...); // your custom repository
-DatabaseMeta meta=Databasir.of().get(connection,"user").orElseThrow();
-```
+![](README/group-member-list.jpg)
 
-Default Repository Is
+![](README/group-member-add.jpg)
 
-- com.databasir.core.meta.repository.impl.jdbc.JdbcDatabaseMetaRepository
-- com.databasir.core.meta.repository.impl.jdbc.JdbcTableMetaRepository
-- com.databasir.core.meta.repository.impl.jdbc.JdbcColumnMetaRepository
-- com.databasir.core.meta.repository.impl.jdbc.JdbcIndexMetaRepository
-- com.databasir.core.meta.repository.impl.jdbc.JdbcTriggerMetaRepository
+![](README/user.jpg)
+
+![](README/user-profile.jpg)
+
+![](README/sys-mail.jpg)
