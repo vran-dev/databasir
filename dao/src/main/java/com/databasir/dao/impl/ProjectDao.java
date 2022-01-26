@@ -86,4 +86,18 @@ public class ProjectDao extends BaseDao<ProjectRecord, ProjectPojo> {
                 + " where project.deleted = false and `group`.id in " + groupIdIn + " group by `group`.id;";
         return dslContext.resultQuery(sql).fetchInto(GroupProjectCountPojo.class);
     }
+
+    public void deleteByGroupId(Integer groupId) {
+        dslContext
+                .update(PROJECT).set(PROJECT.DELETED, true)
+                .where(PROJECT.GROUP_ID.eq(groupId).and(PROJECT.DELETED.eq(false)))
+                .execute();
+    }
+
+    public List<Integer> selectProjectIdsByGroupId(Integer groupId) {
+        return dslContext
+                .select(PROJECT.ID).from(PROJECT)
+                .where(PROJECT.GROUP_ID.eq(groupId).and(PROJECT.DELETED.eq(false)))
+                .fetchInto(Integer.class);
+    }
 }
