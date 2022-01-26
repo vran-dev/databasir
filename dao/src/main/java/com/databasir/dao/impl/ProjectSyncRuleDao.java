@@ -95,4 +95,22 @@ public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRuleRecord, ProjectSy
                 PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId)
                         .and(PROJECT_SYNC_RULE.AUTO_SYNC_CRON.eq(cron)));
     }
+
+    public void disableAutoSyncByProjectId(Integer projectId) {
+        dslContext
+                .update(PROJECT_SYNC_RULE).set(PROJECT_SYNC_RULE.IS_AUTO_SYNC, false)
+                .where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
+                .execute();
+
+    }
+
+    public void disableAutoSyncByProjectIds(List<Integer> projectIds) {
+        if (projectIds == null || projectIds.isEmpty()) {
+            return;
+        }
+        dslContext
+                .update(PROJECT_SYNC_RULE).set(PROJECT_SYNC_RULE.IS_AUTO_SYNC, false)
+                .where(PROJECT_SYNC_RULE.PROJECT_ID.in(projectIds))
+                .execute();
+    }
 }

@@ -49,11 +49,11 @@ public class ProjectService {
     public ProjectDetailResponse getOne(Integer id) {
         return projectDao.selectOptionalById(id)
                 .map(schemaSource -> {
-                    DataSourcePojo dataSource = dataSourceDao.selectByProjectId(id);
-                    List<DataSourcePropertyPojo> properties = dataSourcePropertyDao.selectByDataSourceId(dataSource.getId());
-                    ProjectDetailResponse.DataSourceResponse dataSourceResponse = projectResponseConverter.toResponse(dataSource, properties);
-                    ProjectSyncRulePojo rule = projectSyncRuleDao.selectByProjectId(id);
-                    ProjectDetailResponse.ProjectSyncRuleResponse ruleResponse = projectResponseConverter.toResponse(rule);
+                    var dataSource = dataSourceDao.selectByProjectId(id);
+                    var properties = dataSourcePropertyDao.selectByDataSourceId(dataSource.getId());
+                    var dataSourceResponse = projectResponseConverter.toResponse(dataSource, properties);
+                    var projectSyncRule = projectSyncRuleDao.selectOptionalByProjectId(id).orElse(null);
+                    var ruleResponse = projectResponseConverter.toResponse(projectSyncRule);
                     return projectResponseConverter.toResponse(schemaSource, dataSourceResponse, ruleResponse);
                 })
                 .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
@@ -125,6 +125,7 @@ public class ProjectService {
 
     public void delete(Integer projectId) {
         projectDao.updateDeletedById(true, projectId);
+        projectSyncRuleDao.disableAutoSyncByProjectId(projectId);
     }
 
     public Page<ProjectSimpleResponse> list(Pageable page, ProjectListCondition condition) {
