@@ -55,4 +55,10 @@ public class ProjectController {
                                                       ProjectListCondition condition) {
         return JsonData.ok(projectService.list(page, condition));
     }
+
+    @PostMapping(Routes.GroupProject.TEST_CONNECTION)
+    public JsonData<Void> testConnection(@RequestBody @Valid ProjectTestConnectionRequest request) {
+        projectService.testConnection(request);
+        return JsonData.ok();
+    }
 }

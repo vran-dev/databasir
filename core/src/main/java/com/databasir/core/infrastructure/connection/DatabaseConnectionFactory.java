@@ -1,6 +1,7 @@
 package com.databasir.core.infrastructure.connection;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public interface DatabaseConnectionFactory {
@@ -11,5 +12,5 @@ public interface DatabaseConnectionFactory {
                              String password,
                              String url,
                              String schema,
-                             Properties properties);
+                             Properties properties) throws SQLException;
 }
