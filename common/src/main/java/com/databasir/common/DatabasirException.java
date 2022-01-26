@@ -46,4 +46,11 @@ public class DatabasirException extends RuntimeException {
         this.errCode = errorCodeMessage.getErrCode();
         this.errMessage = errorCodeMessage.getErrMessage();
     }
+
+    public DatabasirException(DatabasirErrors errorCodeMessage, String overrideMessage, Throwable cause) {
+        super(overrideMessage, cause);
+        this.errorCodeMessage = errorCodeMessage;
+        this.errCode = errorCodeMessage.getErrCode();
+        this.errMessage = overrideMessage;
+    }
 }

@@ -57,6 +57,8 @@ public interface Routes {
         String UPDATE = BASE + "/groups/{groupId}/projects";
 
         String DELETE = BASE + "/groups/{groupId}/projects/{projectId}";
+
+        String TEST_CONNECTION = BASE + "/projects/test_connection";
     }
 
     interface Document {

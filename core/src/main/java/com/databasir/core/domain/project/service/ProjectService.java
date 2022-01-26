@@ -6,6 +6,7 @@ import com.databasir.core.domain.project.converter.DataSourcePojoConverter;
 import com.databasir.core.domain.project.converter.ProjectPojoConverter;
 import com.databasir.core.domain.project.converter.ProjectResponseConverter;
 import com.databasir.core.domain.project.data.*;
+import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,8 @@ public class ProjectService {
     private final ProjectPojoConverter projectPojoConverter;
 
     private final ProjectResponseConverter projectResponseConverter;
+
+    private final DatabaseConnectionService databaseConnectionService;
 
     public ProjectDetailResponse getOne(Integer id) {
         return projectDao.selectOptionalById(id)
@@ -140,6 +144,27 @@ public class ProjectService {
             ProjectSyncRulePojo syncRule = syncRuleMapByProjectId.get(project.getId());
             return projectResponseConverter.toSimple(project, dataSource, syncRule);
         });
+    }
+
+    public void testConnection(ProjectTestConnectionRequest request) {
+        String password;
+        if (request.getProjectId() != null && !StringUtils.hasText(request.getPassword())) {
+            DataSourcePojo dataSource = dataSourceDao.selectByProjectId(request.getProjectId());
+            SysKeyPojo sysKey = sysKeyDao.selectTopOne();
+            password = Aes.decryptFromBase64Data(dataSource.getPassword(), sysKey.getAesKey());
+        } else if (StringUtils.hasText(request.getPassword())) {
+            password = request.getPassword();
+        } else {
+            throw DomainErrors.PASSWORD_MUST_NOT_BE_BLANK.exception();
+        }
+        Properties properties = new Properties();
+        request.getProperties().forEach(prop -> properties.put(prop.getKey(), prop.getValue()));
+        databaseConnectionService.testConnection(request.getUsername(),
+                password,
+                request.getUrl(),
+                request.getDatabaseName(),
+                request.getDatabaseType(),
+                properties);
     }
 
 }

@@ -35,4 +35,8 @@ public enum DomainErrors implements DatabasirErrors {
     public DatabasirException exception(Throwable origin) {
         return new DatabasirException(this, origin);
     }
+
+    public DatabasirException exception(String message, Throwable origin) {
+        return new DatabasirException(this, message, origin);
+    }
 }
