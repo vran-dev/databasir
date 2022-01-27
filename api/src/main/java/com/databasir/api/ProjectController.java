@@ -1,5 +1,6 @@
 package com.databasir.api;
 
+import com.databasir.api.validator.CronExpressionValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.project.data.*;
 import com.databasir.core.domain.project.service.ProjectService;
@@ -21,9 +22,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    private final CronExpressionValidator cronExpressionValidator;
+
     @PostMapping(Routes.GroupProject.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#request.groupId, 'GROUP_MEMBER?groupId='+#request.groupId)")
     public JsonData<Void> create(@RequestBody @Valid ProjectCreateRequest request) {
+        cronExpressionValidator.isValidCron(request);
         projectService.create(request);
         return JsonData.ok();
     }
@@ -32,6 +36,7 @@ public class ProjectController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
     public JsonData<Void> update(@RequestBody @Valid ProjectUpdateRequest request,
                                  @PathVariable Integer groupId) {
+        cronExpressionValidator.isValidCron(request);
         projectService.update(groupId, request);
         return JsonData.ok();
     }
