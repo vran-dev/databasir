@@ -43,8 +43,8 @@ public class LoginController {
         try {
             return JsonData.ok(loginService.refreshAccessTokens(request));
         } catch (DatabasirException e) {
-            if (Objects.equals(e.getErrCode(), DomainErrors.ACCESS_TOKEN_REFRESH_INVALID.getErrCode())) {
-                throw new InvalidTokenException(DomainErrors.ACCESS_TOKEN_REFRESH_INVALID);
+            if (Objects.equals(e.getErrCode(), DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.getErrCode())) {
+                throw new InvalidTokenException(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION);
             }
             if (Objects.equals(e.getErrCode(), DomainErrors.REFRESH_TOKEN_EXPIRED.getErrCode())) {
                 throw new InvalidTokenException(DomainErrors.REFRESH_TOKEN_EXPIRED);

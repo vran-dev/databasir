@@ -48,7 +48,7 @@ public class SystemService {
                     return pojo;
                 });
 
-        String email = "admin@databasir.com";
+        String email = "N/A";
         String username = "databasir";
         Optional<UserPojo> userOpt = userDao.selectByEmail(email);
         if (!userOpt.isPresent()) {

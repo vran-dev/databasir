@@ -31,13 +31,3 @@ dependencies {
 
 }
 
-/**
- * Docker
- */
-task copyDockerfile(type: Copy) {
-    from("Dockerfile")
-    into("build/libs")
-}
-
-bootJar.finalizedBy copyDockerfile
-assemble.finalizedBy copyDockerfile
