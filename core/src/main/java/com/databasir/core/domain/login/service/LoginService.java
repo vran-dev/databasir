@@ -32,7 +32,7 @@ public class LoginService {
 
     public AccessTokenRefreshResponse refreshAccessTokens(AccessTokenRefreshRequest request) {
         LoginPojo login = loginDao.selectByRefreshToken(request.getRefreshToken())
-                .orElseThrow(DomainErrors.ACCESS_TOKEN_REFRESH_INVALID::exception);
+                .orElseThrow(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION::exception);
         // refresh-token 已过期
         if (login.getRefreshTokenExpireAt().isBefore(LocalDateTime.now())) {
             throw DomainErrors.REFRESH_TOKEN_EXPIRED.exception();
@@ -41,9 +41,15 @@ public class LoginService {
         if (login.getAccessTokenExpireAt().isAfter(LocalDateTime.now())) {
             log.warn("invalid access token refresh operation: request = {}, login = {}", request, login);
             loginDao.deleteByUserId(login.getUserId());
-            throw DomainErrors.ACCESS_TOKEN_REFRESH_INVALID.exception();
+            throw DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
         }
-        UserPojo user = userDao.selectById(login.getUserId());
+
+        // refresh-token 对应的用户已被删除
+        UserPojo user = userDao.selectOptionalById(login.getUserId())
+                .orElseThrow(() -> {
+                    log.warn("user not exists but refresh token exists for " + login.getRefreshToken());
+                    return DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
+                });
         String accessToken = jwtTokens.accessToken(user.getEmail());
         LocalDateTime accessTokenExpireAt = jwtTokens.expireAt(accessToken);
         loginDao.updateAccessToken(accessToken, accessTokenExpireAt, user.getId());
