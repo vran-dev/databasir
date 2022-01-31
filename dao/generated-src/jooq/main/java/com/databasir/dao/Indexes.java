@@ -6,6 +6,7 @@ package com.databasir.dao;
 
 import com.databasir.dao.tables.DataSourceProperty;
 import com.databasir.dao.tables.DatabaseDocumentHistory;
+import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.TableColumnDocument;
 import com.databasir.dao.tables.TableDocument;
 import com.databasir.dao.tables.TableIndexDocument;
@@ -33,6 +34,7 @@ public class Indexes {
     public static final Index TABLE_INDEX_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableIndexDocument.TABLE_INDEX_DOCUMENT, new OrderField[] { TableIndexDocument.TABLE_INDEX_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index TABLE_TRIGGER_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableTriggerDocument.TABLE_TRIGGER_DOCUMENT, new OrderField[] { TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index DATABASE_DOCUMENT_HISTORY_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), DatabaseDocumentHistory.DATABASE_DOCUMENT_HISTORY, new OrderField[] { DatabaseDocumentHistory.DATABASE_DOCUMENT_HISTORY.PROJECT_ID }, false);
+    public static final Index DOCUMENT_REMARK_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), DocumentRemark.DOCUMENT_REMARK, new OrderField[] { DocumentRemark.DOCUMENT_REMARK.PROJECT_ID }, false);
     public static final Index TABLE_COLUMN_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableColumnDocument.TABLE_COLUMN_DOCUMENT, new OrderField[] { TableColumnDocument.TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID }, false);
     public static final Index TABLE_INDEX_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableIndexDocument.TABLE_INDEX_DOCUMENT, new OrderField[] { TableIndexDocument.TABLE_INDEX_DOCUMENT.TABLE_DOCUMENT_ID }, false);
     public static final Index TABLE_TRIGGER_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableTriggerDocument.TABLE_TRIGGER_DOCUMENT, new OrderField[] { TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID }, false);

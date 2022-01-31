@@ -45,7 +45,7 @@ public class UserDao extends BaseDao<UserRecord, UserPojo> {
                 .execute();
     }
 
-    public List<UserPojo> selectUserIdIn(List<Integer> userIds) {
+    public List<UserPojo> selectUserIdIn(Collection<Integer> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return Collections.emptyList();
         }

@@ -220,3 +220,16 @@ CREATE TABLE login
     CONSTRAINT UNIQUE uk_user_id (user_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS document_remark
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    remark      TEXT         NOT NULL,
+    user_id     INT          NOT NULL COMMENT 'user.id',
+    project_id  INT          NOT NULL,
+    table_name  VARCHAR(255) NOT NULL,
+    column_name VARCHAR(255)          DEFAULT NULL,
+    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_project_id (project_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
