@@ -70,6 +70,15 @@ public interface Routes {
         String LIST_VERSIONS = BASE + "/projects/{projectId}/document_versions";
     }
 
+    interface DocumentRemark {
+
+        String LIST = BASE + "/groups/{groupId}/projects/{projectId}/remarks";
+
+        String CREATE = BASE + "/groups/{groupId}/projects/{projectId}/remarks";
+
+        String DELETE = BASE + "/groups/{groupId}/projects/{projectId}/remarks/{remarkId}";
+    }
+
     interface Setting {
 
         String GET_SYS_EMAIL = BASE + "/settings/sys_email";

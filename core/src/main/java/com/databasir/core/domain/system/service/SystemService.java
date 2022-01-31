@@ -50,7 +50,7 @@ public class SystemService {
 
         String email = "N/A";
         String username = "databasir";
-        Optional<UserPojo> userOpt = userDao.selectByEmail(email);
+        Optional<UserPojo> userOpt = userDao.selectByEmailOrUsername(username);
         if (!userOpt.isPresent()) {
             UserPojo admin = new UserPojo();
             admin.setEmail(email);
