@@ -1,6 +1,7 @@
 package com.databasir.api;
 
 import com.databasir.common.JsonData;
+import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.service.DocumentService;
@@ -9,13 +10,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-@RestController
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Validated
+@RestController
 public class DocumentController {
 
     private final DocumentService documentService;
@@ -39,6 +51,27 @@ public class DocumentController {
                                                                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC)
                                                                                           Pageable page) {
         return JsonData.ok(documentService.getVersionsBySchemaSourceId(projectId, page));
+    }
+
+    @GetMapping(Routes.Document.EXPORT)
+    public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
+                                                                  @RequestParam(required = false) Long version) {
+        String data = documentService.toMarkdown(projectId, version).get();
+        try {
+            Path path = Files.writeString(Paths.get(UUID.randomUUID().toString() + ".md"), data, StandardCharsets.UTF_8);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename("demo.md", StandardCharsets.UTF_8)
+                    .build());
+            byte[] bytes = Files.readAllBytes(path);
+            Files.deleteIfExists(path);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(out -> out.write(bytes));
+        } catch (IOException e) {
+            throw new SystemException("System error");
+        }
     }
 
 }
