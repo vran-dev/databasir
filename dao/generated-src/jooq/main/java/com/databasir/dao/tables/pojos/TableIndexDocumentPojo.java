@@ -22,7 +22,6 @@ public class TableIndexDocumentPojo implements Serializable {
     private Integer       tableDocumentId;
     private Integer       databaseDocumentId;
     private String        name;
-    private Boolean       isPrimary;
     private Boolean       isUnique;
     private JSON          columnNameArray;
     private LocalDateTime createAt;
@@ -34,7 +33,6 @@ public class TableIndexDocumentPojo implements Serializable {
         this.tableDocumentId = value.tableDocumentId;
         this.databaseDocumentId = value.databaseDocumentId;
         this.name = value.name;
-        this.isPrimary = value.isPrimary;
         this.isUnique = value.isUnique;
         this.columnNameArray = value.columnNameArray;
         this.createAt = value.createAt;
@@ -45,7 +43,6 @@ public class TableIndexDocumentPojo implements Serializable {
         Integer       tableDocumentId,
         Integer       databaseDocumentId,
         String        name,
-        Boolean       isPrimary,
         Boolean       isUnique,
         JSON          columnNameArray,
         LocalDateTime createAt
@@ -54,7 +51,6 @@ public class TableIndexDocumentPojo implements Serializable {
         this.tableDocumentId = tableDocumentId;
         this.databaseDocumentId = databaseDocumentId;
         this.name = name;
-        this.isPrimary = isPrimary;
         this.isUnique = isUnique;
         this.columnNameArray = columnNameArray;
         this.createAt = createAt;
@@ -119,20 +115,6 @@ public class TableIndexDocumentPojo implements Serializable {
     }
 
     /**
-     * Getter for <code>databasir.table_index_document.is_primary</code>.
-     */
-    public Boolean getIsPrimary() {
-        return this.isPrimary;
-    }
-
-    /**
-     * Setter for <code>databasir.table_index_document.is_primary</code>.
-     */
-    public void setIsPrimary(Boolean isPrimary) {
-        this.isPrimary = isPrimary;
-    }
-
-    /**
      * Getter for <code>databasir.table_index_document.is_unique</code>.
      */
     public Boolean getIsUnique() {
@@ -182,7 +164,6 @@ public class TableIndexDocumentPojo implements Serializable {
         sb.append(", ").append(tableDocumentId);
         sb.append(", ").append(databaseDocumentId);
         sb.append(", ").append(name);
-        sb.append(", ").append(isPrimary);
         sb.append(", ").append(isUnique);
         sb.append(", ").append(columnNameArray);
         sb.append(", ").append(createAt);

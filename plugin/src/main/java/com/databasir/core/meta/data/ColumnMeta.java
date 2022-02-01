@@ -26,4 +26,5 @@ public class ColumnMeta {
 
     private String autoIncrement;
 
+    private Boolean isPrimaryKey;
 }

@@ -57,7 +57,6 @@ public class RenderConfig {
     protected LinkedHashMap<String, Function<IndexMeta, String>> indexTitleAndValueMapping() {
         LinkedHashMap<String, Function<IndexMeta, String>> mapping = new LinkedHashMap<>();
         mapping.put("Name", IndexMeta::getName);
-        mapping.put("IsPrimary", index -> index.getIsPrimaryKey() ? "YES" : "");
         mapping.put("IsUnique", index -> index.getIsUniqueKey() ? "YES" : "");
         mapping.put("Columns", index -> String.join(", ", index.getColumnNames()));
         return mapping;

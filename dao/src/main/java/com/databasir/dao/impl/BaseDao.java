@@ -4,6 +4,7 @@ package com.databasir.dao.impl;
 import com.databasir.dao.exception.DataNotExistsException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
+import org.jooq.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

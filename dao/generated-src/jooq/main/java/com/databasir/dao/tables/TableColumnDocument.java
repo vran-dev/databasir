@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -97,6 +97,11 @@ public class TableColumnDocument extends TableImpl<TableColumnDocumentRecord> {
      * The column <code>databasir.table_column_document.decimal_digits</code>.
      */
     public final TableField<TableColumnDocumentRecord, Integer> DECIMAL_DIGITS = createField(DSL.name("decimal_digits"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>databasir.table_column_document.is_primary_key</code>.
+     */
+    public final TableField<TableColumnDocumentRecord, Boolean> IS_PRIMARY_KEY = createField(DSL.name("is_primary_key"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>databasir.table_column_document.nullable</code>. YES,
@@ -197,11 +202,11 @@ public class TableColumnDocument extends TableImpl<TableColumnDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, Integer, String, String, String, String, Integer, Integer, String, String, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, Integer, Integer, String, String, String, String, Integer, Integer, Boolean, String, String, LocalDateTime> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

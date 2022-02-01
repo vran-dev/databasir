@@ -51,7 +51,6 @@ public interface DocumentPojoConverter extends BaseConverter {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(target = "isPrimary", source = "meta.isPrimaryKey")
     @Mapping(target = "isUnique", source = "meta.isUniqueKey")
     @Mapping(target = "columnNameArray", source = "meta.columnNames")
     TableIndexDocumentPojo toIndexPojo(Integer databaseDocumentId,
