@@ -13,10 +13,10 @@ public class App {
 
     @Test
     public void testRenderAsMarkdown() throws SQLException, ClassNotFoundException {
-        try (FileOutputStream out = new FileOutputStream("user.md")) {
+        try (FileOutputStream out = new FileOutputStream("demo.md")) {
             Connection connection = getJdbcConnection();
             Databasir databasir = Databasir.of();
-            DatabaseMeta doc = databasir.get(connection, "user").orElseThrow();
+            DatabaseMeta doc = databasir.get(connection, "demo").orElseThrow();
             databasir.renderAsMarkdown(doc, out);
         } catch (IOException e) {
             throw new IllegalStateException(e);

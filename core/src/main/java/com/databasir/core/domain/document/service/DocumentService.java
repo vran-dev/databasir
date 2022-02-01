@@ -11,6 +11,7 @@ import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.meta.data.DatabaseMeta;
+import com.databasir.core.render.markdown.MarkdownBuilder;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -182,5 +181,82 @@ public class DocumentService {
                                 .createAt(history.getCreateAt())
                                 .build()))
                 .orElseGet(Page::empty);
+    }
+
+    public Optional<String> toMarkdown(Integer projectId, Long version) {
+        return getOneByProjectId(projectId, version)
+                .map(doc -> {
+                    MarkdownBuilder builder = MarkdownBuilder.builder();
+                    builder.primaryTitle(doc.getDatabaseName());
+                    // overview
+                    builder.secondTitle("overview");
+                    List<List<String>> overviewContent = new ArrayList<>();
+                    for (int i = 0; i < doc.getTables().size(); i++) {
+                        DatabaseDocumentResponse.TableDocumentResponse table = doc.getTables().get(i);
+                        overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(), table.getComment()));
+                    }
+                    builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
+
+                    Function<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse, String> columnDefaultValueMapping = column -> {
+                        if (Objects.equals(column.getNullable(), "YES")) {
+                            return Objects.requireNonNullElse(column.getDefaultValue(), "null");
+                        } else {
+                            return Objects.requireNonNullElse(column.getDefaultValue(), "");
+                        }
+                    };
+                    // tables
+                    doc.getTables().forEach(table -> {
+                        builder.secondTitle(table.getName());
+
+                        // columns
+                        List<List<String>> columnContent = new ArrayList<>();
+                        for (int i = 0; i < table.getColumns().size(); i++) {
+                            var column = table.getColumns().get(i);
+                            String type;
+                            if (column.getDecimalDigits() == null || column.getDecimalDigits() == 0) {
+                                type = table.getType() + "(" + column.getSize() + ")";
+                            } else {
+                                type = table.getType() + "(" + column.getSize() + "," + column.getDecimalDigits() + ")";
+                            }
+                            columnContent.add(List.of((i + 1) + "",
+                                    column.getName(),
+                                    type,
+                                    column.getIsPrimaryKey() ? "YES" : "NO",
+                                    column.getNullable(),
+                                    column.getAutoIncrement(),
+                                    columnDefaultValueMapping.apply(column),
+                                    column.getComment()));
+                        }
+                        builder.thirdTitle("columns");
+                        builder.table(List.of("", "名称", "类型", "是否为主键", "可为空", "自增", "默认值", "备注"),
+                                columnContent);
+
+                        // indexes
+                        List<List<String>> indexContent = new ArrayList<>();
+                        for (int i = 0; i < table.getIndexes().size(); i++) {
+                            var index = table.getIndexes().get(i);
+                            String columnNames = String.join(", ", index.getColumnNames());
+                            String isUnique = index.getIsUnique() ? "YES" : "NO";
+                            indexContent.add(List.of((i + 1) + "", index.getName(), isUnique, columnNames));
+                        }
+                        builder.thirdTitle("indexes");
+                        builder.table(List.of("", "名称", "是否唯一", "关联列"), indexContent);
+
+                        if (!table.getTriggers().isEmpty()) {
+                            List<List<String>> triggerContent = new ArrayList<>();
+                            for (int i = 0; i < table.getTriggers().size(); i++) {
+                                var trigger = table.getTriggers().get(i);
+                                triggerContent.add(List.of((i + 1) + "",
+                                        trigger.getName(),
+                                        trigger.getTiming(),
+                                        trigger.getManipulation(),
+                                        trigger.getStatement()));
+                            }
+                            builder.thirdTitle("triggers");
+                            builder.table(List.of("", "名称", "timing", "manipulation", "statement"), triggerContent);
+                        }
+                    });
+                    return builder.build();
+                });
     }
 }

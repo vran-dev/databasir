@@ -68,6 +68,8 @@ public interface Routes {
         String SYNC_ONE = BASE + "/projects/{projectId}/documents";
 
         String LIST_VERSIONS = BASE + "/projects/{projectId}/document_versions";
+
+        String EXPORT = BASE + "/projects/{projectId}/document_files";
     }
 
     interface DocumentRemark {
