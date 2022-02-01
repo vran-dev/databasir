@@ -33,7 +33,7 @@ public class App {
         // this config is used by mysql
         info.put("useInformationSchema", "true");
 
-        String url = "jdbc:mysql://localhost:3306/patient?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true";
+        String url = "jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true";
         return DriverManager.getConnection(url, info);
     }
 }

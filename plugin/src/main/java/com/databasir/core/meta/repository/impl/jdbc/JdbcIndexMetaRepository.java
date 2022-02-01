@@ -47,7 +47,6 @@ public class JdbcIndexMetaRepository implements IndexMetaRepository {
                 IndexMeta indexMeta = IndexMeta.builder()
                         .name(indexName)
                         .columnNames(columns)
-                        .isPrimaryKey(Objects.equals("PRIMARY", indexName))
                         .isUniqueKey(Objects.equals(nonUnique, false))
                         .build();
                 pojoGroupByName.put(indexName, indexMeta);

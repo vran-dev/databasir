@@ -72,6 +72,8 @@ public class DatabaseDocumentResponse {
 
             private String comment;
 
+            private Boolean isPrimaryKey;
+
             private String nullable;
 
             private String autoIncrement;
@@ -90,8 +92,6 @@ public class DatabaseDocumentResponse {
             private Integer id;
 
             private String name;
-
-            private Boolean isPrimary;
 
             private Boolean isUnique;
 

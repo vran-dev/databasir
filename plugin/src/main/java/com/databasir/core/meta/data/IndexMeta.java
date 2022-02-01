@@ -15,7 +15,5 @@ public class IndexMeta {
     @Builder.Default
     private List<String> columnNames = Collections.emptyList();
 
-    private Boolean isPrimaryKey;
-
     private Boolean isUniqueKey;
 }

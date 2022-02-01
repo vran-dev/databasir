@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
         List<ColumnMeta> columnDocs = new ArrayList<>();
         String databaseName = tableCondition.getDatabaseName();
         String tableName = tableCondition.getTableName();
+        List<String> primaryKeyColumns = selectPrimaryKeyColumns(connection.getMetaData(), databaseName, tableName);
         ResultSet columnsResult;
         try {
             columnsResult = connection.getMetaData().getColumns(databaseName, null, tableName, null);
@@ -73,11 +75,22 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                         .autoIncrement(isAutoIncrement)
                         .comment(columnComment)
                         .defaultValue(defaultValue)
+                        .isPrimaryKey(primaryKeyColumns.contains(columnName))
                         .build();
                 columnDocs.add(columnMeta);
             }
 
         }
         return columnDocs;
+    }
+
+    private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta, String catalog, String tableName) throws SQLException {
+        ResultSet result = meta.getPrimaryKeys(catalog, null, tableName);
+        List<String> columns = new ArrayList<>();
+        while (result.next()) {
+            String columnName = result.getString("COLUMN_NAME");
+            columns.add(columnName);
+        }
+        return columns;
     }
 }

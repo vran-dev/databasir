@@ -20,7 +20,7 @@ import org.jooq.Index;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -72,11 +72,6 @@ public class TableIndexDocument extends TableImpl<TableIndexDocumentRecord> {
      * The column <code>databasir.table_index_document.name</code>.
      */
     public final TableField<TableIndexDocumentRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>databasir.table_index_document.is_primary</code>.
-     */
-    public final TableField<TableIndexDocumentRecord, Boolean> IS_PRIMARY = createField(DSL.name("is_primary"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>databasir.table_index_document.is_unique</code>.
@@ -175,11 +170,11 @@ public class TableIndexDocument extends TableImpl<TableIndexDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, Integer, String, Boolean, Boolean, JSON, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Integer, Integer, Integer, String, Boolean, JSON, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

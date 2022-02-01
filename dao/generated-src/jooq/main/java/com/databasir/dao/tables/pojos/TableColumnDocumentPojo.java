@@ -25,6 +25,7 @@ public class TableColumnDocumentPojo implements Serializable {
     private String        defaultValue;
     private Integer       size;
     private Integer       decimalDigits;
+    private Boolean       isPrimaryKey;
     private String        nullable;
     private String        autoIncrement;
     private LocalDateTime createAt;
@@ -41,6 +42,7 @@ public class TableColumnDocumentPojo implements Serializable {
         this.defaultValue = value.defaultValue;
         this.size = value.size;
         this.decimalDigits = value.decimalDigits;
+        this.isPrimaryKey = value.isPrimaryKey;
         this.nullable = value.nullable;
         this.autoIncrement = value.autoIncrement;
         this.createAt = value.createAt;
@@ -56,6 +58,7 @@ public class TableColumnDocumentPojo implements Serializable {
         String        defaultValue,
         Integer       size,
         Integer       decimalDigits,
+        Boolean       isPrimaryKey,
         String        nullable,
         String        autoIncrement,
         LocalDateTime createAt
@@ -69,6 +72,7 @@ public class TableColumnDocumentPojo implements Serializable {
         this.defaultValue = defaultValue;
         this.size = size;
         this.decimalDigits = decimalDigits;
+        this.isPrimaryKey = isPrimaryKey;
         this.nullable = nullable;
         this.autoIncrement = autoIncrement;
         this.createAt = createAt;
@@ -205,6 +209,20 @@ public class TableColumnDocumentPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.table_column_document.is_primary_key</code>.
+     */
+    public Boolean getIsPrimaryKey() {
+        return this.isPrimaryKey;
+    }
+
+    /**
+     * Setter for <code>databasir.table_column_document.is_primary_key</code>.
+     */
+    public void setIsPrimaryKey(Boolean isPrimaryKey) {
+        this.isPrimaryKey = isPrimaryKey;
+    }
+
+    /**
      * Getter for <code>databasir.table_column_document.nullable</code>. YES,
      * NO, UNKNOWN
      */
@@ -263,6 +281,7 @@ public class TableColumnDocumentPojo implements Serializable {
         sb.append(", ").append(defaultValue);
         sb.append(", ").append(size);
         sb.append(", ").append(decimalDigits);
+        sb.append(", ").append(isPrimaryKey);
         sb.append(", ").append(nullable);
         sb.append(", ").append(autoIncrement);
         sb.append(", ").append(createAt);
