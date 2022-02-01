@@ -1,25 +1,32 @@
 # Databasir
+
 ## 规划
-项目目前还属于 MVP （可行性验证）阶段，功能处于随时调整的阶段
+项目目前还属于 MVP （可行性验证）阶段，版本功能迭代较快
 
 以下功能尚在开发中
 
-- [ ] 表字段协同注释
 - [ ] 操作审计日志
 - [ ] 文档导出功能
+- [ ] 数据库动态扩展
+- [ ] 忘记密码
+
+目前已支持 MySQL，Postgresql 两款数据库，文档转换基于 JDBC 开发，理论上支持所有有 JDBC 驱动的数据库。
+
+
 
 ## 简介
 
-**Databasir** 是一款在线数据库文档管理工具，为企业开发中最核心的数据库结构提供文档化管理支撑能力
+**Databasir** 是一款集中式的数据库文档管理工具，提供了自动化、版本化、扁平化的数据库文档管理能力
 
-1. 自动化：定时、手动同步数据库结构并生成文档
-2. 版本化：历史变更版本皆可查看
-3. 精细化：团队成员可以协同为文档做更精细化的注释
-4. 扁平化：权限管理扁平，减少冗余流程，价值最大化
+1. 自动化：定时、手动同步数据库结构并自动生成文档
+2. 版本化：每一次同步的文档版本皆可回溯
+3. 扁平化：权限管理兼顾完备与简单，信息传输价值最大化
+
+
 
 ## 部署
 
-Databasir 采用了前后端分离的模式进行开发和部署，前端和后端可以独立部署，也可以采用只部署已整合前端资源的后端应用
+Databasir 采用了前后端分离的模式进行开发和部署，前端和后端可以独立部署
 
 - 后端应用： https://github.com/vran-dev/databasir
 - 前端应用： https://github.com/vran-dev/databasir-frontend
@@ -28,8 +35,8 @@ Databasir 采用了前后端分离的模式进行开发和部署，前端和后�
 
 注意：
 
-1. 使用 JAR 模式部署需要系统环境有 Java 环境，最低版本为 Java11。
-2. 应用使用 MYSQL 作为数据存储，所以也需要准备好数据库。
+1. 使用 JAR 模式部署需要系统环境有 Java 环境，**要求最低版本为 Java11**。
+2. 应用使用 MYSQL 作为数据存储，需要准备好数据库。
 
 部署：
 1. 在 [Github RELEASE](https://github.com/vran-dev/databasir/releases) 页面下载最新版应用 Databasir.jar (你也可以选择克隆项目后自行构建)
@@ -60,41 +67,12 @@ databasir.datasource.url=127.0.0.1:3306
 
 TODO
 
-
 ## 展示
 
-- 首页
+- 分组管理、项目管理
 
-![](README/home.jpg)
+![](README/a.jpg)
 
-- 项目中心
+- 文档页面、用户管理页面
 
-![](README/group-projects.jpg)
-
-- 项目创建
-
-![](README/group-project-create.jpg)
-
-- 项目文档
-
-![](README/group-project-document.jpg)
-
-- 分组成员
-
-![](README/group-member-list.jpg)
-
-- 添加成员
-
-![](README/group-member-add.jpg)
-
-- 用户中心
-
-![](README/user.jpg)
-
-- 个人中心
-
-![](README/user-profile.jpg)
-
-- 系统邮件
-
-![](README/sys-mail.jpg)
+![](README/b.jpg)
