@@ -48,7 +48,7 @@ public class DatabasirAuthenticationSuccessHandler implements AuthenticationSucc
         data.setId(user.getUserPojo().getId());
         data.setNickname(user.getUserPojo().getNickname());
         data.setEmail(user.getUserPojo().getEmail());
-        data.setUsername(user.getUsername());
+        data.setUsername(user.getUserPojo().getUsername());
 
         LoginKeyResponse loginKey = loginService.generate(user.getUserPojo().getId());
         data.setAccessToken(loginKey.getAccessToken());
