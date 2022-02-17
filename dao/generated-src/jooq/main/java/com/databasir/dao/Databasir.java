@@ -11,6 +11,7 @@ import com.databasir.dao.tables.DatabaseDocumentHistory;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
 import com.databasir.dao.tables.SysKey;
@@ -77,6 +78,11 @@ public class Databasir extends SchemaImpl {
      * The table <code>databasir.login</code>.
      */
     public final Login LOGIN = Login.LOGIN;
+
+    /**
+     * The table <code>databasir.operation_log</code>.
+     */
+    public final OperationLog OPERATION_LOG = OperationLog.OPERATION_LOG;
 
     /**
      * The table <code>databasir.project</code>.
@@ -151,6 +157,7 @@ public class Databasir extends SchemaImpl {
             DocumentRemark.DOCUMENT_REMARK,
             Group.GROUP,
             Login.LOGIN,
+            OperationLog.OPERATION_LOG,
             Project.PROJECT,
             ProjectSyncRule.PROJECT_SYNC_RULE,
             SysKey.SYS_KEY,

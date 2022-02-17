@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.DataSourcePropertyPojo;
-import com.databasir.dao.tables.records.DataSourcePropertyRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import static com.databasir.dao.Tables.DATA_SOURCE_PROPERTY;
 
 
 @Repository
-public class DataSourcePropertyDao extends BaseDao<DataSourcePropertyRecord, DataSourcePropertyPojo> {
+public class DataSourcePropertyDao extends BaseDao<DataSourcePropertyPojo> {
 
     @Autowired
     @Getter

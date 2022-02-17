@@ -16,7 +16,7 @@ import static com.databasir.dao.Tables.DATA_SOURCE;
 
 
 @Repository
-public class DataSourceDao extends BaseDao<DataSourceRecord, DataSourcePojo> {
+public class DataSourceDao extends BaseDao<DataSourcePojo> {
 
     @Autowired
     @Getter

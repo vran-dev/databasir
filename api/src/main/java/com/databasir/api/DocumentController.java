@@ -5,6 +5,7 @@ import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.service.DocumentService;
+import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @PostMapping(Routes.Document.SYNC_ONE)
+    @Operation(module = Operation.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
     public JsonData<Void> sync(@PathVariable Integer projectId) {
         documentService.syncByProjectId(projectId);
         return JsonData.ok();

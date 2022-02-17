@@ -2,7 +2,6 @@ package com.databasir.dao.impl;
 
 import com.databasir.dao.Databasir;
 import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.records.UserRecord;
 import com.databasir.dao.value.GroupMemberDetailPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -23,7 +22,7 @@ import static com.databasir.dao.Tables.USER_ROLE;
 
 
 @Repository
-public class UserDao extends BaseDao<UserRecord, UserPojo> {
+public class UserDao extends BaseDao<UserPojo> {
 
     @Autowired
     @Getter

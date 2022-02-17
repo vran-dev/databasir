@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.TableIndexDocumentPojo;
-import com.databasir.dao.tables.records.TableIndexDocumentRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import static com.databasir.dao.Tables.TABLE_INDEX_DOCUMENT;
 
 
 @Repository
-public class TableIndexDocumentDao extends BaseDao<TableIndexDocumentRecord, TableIndexDocumentPojo> {
+public class TableIndexDocumentDao extends BaseDao<TableIndexDocumentPojo> {
 
     @Autowired
     @Getter

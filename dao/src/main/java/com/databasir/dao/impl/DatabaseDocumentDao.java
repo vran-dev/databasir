@@ -13,7 +13,7 @@ import static com.databasir.dao.Tables.DATABASE_DOCUMENT;
 
 
 @Repository
-public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentRecord, DatabaseDocumentPojo> {
+public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
 
     @Autowired
     @Getter

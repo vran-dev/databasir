@@ -1,5 +1,6 @@
 package com.databasir.core.infrastructure.converter;
 
+import com.databasir.common.JsonData;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -20,12 +21,8 @@ public class JsonConverter {
     private ObjectMapper objectMapper;
 
     public JSON toJson(List<String> array) {
-        try {
-            String json = objectMapper.writeValueAsString(array);
-            return JSON.valueOf(json);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        String json = objToJson(array);
+        return JSON.valueOf(json);
     }
 
     public List<String> fromJson(JSON json) {
@@ -44,12 +41,8 @@ public class JsonConverter {
     }
 
     public JSON toJson(DatabaseDocumentResponse response) {
-        try {
-            String json = objectMapper.writeValueAsString(response);
-            return JSON.valueOf(json);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        String json = objToJson(response);
+        return JSON.valueOf(json);
     }
 
     public DatabaseDocumentResponse of(JSON json) {
@@ -59,6 +52,24 @@ public class JsonConverter {
             }
             return objectMapper.readValue(json.data().getBytes(StandardCharsets.UTF_8), DatabaseDocumentResponse.class);
         } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public JSON toJson(JsonData<Object> data) {
+        String json = objToJson(data);
+        return JSON.valueOf(json);
+    }
+
+    public JSON objToJsonData(Object obj) {
+        String json = objToJson(obj);
+        return JSON.valueOf(json);
+    }
+
+    private String objToJson(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
     }

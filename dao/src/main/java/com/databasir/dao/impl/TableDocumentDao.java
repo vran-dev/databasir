@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.TableDocumentPojo;
-import com.databasir.dao.tables.records.TableDocumentRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import java.util.List;
 import static com.databasir.dao.Tables.TABLE_DOCUMENT;
 
 @Repository
-public class TableDocumentDao extends BaseDao<TableDocumentRecord, TableDocumentPojo> {
+public class TableDocumentDao extends BaseDao<TableDocumentPojo> {
 
     @Autowired
     @Getter

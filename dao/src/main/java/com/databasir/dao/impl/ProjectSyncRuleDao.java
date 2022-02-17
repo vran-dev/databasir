@@ -16,7 +16,7 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.PROJECT_SYNC_RULE;
 
 @Repository
-public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRuleRecord, ProjectSyncRulePojo> {
+public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
 
     @Autowired
     @Getter

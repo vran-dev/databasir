@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.DatabaseDocumentHistoryPojo;
-import com.databasir.dao.tables.records.DatabaseDocumentHistoryRecord;
 import com.databasir.dao.value.DatabaseDocumentVersionPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -19,7 +18,7 @@ import static com.databasir.dao.Tables.DATABASE_DOCUMENT_HISTORY;
 
 
 @Repository
-public class DatabaseDocumentHistoryDao extends BaseDao<DatabaseDocumentHistoryRecord, DatabaseDocumentHistoryPojo> {
+public class DatabaseDocumentHistoryDao extends BaseDao<DatabaseDocumentHistoryPojo> {
 
     @Autowired
     @Getter
