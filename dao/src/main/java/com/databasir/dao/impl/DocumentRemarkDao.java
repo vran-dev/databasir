@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.DocumentRemarkPojo;
-import com.databasir.dao.tables.records.DocumentRemarkRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import static com.databasir.dao.Tables.DOCUMENT_REMARK;
 
 
 @Repository
-public class DocumentRemarkDao extends BaseDao<DocumentRemarkRecord, DocumentRemarkPojo> {
+public class DocumentRemarkDao extends BaseDao<DocumentRemarkPojo> {
 
     @Autowired
     @Getter

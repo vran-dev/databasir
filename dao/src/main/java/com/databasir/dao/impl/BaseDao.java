@@ -2,72 +2,75 @@ package com.databasir.dao.impl;
 
 
 import com.databasir.dao.exception.DataNotExistsException;
-import lombok.RequiredArgsConstructor;
 import org.jooq.*;
-import org.jooq.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public abstract class BaseDao<T extends Record, R> {
+public abstract class BaseDao<PO> {
 
-    private final Table<T> table;
+    private final Table<?> table;
 
-    private final Class<R> pojoType;
+    private final Class<PO> pojoType;
+
+    public BaseDao(Table<?> table, Class<PO> pojoType) {
+        this.table = table;
+        this.pojoType = pojoType;
+    }
 
     public abstract DSLContext getDslContext();
 
-    public boolean existsById(Integer id) {
+    public <T extends Serializable> boolean existsById(T id) {
         return getDslContext().fetchExists(table, identity().eq(id));
     }
 
-    public Integer insertAndReturnId(R pojo) {
-        T record = getDslContext().newRecord(table, pojo);
+    public <T> T insertAndReturnId(PO pojo) {
+        Record record = getDslContext().newRecord(table, pojo);
         UpdatableRecord<?> updatableRecord = (UpdatableRecord<?>) record;
         updatableRecord.store();
         Object value = updatableRecord.getValue(table.getIdentity().getField());
-        return (Integer) value;
+        return (T) identityType().cast(value);
     }
 
-    public int batchInsert(Collection<R> pojoList) {
+    public int batchInsert(Collection<PO> pojoList) {
         List<TableRecord<?>> records = pojoList.stream()
                 .map(pojo -> {
-                    T record = getDslContext().newRecord(table, pojo);
+                    Record record = getDslContext().newRecord(table, pojo);
                     return (TableRecord<?>) record;
                 })
                 .collect(Collectors.toList());
         return Arrays.stream(getDslContext().batchInsert(records).execute()).sum();
     }
 
-    public int deleteById(Integer id) {
+    public <T extends Serializable> int deleteById(T id) {
         return getDslContext()
                 .deleteFrom(table).where(identity().eq(id))
                 .execute();
     }
 
-    public int updateById(R pojo) {
-        T record = getDslContext().newRecord(table, pojo);
+    public int updateById(PO pojo) {
+        Record record = getDslContext().newRecord(table, pojo);
         record.changed(table.getIdentity().getField(), false);
         return getDslContext().executeUpdate((UpdatableRecord<?>) record);
     }
 
-    public Optional<R> selectOptionalById(Integer id) {
+    public <T extends Serializable> Optional<PO> selectOptionalById(T id) {
         return getDslContext()
                 .select(table.fields()).from(table).where(identity().eq(id))
                 .fetchOptionalInto(pojoType);
     }
 
-    public R selectById(Integer id) {
+    public <T extends Serializable> PO selectById(T id) {
         return selectOptionalById(id)
                 .orElseThrow(() -> new DataNotExistsException("data not exists in " + table.getName() + " with id = " + id));
     }
 
-    public List<R> selectInIds(List<Integer> ids) {
+    public List<PO> selectInIds(List<? extends Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
@@ -77,12 +80,12 @@ public abstract class BaseDao<T extends Record, R> {
                 .fetchInto(pojoType);
     }
 
-    public Page<R> selectByPage(Pageable request, Condition condition) {
+    public Page<PO> selectByPage(Pageable request, Condition condition) {
         Integer count = getDslContext()
                 .selectCount().from(table).where(condition)
                 .fetchOne(0, int.class);
         int total = count == null ? 0 : count;
-        List<R> data = getDslContext()
+        List<PO> data = getDslContext()
                 .selectFrom(table).where(condition)
                 .orderBy(getSortFields(request.getSort()))
                 .offset(request.getOffset()).limit(request.getPageSize())
@@ -110,15 +113,19 @@ public abstract class BaseDao<T extends Record, R> {
         return querySortFields;
     }
 
-    protected Field<Integer> identity() {
-        Identity<T, ?> identity = table.getIdentity();
+    protected <T extends Serializable> Field<T> identity() {
+        Identity<?, ?> identity = table.getIdentity();
         if (identity == null) {
             throw new IllegalStateException("can not find identity column in " + table.getName());
         }
-        return identity.getField().cast(Integer.class);
+        return identity.getField().cast(identityType());
     }
 
-    protected Table<T> table() {
+    protected <T extends Serializable> Class<T> identityType() {
+        return (Class<T>) Integer.class;
+    }
+
+    protected Table<?> table() {
         return this.table;
     }
 }

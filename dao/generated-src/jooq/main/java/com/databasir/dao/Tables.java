@@ -11,6 +11,7 @@ import com.databasir.dao.tables.DatabaseDocumentHistory;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
 import com.databasir.dao.tables.SysKey;
@@ -63,6 +64,11 @@ public class Tables {
      * The table <code>databasir.login</code>.
      */
     public static final Login LOGIN = Login.LOGIN;
+
+    /**
+     * The table <code>databasir.operation_log</code>.
+     */
+    public static final OperationLog OPERATION_LOG = OperationLog.OPERATION_LOG;
 
     /**
      * The table <code>databasir.project</code>.

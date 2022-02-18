@@ -2,7 +2,6 @@ package com.databasir.dao.impl;
 
 import com.databasir.dao.exception.DataNotExistsException;
 import com.databasir.dao.tables.pojos.SysKeyPojo;
-import com.databasir.dao.tables.records.SysKeyRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.SYS_KEY;
 
 @Repository
-public class SysKeyDao extends BaseDao<SysKeyRecord, SysKeyPojo> {
+public class SysKeyDao extends BaseDao<SysKeyPojo> {
 
     @Autowired
     @Getter

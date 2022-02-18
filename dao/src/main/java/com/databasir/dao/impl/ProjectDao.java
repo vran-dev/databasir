@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.ProjectPojo;
-import com.databasir.dao.tables.records.ProjectRecord;
 import com.databasir.dao.value.GroupProjectCountPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import static com.databasir.dao.Tables.PROJECT;
 
 
 @Repository
-public class ProjectDao extends BaseDao<ProjectRecord, ProjectPojo> {
+public class ProjectDao extends BaseDao<ProjectPojo> {
 
     @Autowired
     @Getter
@@ -39,7 +39,7 @@ public class ProjectDao extends BaseDao<ProjectRecord, ProjectPojo> {
     }
 
     @Override
-    public Optional<ProjectPojo> selectOptionalById(Integer id) {
+    public <T extends Serializable> Optional<ProjectPojo> selectOptionalById(T id) {
         return getDslContext()
                 .select(PROJECT.fields()).from(PROJECT)
                 .where(identity().eq(id).and(PROJECT.DELETED.eq(false)))
@@ -47,7 +47,7 @@ public class ProjectDao extends BaseDao<ProjectRecord, ProjectPojo> {
     }
 
     @Override
-    public boolean existsById(Integer id) {
+    public <T extends Serializable> boolean existsById(T id) {
         return getDslContext().fetchExists(table(), identity().eq(id).and(PROJECT.DELETED.eq(false)));
     }
 

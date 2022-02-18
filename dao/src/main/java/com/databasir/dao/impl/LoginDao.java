@@ -1,7 +1,6 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.LoginPojo;
-import com.databasir.dao.tables.records.LoginRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import static com.databasir.dao.Tables.LOGIN;
 
 
 @Repository
-public class LoginDao extends BaseDao<LoginRecord, LoginPojo> {
+public class LoginDao extends BaseDao<LoginPojo> {
 
     @Autowired
     @Getter

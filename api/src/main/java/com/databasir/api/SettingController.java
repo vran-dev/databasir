@@ -2,6 +2,7 @@ package com.databasir.api;
 
 
 import com.databasir.common.JsonData;
+import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.system.data.SystemEmailResponse;
 import com.databasir.core.domain.system.data.SystemEmailUpdateRequest;
 import com.databasir.core.domain.system.service.SystemService;
@@ -28,6 +29,7 @@ public class SettingController {
     }
 
     @PostMapping(Routes.Setting.UPDATE_SYS_EMAIL)
+    @Operation(module = Operation.Modules.PROJECT, name = "更新邮件配置")
     public JsonData<Void> updateSystemEmailSetting(@RequestBody @Valid SystemEmailUpdateRequest request) {
         systemService.updateEmailSetting(request);
         return JsonData.ok();

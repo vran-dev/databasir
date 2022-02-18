@@ -13,7 +13,7 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.SYS_MAIL;
 
 @Repository
-public class SysMailDao extends BaseDao<SysMailRecord, SysMailPojo> {
+public class SysMailDao extends BaseDao<SysMailPojo> {
 
     @Autowired
     @Getter

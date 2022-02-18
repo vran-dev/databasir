@@ -2,6 +2,7 @@ package com.databasir.api;
 
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.JsonData;
+import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.remark.data.RemarkCreateRequest;
 import com.databasir.core.domain.remark.data.RemarkListCondition;
 import com.databasir.core.domain.remark.data.RemarkResponse;
@@ -38,6 +39,9 @@ public class DocumentRemarkController {
 
     @DeleteMapping(Routes.DocumentRemark.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId)")
+    @Operation(module = Operation.Modules.PROJECT,
+            name = "删除批注",
+            involvedProjectId = "#projectId")
     public JsonData<Void> delete(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,
                                  @PathVariable Integer remarkId) {
@@ -47,6 +51,9 @@ public class DocumentRemarkController {
 
     @PostMapping(Routes.DocumentRemark.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
+    @Operation(module = Operation.Modules.PROJECT,
+            name = "新增批注",
+            involvedProjectId = "#projectId")
     public JsonData<Void> create(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,
                                  @RequestBody @Valid RemarkCreateRequest request) {
