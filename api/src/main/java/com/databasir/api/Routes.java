@@ -94,4 +94,8 @@ public interface Routes {
 
         String REFRESH_ACCESS_TOKEN = "/access_tokens";
     }
+
+    interface OperationLog {
+        String LIST = BASE + "/operation_logs";
+    }
 }

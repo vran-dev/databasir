@@ -56,6 +56,17 @@ public class JsonConverter {
         }
     }
 
+    public JsonData toJsonData(JSON json) {
+        try {
+            if (json == null) {
+                return null;
+            }
+            return objectMapper.readValue(json.data().getBytes(StandardCharsets.UTF_8), JsonData.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     public JSON toJson(JsonData<Object> data) {
         String json = objToJson(data);
         return JSON.valueOf(json);
