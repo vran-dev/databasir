@@ -9,8 +9,6 @@ import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.GroupRecord;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -125,11 +123,6 @@ public class Group extends TableImpl<GroupRecord> {
     @Override
     public UniqueKey<GroupRecord> getPrimaryKey() {
         return Keys.KEY_GROUP_PRIMARY;
-    }
-
-    @Override
-    public List<UniqueKey<GroupRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GROUP_UK_NAME);
     }
 
     @Override

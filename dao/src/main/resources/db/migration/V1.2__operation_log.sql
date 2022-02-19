@@ -1,4 +1,4 @@
-CREATE TABLE operation_log
+CREATE TABLE IF NOT EXISTS operation_log
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 
@@ -16,3 +16,5 @@ CREATE TABLE operation_log
     create_at           TIMESTAMP                         NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
+
+DROP INDEX uk_name ON `group`;
