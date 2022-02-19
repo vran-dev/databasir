@@ -32,8 +32,8 @@
 
 ## 功能规划
 
-- [ ] 用户操作审计日志
-- [ ] 文档自动同步日志
+- [x] 用户操作审计日志
+- [x] 文档自动同步日志
 - [ ] Excel 文档导出
 - [x] Markdown 文档导出
 
@@ -41,14 +41,48 @@
 
 ## 展示
 
-- 项目中心
+- 分组创建
 
-![](README/a.png)
+![](README/group-create.gif)
 
-- 项目文档
 
-![](README/b.png)
 
-- 用户管理
+- 项目创建
 
-![](README/c.png)
+![](README/project-create.gif)
+
+
+
+- 项目同步
+
+![](README/project-sync.gif)
+
+
+
+- 项目批注
+
+![](README/document-remark.gif)
+
+
+
+- 分组成员
+
+![](README/group-member.gif)
+
+
+
+- 用户创建
+
+![](README/user-create.gif)
+
+
+
+- 用户详情
+
+![](README/user-detail.gif)
+
+
+
+- 操作日志
+
+![](README/log-list.gif)
