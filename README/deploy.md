@@ -48,11 +48,25 @@ databasir.datasource.url=127.0.0.1:3306
 
 ### Docker 部署
 
-TODO
+目前镜像没有上传到 DockerHub，需要用户自己在本地手动构建
 
+1. 克隆仓库
 
+```shell
+git clone https://github.com/vran-dev/databasir.git
+```
 
+2. 构建镜像
 
+```shell
+docker build -t databasir:v1 .
+```
+
+3. 启动项目
+
+```shell
+docker run  -e JAVA_OPTS="-Ddatabasir.datasource.url=127.0.0.1:3306 -Ddatabasir.datasource.username=root -Ddatabasir.datasource.password=123456" -p 8080:8080 -d databasir:v1
+```
 
 ## Docker Compose 本地部署
 
