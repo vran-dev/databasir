@@ -4,9 +4,8 @@ ADD . /app
 RUN gradle api:build
 
 FROM openjdk:11.0.13-jre
-ARG service_name_folder
 WORKDIR /app
-ADD databasir.jar /app
+COPY --from=build /app/api/build/libs/databasir.jar /app/databasir.jar
 EXPOSE 8080
 
 #-Ddatabasir.datasource.username=${databasir.datasource.username}
