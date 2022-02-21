@@ -9,7 +9,6 @@ import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RequiredArgsConstructor
 @Validated
@@ -50,7 +51,8 @@ public class DocumentController {
 
     @GetMapping(Routes.Document.LIST_VERSIONS)
     public JsonData<Page<DatabaseDocumentVersionResponse>> getVersionsByProjectId(@PathVariable Integer projectId,
-                                                                                  @PageableDefault(sort = "id", direction = Sort.Direction.DESC)
+                                                                                  @PageableDefault(sort = "id",
+                                                                                          direction = DESC)
                                                                                           Pageable page) {
         return JsonData.ok(documentService.getVersionsBySchemaSourceId(projectId, page));
     }
@@ -60,7 +62,8 @@ public class DocumentController {
                                                                   @RequestParam(required = false) Long version) {
         String data = documentService.toMarkdown(projectId, version).get();
         try {
-            Path path = Files.writeString(Paths.get(UUID.randomUUID().toString() + ".md"), data, StandardCharsets.UTF_8);
+            Path path = Files.writeString(Paths.get(UUID.randomUUID().toString() + ".md"), data,
+                    StandardCharsets.UTF_8);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDisposition(ContentDisposition.attachment()
                     .filename("demo.md", StandardCharsets.UTF_8)

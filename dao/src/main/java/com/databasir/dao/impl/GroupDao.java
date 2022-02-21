@@ -27,7 +27,6 @@ public class GroupDao extends BaseDao<GroupPojo> {
         super(GROUP, GroupPojo.class);
     }
 
-
     @Override
     public <T extends Serializable> int deleteById(T id) {
         return dslContext

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,10 +87,10 @@ public class GroupService {
                 .stream()
                 .map(GroupPojo::getId)
                 .collect(Collectors.toList());
-        Map<Integer, List<GroupMemberSimplePojo>> ownersGroupByGroupId = userRoleDao.selectOwnerNamesByGroupIdIn(groupIdList)
+        var ownersGroupByGroupId = userRoleDao.selectOwnerNamesByGroupIdIn(groupIdList)
                 .stream()
                 .collect(Collectors.groupingBy(GroupMemberSimplePojo::getGroupId));
-        Map<Integer, GroupProjectCountPojo> projectCountMapByGroupId = projectDao.selectCountByGroupIds(groupIdList)
+        var projectCountMapByGroupId = projectDao.selectCountByGroupIds(groupIdList)
                 .stream()
                 .collect(Collectors.toMap(GroupProjectCountPojo::getGroupId, v -> v));
         return page.map(groupPojo -> {

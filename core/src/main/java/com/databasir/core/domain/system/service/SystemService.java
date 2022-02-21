@@ -33,6 +33,7 @@ public class SystemService {
 
     private final UserRoleDao userRoleDao;
 
+    @SuppressWarnings("checkstyle:all")
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @PostConstruct
@@ -83,11 +84,12 @@ public class SystemService {
     }
 
     public void updateEmailSetting(SystemEmailUpdateRequest request) {
-        Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMailPojo::getId);
         SysMailPojo sysMailPojo = new SysMailPojo();
         sysMailPojo.setSmtpHost(request.getSmtpHost());
         sysMailPojo.setSmtpPort(request.getSmtpPort());
         sysMailPojo.setUsername(request.getUsername());
+
+        Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMailPojo::getId);
         idOpt.ifPresent(sysMailPojo::setId);
         if (request.getPassword() != null) {
             // TODO encrypt password ?

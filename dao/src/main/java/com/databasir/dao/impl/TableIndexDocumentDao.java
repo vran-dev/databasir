@@ -10,7 +10,6 @@ import java.util.List;
 
 import static com.databasir.dao.Tables.TABLE_INDEX_DOCUMENT;
 
-
 @Repository
 public class TableIndexDocumentDao extends BaseDao<TableIndexDocumentPojo> {
 

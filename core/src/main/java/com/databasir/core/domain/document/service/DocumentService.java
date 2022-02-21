@@ -121,10 +121,11 @@ public class DocumentService {
 
         Integer currentDatabaseDocumentId = databaseDocumentId;
         if (databaseDocumentId == null) {
-            currentDatabaseDocumentId =
-                    databaseDocumentDao.insertAndReturnId(documentPojoConverter.toDatabasePojo(projectId, meta, 1L));
+            var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, 1L);
+            currentDatabaseDocumentId = databaseDocumentDao.insertAndReturnId(pojo);
         } else {
-            databaseDocumentDao.update(documentPojoConverter.toDatabasePojo(projectId, meta, databaseDocumentId, version));
+            var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, databaseDocumentId, version);
+            databaseDocumentDao.update(pojo);
         }
 
         final Integer docId = currentDatabaseDocumentId;
@@ -132,11 +133,14 @@ public class DocumentService {
             TableDocumentPojo tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
             Integer tableMetaId = tableDocumentDao.insertAndReturnId(tableMeta);
-            List<TableColumnDocumentPojo> tableColumnMetas = documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
+            List<TableColumnDocumentPojo> tableColumnMetas =
+                    documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
             tableColumnDocumentDao.batchInsert(tableColumnMetas);
-            List<TableIndexDocumentPojo> tableIndexMetas = documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes());
+            List<TableIndexDocumentPojo> tableIndexMetas =
+                    documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes());
             tableIndexDocumentDao.batchInsert(tableIndexMetas);
-            List<TableTriggerDocumentPojo> tableTriggerMetas = documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
+            List<TableTriggerDocumentPojo> tableTriggerMetas =
+                    documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
             tableTriggerDocumentDao.batchInsert(tableTriggerMetas);
         });
         log.info("save new meta info success");
@@ -147,21 +151,25 @@ public class DocumentService {
             return databaseDocumentDao.selectOptionalByProjectId(projectId)
                     .map(document -> {
                         Integer id = document.getId();
-                        List<TableDocumentPojo> tables = tableDocumentDao.selectByDatabaseDocumentId(id);
-                        List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByDatabaseDocumentId(id);
-                        List<TableIndexDocumentPojo> indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
-                        List<TableTriggerDocumentPojo> triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
+                        var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
+                        var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(id);
+                        var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
+                        var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
                         Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
                                 .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
                         Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
                                 .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
                         Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
                                 .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
-                        List<DatabaseDocumentResponse.TableDocumentResponse> tableDocumentResponseList = tables.stream()
+                        var tableDocumentResponseList = tables.stream()
                                 .map(table -> {
-                                    List<TableColumnDocumentPojo> subColumns = columnsGroupByTableMetaId.getOrDefault(table.getId(), Collections.emptyList());
-                                    List<TableIndexDocumentPojo> subIndexes = indexesGroupByTableMetaId.getOrDefault(table.getId(), Collections.emptyList());
-                                    List<TableTriggerDocumentPojo> subTriggers = triggersGroupByTableMetaId.getOrDefault(table.getId(), Collections.emptyList());
+                                    Integer tableId = table.getId();
+                                    var subColumns =
+                                            columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                                    var subIndexes =
+                                            indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                                    var subTriggers =
+                                            triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                                     return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
                                 })
                                 .collect(Collectors.toList());
@@ -175,11 +183,12 @@ public class DocumentService {
 
     public Page<DatabaseDocumentVersionResponse> getVersionsBySchemaSourceId(Integer projectId, Pageable page) {
         return databaseDocumentDao.selectOptionalByProjectId(projectId)
-                .map(schemaMeta -> databaseDocumentHistoryDao.selectVersionPageByDatabaseDocumentId(page, schemaMeta.getId())
-                        .map(history -> DatabaseDocumentVersionResponse.builder()
-                                .version(history.getVersion())
-                                .createAt(history.getCreateAt())
-                                .build()))
+                .map(schemaMeta ->
+                        databaseDocumentHistoryDao.selectVersionPageByDatabaseDocumentId(page, schemaMeta.getId())
+                                .map(history -> DatabaseDocumentVersionResponse.builder()
+                                        .version(history.getVersion())
+                                        .createAt(history.getCreateAt())
+                                        .build()))
                 .orElseGet(Page::empty);
     }
 
@@ -193,11 +202,13 @@ public class DocumentService {
                     List<List<String>> overviewContent = new ArrayList<>();
                     for (int i = 0; i < doc.getTables().size(); i++) {
                         DatabaseDocumentResponse.TableDocumentResponse table = doc.getTables().get(i);
-                        overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(), table.getComment()));
+                        overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(),
+                                table.getComment()));
                     }
                     builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
 
-                    Function<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse, String> columnDefaultValueMapping = column -> {
+                    Function<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse, String>
+                            columnDefaultValueMapping = column -> {
                         if (Objects.equals(column.getNullable(), "YES")) {
                             return Objects.requireNonNullElse(column.getDefaultValue(), "null");
                         } else {

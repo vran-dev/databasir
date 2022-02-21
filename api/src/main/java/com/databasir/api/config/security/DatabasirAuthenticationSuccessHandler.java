@@ -33,15 +33,6 @@ public class DatabasirAuthenticationSuccessHandler implements AuthenticationSucc
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         DatabasirUserDetails user = (DatabasirUserDetails) authentication.getPrincipal();
-        List<UserLoginResponse.RoleResponse> roles = user.getRoles()
-                .stream()
-                .map(ur -> {
-                    UserLoginResponse.RoleResponse data = new UserLoginResponse.RoleResponse();
-                    data.setRole(ur.getRole());
-                    data.setGroupId(ur.getGroupId());
-                    return data;
-                })
-                .collect(Collectors.toList());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         UserLoginResponse data = new UserLoginResponse();
@@ -55,6 +46,16 @@ public class DatabasirAuthenticationSuccessHandler implements AuthenticationSucc
         long expireAt = loginKey.getAccessTokenExpireAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         data.setAccessTokenExpireAt(expireAt);
         data.setRefreshToken(loginKey.getRefreshToken());
+
+        List<UserLoginResponse.RoleResponse> roles = user.getRoles()
+                .stream()
+                .map(ur -> {
+                    UserLoginResponse.RoleResponse roleResponse = new UserLoginResponse.RoleResponse();
+                    roleResponse.setRole(ur.getRole());
+                    roleResponse.setGroupId(ur.getGroupId());
+                    return roleResponse;
+                })
+                .collect(Collectors.toList());
         data.setRoles(roles);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
     }

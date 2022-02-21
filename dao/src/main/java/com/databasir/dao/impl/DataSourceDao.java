@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static com.databasir.dao.Tables.DATA_SOURCE;
 
-
 @Repository
 public class DataSourceDao extends BaseDao<DataSourcePojo> {
 
@@ -36,7 +35,10 @@ public class DataSourceDao extends BaseDao<DataSourcePojo> {
         return getDslContext()
                 .select(DATA_SOURCE.fields()).from(DATA_SOURCE).where(DATA_SOURCE.PROJECT_ID.eq(projectId))
                 .fetchOptionalInto(DataSourcePojo.class)
-                .orElseThrow(() -> new DataNotExistsException("data not exists in " + table().getName() + " with schemaSourceId = " + projectId));
+                .orElseThrow(() -> new DataNotExistsException("data not exists in "
+                        + table().getName()
+                        + " with schemaSourceId = "
+                        + projectId));
     }
 
     public int updateByProjectId(DataSourcePojo dataSource) {

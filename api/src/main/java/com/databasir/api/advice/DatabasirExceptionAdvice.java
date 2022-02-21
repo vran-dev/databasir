@@ -1,6 +1,5 @@
 package com.databasir.api.advice;
 
-
 import com.databasir.common.DatabasirException;
 import com.databasir.common.JsonData;
 import com.databasir.common.SystemException;

@@ -30,8 +30,6 @@ public interface SqlProvider {
      * </table>
      * <br>
      *
-     * @param databaseName
-     * @return
      */
     default Optional<String> databaseMetaSql(String databaseName) {
         return Optional.empty();
@@ -54,9 +52,6 @@ public interface SqlProvider {
      *     </tr>
      * </table>
      *
-     * @param databaseName
-     * @param tableName
-     * @return
      */
     default Optional<String> tableMetaSql(String databaseName, String tableName) {
         return Optional.empty();

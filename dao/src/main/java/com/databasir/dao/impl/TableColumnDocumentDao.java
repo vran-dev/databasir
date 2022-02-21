@@ -10,7 +10,6 @@ import java.util.List;
 
 import static com.databasir.dao.Tables.TABLE_COLUMN_DOCUMENT;
 
-
 @Repository
 public class TableColumnDocumentDao extends BaseDao<TableColumnDocumentPojo> {
 
@@ -31,7 +30,8 @@ public class TableColumnDocumentDao extends BaseDao<TableColumnDocumentPojo> {
 
     public void deleteByDatabaseDocumentId(Integer schemaDocumentId) {
         getDslContext()
-                .deleteFrom(TABLE_COLUMN_DOCUMENT).where(TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
+                .deleteFrom(TABLE_COLUMN_DOCUMENT)
+                .where(TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
                 .execute();
     }
 }

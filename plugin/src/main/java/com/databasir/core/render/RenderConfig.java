@@ -19,11 +19,14 @@ public class RenderConfig {
 
     private Boolean renderTriggers = true;
 
-    private LinkedHashMap<String, Function<ColumnMeta, String>> columnTitleAndValueMapping = columnTitleAndValueMapping();
+    private LinkedHashMap<String, Function<ColumnMeta, String>> columnTitleAndValueMapping =
+            columnTitleAndValueMapping();
 
-    private LinkedHashMap<String, Function<IndexMeta, String>> indexTitleAndValueMapping = indexTitleAndValueMapping();
+    private LinkedHashMap<String, Function<IndexMeta, String>> indexTitleAndValueMapping =
+            indexTitleAndValueMapping();
 
-    private LinkedHashMap<String, Function<TriggerMeta, String>> triggerTitleAndValueMapping = triggerTitleAndValueMapping();
+    private LinkedHashMap<String, Function<TriggerMeta, String>> triggerTitleAndValueMapping =
+            triggerTitleAndValueMapping();
 
     protected LinkedHashMap<String, Function<ColumnMeta, String>> columnTitleAndValueMapping() {
         LinkedHashMap<String, Function<ColumnMeta, String>> mapping = new LinkedHashMap<>();
@@ -39,18 +42,6 @@ public class RenderConfig {
             }
             return type;
         });
-//        mapping.put("Not Null", column -> column.getIsNullable() ? "" : "YES");
-//        mapping.put("Auto Increment", column -> column.getIsAutoIncrement() ? "YES" : "");
-//        mapping.put("Default", column -> {
-//            if (column.getDefaultValue() == null) {
-//                return "";
-//            }
-//            if (column.getDefaultValue().trim().equals("")) {
-//                return "'" + column.getDefaultValue() + "'";
-//            }
-//            return column.getDefaultValue();
-//        });
-//        mapping.put("Comment", ColumnMeta::getComment);
         return mapping;
     }
 

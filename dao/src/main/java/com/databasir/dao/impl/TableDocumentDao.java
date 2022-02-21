@@ -23,7 +23,8 @@ public class TableDocumentDao extends BaseDao<TableDocumentPojo> {
 
     public List<TableDocumentPojo> selectByDatabaseDocumentId(Integer schemaDocumentId) {
         return getDslContext()
-                .select(TABLE_DOCUMENT.fields()).from(TABLE_DOCUMENT).where(TABLE_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
+                .select(TABLE_DOCUMENT.fields()).from(TABLE_DOCUMENT)
+                .where(TABLE_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
                 .fetchInto(TableDocumentPojo.class);
     }
 

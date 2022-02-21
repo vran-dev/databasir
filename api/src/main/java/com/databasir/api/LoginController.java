@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Objects;
 
@@ -40,8 +39,8 @@ public class LoginController {
     }
 
     @PostMapping(Routes.Login.REFRESH_ACCESS_TOKEN)
-    public JsonData<AccessTokenRefreshResponse> refreshAccessTokens(@RequestBody @Valid AccessTokenRefreshRequest request,
-                                                                    HttpServletResponse response) {
+    public JsonData<AccessTokenRefreshResponse> refreshAccessTokens(@RequestBody @Valid
+                                                                            AccessTokenRefreshRequest request) {
         try {
             return JsonData.ok(loginService.refreshAccessTokens(request));
         } catch (DatabasirException e) {

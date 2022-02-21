@@ -20,7 +20,6 @@ import java.util.*;
 import static com.databasir.dao.Tables.USER;
 import static com.databasir.dao.Tables.USER_ROLE;
 
-
 @Repository
 public class UserDao extends BaseDao<UserPojo> {
 

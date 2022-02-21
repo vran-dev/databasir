@@ -20,11 +20,6 @@ public class JsonConverter {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public JSON toJson(List<String> array) {
-        String json = objToJson(array);
-        return JSON.valueOf(json);
-    }
-
     public List<String> fromJson(JSON json) {
         String data = json.data();
         if (data == null) {
@@ -40,8 +35,18 @@ public class JsonConverter {
         }
     }
 
+    public JSON toJson(List<String> array) {
+        String json = objToJson(array);
+        return JSON.valueOf(json);
+    }
+
     public JSON toJson(DatabaseDocumentResponse response) {
         String json = objToJson(response);
+        return JSON.valueOf(json);
+    }
+
+    public JSON toJson(JsonData<Object> data) {
+        String json = objToJson(data);
         return JSON.valueOf(json);
     }
 
@@ -65,11 +70,6 @@ public class JsonConverter {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public JSON toJson(JsonData<Object> data) {
-        String json = objToJson(data);
-        return JSON.valueOf(json);
     }
 
     public JSON objToJsonData(Object obj) {

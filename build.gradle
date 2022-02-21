@@ -19,6 +19,7 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'nu.studer.jooq'
+    apply plugin: 'checkstyle'
 
     group 'com.databasir'
     version '1.0.0'
@@ -50,6 +51,16 @@ subprojects {
 
     test {
         useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    checkstyle {
+        toolVersion = '8.42'
+        ignoreFailures = false
+        maxWarnings = 0
     }
 }
 

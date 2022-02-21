@@ -25,7 +25,9 @@ public class UserLoginResponse {
 
     @Data
     public static class RoleResponse {
+
         private String role;
+
         private Integer groupId;
     }
 }

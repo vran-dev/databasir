@@ -23,13 +23,15 @@ public class TableTriggerDocumentDao extends BaseDao<TableTriggerDocumentPojo> {
 
     public List<TableTriggerDocumentPojo> selectByDatabaseDocumentId(Integer schemaDocumentId) {
         return getDslContext()
-                .select(TABLE_TRIGGER_DOCUMENT.fields()).from(TABLE_TRIGGER_DOCUMENT).where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
+                .select(TABLE_TRIGGER_DOCUMENT.fields()).from(TABLE_TRIGGER_DOCUMENT)
+                .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
                 .fetchInto(TableTriggerDocumentPojo.class);
     }
 
     public void deleteByDatabaseDocumentId(Integer schemaDocumentId) {
         getDslContext()
-                .deleteFrom(TABLE_TRIGGER_DOCUMENT).where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
+                .deleteFrom(TABLE_TRIGGER_DOCUMENT)
+                .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
                 .execute();
     }
 }

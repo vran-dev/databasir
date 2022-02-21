@@ -10,7 +10,6 @@ import java.util.List;
 
 import static com.databasir.dao.Tables.DATA_SOURCE_PROPERTY;
 
-
 @Repository
 public class DataSourcePropertyDao extends BaseDao<DataSourcePropertyPojo> {
 

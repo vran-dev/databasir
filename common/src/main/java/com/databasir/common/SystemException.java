@@ -1,6 +1,6 @@
 package com.databasir.common;
 
-public class SystemException extends RuntimeException{
+public class SystemException extends RuntimeException {
 
     private static final String MSG_INTERNAL_SERVER_ERROR = "服务器开小差了，请稍后再试";
 

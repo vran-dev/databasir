@@ -45,14 +45,6 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                     log.warn("ignore column: " + columnName);
                 }
             } else {
-                String columnType = columnsResult.getString("TYPE_NAME");
-                Integer columnSize = columnsResult.getInt("COLUMN_SIZE");
-                Integer decimalDigits;
-                if (columnsResult.getObject("DECIMAL_DIGITS") == null) {
-                    decimalDigits = null;
-                } else {
-                    decimalDigits = columnsResult.getInt("DECIMAL_DIGITS");
-                }
                 String defaultValue = columnsResult.getString("COLUMN_DEF");
                 String isNullable = columnsResult.getString("IS_NULLABLE");
                 if (isNullable.trim().equals("")) {
@@ -62,10 +54,18 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                 if (isAutoIncrement.trim().equals("")) {
                     isAutoIncrement = "UNKNOWN";
                 }
-                String columnComment = columnsResult.getString("REMARKS");
                 if (defaultValue != null && defaultValue.trim().equals("")) {
                     defaultValue = "'" + defaultValue + "'";
                 }
+                Integer decimalDigits;
+                if (columnsResult.getObject("DECIMAL_DIGITS") == null) {
+                    decimalDigits = null;
+                } else {
+                    decimalDigits = columnsResult.getInt("DECIMAL_DIGITS");
+                }
+                Integer columnSize = columnsResult.getInt("COLUMN_SIZE");
+                String columnType = columnsResult.getString("TYPE_NAME");
+                String columnComment = columnsResult.getString("REMARKS");
                 ColumnMeta columnMeta = ColumnMeta.builder()
                         .name(columnName)
                         .type(columnType)
@@ -84,7 +84,9 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
         return columnDocs;
     }
 
-    private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta, String catalog, String tableName) throws SQLException {
+    private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta,
+                                                 String catalog,
+                                                 String tableName) throws SQLException {
         ResultSet result = meta.getPrimaryKeys(catalog, null, tableName);
         List<String> columns = new ArrayList<>();
         while (result.next()) {

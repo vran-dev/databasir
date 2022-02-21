@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    @SuppressWarnings("checkstyle:all")
     public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }

@@ -20,5 +20,4 @@ public class TableCondition extends Condition {
                 .build();
     }
 
-
 }

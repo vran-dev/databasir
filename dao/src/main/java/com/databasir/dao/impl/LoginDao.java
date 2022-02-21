@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static com.databasir.dao.Tables.LOGIN;
 
-
 @Repository
 public class LoginDao extends BaseDao<LoginPojo> {
 
