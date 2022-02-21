@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface UserResponseConverter {
 
-
     default UserDetailResponse detailResponse(UserPojo user,
                                               List<UserRolePojo> userRoles,
                                               Map<Integer, String> groupNameMapById) {

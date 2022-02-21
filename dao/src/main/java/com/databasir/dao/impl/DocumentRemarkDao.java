@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import static com.databasir.dao.Tables.DOCUMENT_REMARK;
 
-
 @Repository
 public class DocumentRemarkDao extends BaseDao<DocumentRemarkPojo> {
 

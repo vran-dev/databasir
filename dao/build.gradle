@@ -75,3 +75,5 @@ jooq {
         }
     }
 }
+
+checkstyleMain.source = "src/main/java"

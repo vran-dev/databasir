@@ -26,7 +26,8 @@ public class ProjectController {
     private final CronExpressionValidator cronExpressionValidator;
 
     @PostMapping(Routes.GroupProject.CREATE)
-    @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#request.groupId, 'GROUP_MEMBER?groupId='+#request.groupId)")
+    @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#request.groupId, "
+            + "'GROUP_MEMBER?groupId='+#request.groupId)")
     @Operation(module = Operation.Modules.PROJECT,
             name = "创建项目",
             involvedGroupId = "#request.groupId")

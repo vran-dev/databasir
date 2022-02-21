@@ -42,6 +42,7 @@ public class UserService {
 
     private final MailSender mailSender;
 
+    @SuppressWarnings("checkstyle:all")
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     public Page<UserPageResponse> list(Pageable pageable, UserPageCondition condition) {

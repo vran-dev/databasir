@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static com.databasir.dao.Tables.DATABASE_DOCUMENT_HISTORY;
 
-
 @Repository
 public class DatabaseDocumentHistoryDao extends BaseDao<DatabaseDocumentHistoryPojo> {
 
@@ -30,11 +29,14 @@ public class DatabaseDocumentHistoryDao extends BaseDao<DatabaseDocumentHistoryP
 
     public Optional<DatabaseDocumentHistoryPojo> selectOptionalByProjectIdAndVersion(Integer projectId, Long version) {
         return dslContext
-                .selectFrom(DATABASE_DOCUMENT_HISTORY).where(DATABASE_DOCUMENT_HISTORY.PROJECT_ID.eq(projectId).and(DATABASE_DOCUMENT_HISTORY.VERSION.eq(version)))
+                .selectFrom(DATABASE_DOCUMENT_HISTORY)
+                .where(DATABASE_DOCUMENT_HISTORY.PROJECT_ID.eq(projectId)
+                        .and(DATABASE_DOCUMENT_HISTORY.VERSION.eq(version)))
                 .fetchOptionalInto(DatabaseDocumentHistoryPojo.class);
     }
 
-    public Page<DatabaseDocumentVersionPojo> selectVersionPageByDatabaseDocumentId(Pageable request, Integer schemaDocumentId) {
+    public Page<DatabaseDocumentVersionPojo> selectVersionPageByDatabaseDocumentId(Pageable request,
+                                                                                   Integer schemaDocumentId) {
         Condition condition = DATABASE_DOCUMENT_HISTORY.DATABASE_DOCUMENT_ID.eq(schemaDocumentId);
         Integer count = getDslContext()
                 .selectCount().from(DATABASE_DOCUMENT_HISTORY).where(condition)

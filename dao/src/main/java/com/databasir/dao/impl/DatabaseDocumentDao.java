@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static com.databasir.dao.Tables.DATABASE_DOCUMENT;
 
-
 @Repository
 public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
 
@@ -25,7 +24,8 @@ public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
 
     public Optional<DatabaseDocumentPojo> selectOptionalByProjectId(Integer projectId) {
         return getDslContext()
-                .select(DATABASE_DOCUMENT.fields()).from(DATABASE_DOCUMENT).where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId))
+                .select(DATABASE_DOCUMENT.fields()).from(DATABASE_DOCUMENT)
+                .where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId))
                 .fetchOptionalInto(DatabaseDocumentPojo.class);
     }
 

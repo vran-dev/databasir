@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import static com.databasir.dao.Tables.DATA_SOURCE;
 import static com.databasir.dao.Tables.PROJECT;
 
-
 @Repository
 public class ProjectDao extends BaseDao<ProjectPojo> {
 

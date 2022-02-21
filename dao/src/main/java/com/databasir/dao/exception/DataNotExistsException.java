@@ -18,7 +18,10 @@ public class DataNotExistsException extends RuntimeException {
         super(cause);
     }
 
-    protected DataNotExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected DataNotExistsException(String message,
+                                     Throwable cause,
+                                     boolean enableSuppression,
+                                     boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

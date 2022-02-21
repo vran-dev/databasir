@@ -1,6 +1,5 @@
 package com.databasir.api;
 
-
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.system.data.SystemEmailResponse;

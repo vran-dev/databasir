@@ -1,6 +1,5 @@
 package com.databasir.dao.impl;
 
-
 import com.databasir.dao.exception.DataNotExistsException;
 import org.jooq.*;
 import org.springframework.data.domain.Page;
@@ -12,13 +11,13 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BaseDao<PO> {
+public abstract class BaseDao<R> {
 
     private final Table<?> table;
 
-    private final Class<PO> pojoType;
+    private final Class<R> pojoType;
 
-    public BaseDao(Table<?> table, Class<PO> pojoType) {
+    public BaseDao(Table<?> table, Class<R> pojoType) {
         this.table = table;
         this.pojoType = pojoType;
     }
@@ -29,7 +28,7 @@ public abstract class BaseDao<PO> {
         return getDslContext().fetchExists(table, identity().eq(id));
     }
 
-    public <T> T insertAndReturnId(PO pojo) {
+    public <T> T insertAndReturnId(R pojo) {
         Record record = getDslContext().newRecord(table, pojo);
         UpdatableRecord<?> updatableRecord = (UpdatableRecord<?>) record;
         updatableRecord.store();
@@ -37,7 +36,7 @@ public abstract class BaseDao<PO> {
         return (T) identityType().cast(value);
     }
 
-    public int batchInsert(Collection<PO> pojoList) {
+    public int batchInsert(Collection<R> pojoList) {
         List<TableRecord<?>> records = pojoList.stream()
                 .map(pojo -> {
                     Record record = getDslContext().newRecord(table, pojo);
@@ -53,24 +52,25 @@ public abstract class BaseDao<PO> {
                 .execute();
     }
 
-    public int updateById(PO pojo) {
+    public int updateById(R pojo) {
         Record record = getDslContext().newRecord(table, pojo);
         record.changed(table.getIdentity().getField(), false);
         return getDslContext().executeUpdate((UpdatableRecord<?>) record);
     }
 
-    public <T extends Serializable> Optional<PO> selectOptionalById(T id) {
+    public <T extends Serializable> Optional<R> selectOptionalById(T id) {
         return getDslContext()
                 .select(table.fields()).from(table).where(identity().eq(id))
                 .fetchOptionalInto(pojoType);
     }
 
-    public <T extends Serializable> PO selectById(T id) {
+    public <T extends Serializable> R selectById(T id) {
         return selectOptionalById(id)
-                .orElseThrow(() -> new DataNotExistsException("data not exists in " + table.getName() + " with id = " + id));
+                .orElseThrow(() ->
+                        new DataNotExistsException("data not exists in " + table.getName() + " with id = " + id));
     }
 
-    public List<PO> selectInIds(List<? extends Serializable> ids) {
+    public List<R> selectInIds(List<? extends Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
@@ -80,12 +80,12 @@ public abstract class BaseDao<PO> {
                 .fetchInto(pojoType);
     }
 
-    public Page<PO> selectByPage(Pageable request, Condition condition) {
+    public Page<R> selectByPage(Pageable request, Condition condition) {
         Integer count = getDslContext()
                 .selectCount().from(table).where(condition)
                 .fetchOne(0, int.class);
         int total = count == null ? 0 : count;
-        List<PO> data = getDslContext()
+        List<R> data = getDslContext()
                 .selectFrom(table).where(condition)
                 .orderBy(getSortFields(request.getSort()))
                 .offset(request.getOffset()).limit(request.getPageSize())

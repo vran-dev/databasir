@@ -1,6 +1,5 @@
 package com.databasir.core.infrastructure.connection;
 
-
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;

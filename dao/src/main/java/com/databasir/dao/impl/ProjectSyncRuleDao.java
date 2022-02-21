@@ -28,15 +28,19 @@ public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
 
     public Optional<ProjectSyncRulePojo> selectOptionalByProjectId(Integer projectId) {
         return getDslContext()
-                .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE).where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
+                .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE)
+                .where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
                 .fetchOptionalInto(ProjectSyncRulePojo.class);
     }
 
     public ProjectSyncRulePojo selectByProjectId(Integer projectId) {
         return getDslContext()
-                .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE).where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
+                .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE)
+                .where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
                 .fetchOptionalInto(ProjectSyncRulePojo.class)
-                .orElseThrow(() -> new DataNotExistsException("data not exists in " + table().getName() + " with projectId = " + projectId));
+                .orElseThrow(() -> new DataNotExistsException("data not exists in "
+                        + table().getName()
+                        + " with projectId = " + projectId));
     }
 
     public int updateByProjectId(ProjectSyncRulePojo rule) {
@@ -76,7 +80,8 @@ public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
                 .fetchInto(ProjectSyncRulePojo.class);
     }
 
-    public List<ProjectSyncRulePojo> selectByIsAutoSyncAndNotInProjectIds(boolean isAutoSync, List<Integer> projectIds) {
+    public List<ProjectSyncRulePojo> selectByIsAutoSyncAndNotInProjectIds(boolean isAutoSync,
+                                                                          List<Integer> projectIds) {
         if (projectIds == null || projectIds.isEmpty()) {
             return getDslContext()
                     .selectFrom(PROJECT_SYNC_RULE)

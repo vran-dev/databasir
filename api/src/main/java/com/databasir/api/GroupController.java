@@ -8,7 +8,6 @@ import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +47,7 @@ public class GroupController {
     }
 
     @GetMapping(Routes.Group.LIST)
-    public JsonData<Page<GroupPageResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
+    public JsonData<Page<GroupPageResponse>> list(@PageableDefault(sort = "id", direction = DESC)
                                                           Pageable page,
                                                   GroupPageCondition condition) {
         return JsonData.ok(groupService.list(page, condition));
@@ -69,7 +70,8 @@ public class GroupController {
 
     @GetMapping(Routes.Group.MEMBERS)
     public JsonData<Page<GroupMemberPageResponse>> listGroupMembers(@PathVariable Integer groupId,
-                                                                    @PageableDefault(sort = "user_role.create_at", direction = Sort.Direction.DESC)
+                                                                    @PageableDefault(sort = "user_role.create_at",
+                                                                            direction = DESC)
                                                                             Pageable pageable,
                                                                     GroupMemberPageCondition condition) {
         return JsonData.ok(groupService.listGroupMembers(groupId, pageable, condition));

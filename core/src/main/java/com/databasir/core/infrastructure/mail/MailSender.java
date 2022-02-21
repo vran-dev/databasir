@@ -12,12 +12,13 @@ import java.nio.charset.StandardCharsets;
 public class MailSender {
 
     public void send(SysMailPojo mail, String to, String subject, String content) {
-        JavaMailSender sender = initJavaMailSender(mail);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mail.getUsername());
         message.setTo(to);
         message.setSubject(subject);
         message.setText(content);
+
+        JavaMailSender sender = initJavaMailSender(mail);
         sender.send(message);
     }
 

@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RequiredArgsConstructor
 public class DatabasirUserDetails implements UserDetails {
 
