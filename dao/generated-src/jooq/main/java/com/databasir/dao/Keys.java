@@ -21,6 +21,7 @@ import com.databasir.dao.tables.TableDocument;
 import com.databasir.dao.tables.TableIndexDocument;
 import com.databasir.dao.tables.TableTriggerDocument;
 import com.databasir.dao.tables.User;
+import com.databasir.dao.tables.UserFavoriteProject;
 import com.databasir.dao.tables.UserRole;
 import com.databasir.dao.tables.records.DataSourcePropertyRecord;
 import com.databasir.dao.tables.records.DataSourceRecord;
@@ -38,6 +39,7 @@ import com.databasir.dao.tables.records.TableColumnDocumentRecord;
 import com.databasir.dao.tables.records.TableDocumentRecord;
 import com.databasir.dao.tables.records.TableIndexDocumentRecord;
 import com.databasir.dao.tables.records.TableTriggerDocumentRecord;
+import com.databasir.dao.tables.records.UserFavoriteProjectRecord;
 import com.databasir.dao.tables.records.UserRecord;
 import com.databasir.dao.tables.records.UserRoleRecord;
 
@@ -83,6 +85,7 @@ public class Keys {
     public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_PRIMARY"), new TableField[] { User.USER.ID }, true);
     public static final UniqueKey<UserRecord> KEY_USER_UK_EMAIL = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_uk_email"), new TableField[] { User.USER.EMAIL }, true);
     public static final UniqueKey<UserRecord> KEY_USER_UK_USERNAME = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_uk_username"), new TableField[] { User.USER.USERNAME }, true);
+    public static final UniqueKey<UserFavoriteProjectRecord> KEY_USER_FAVORITE_PROJECT_PRIMARY = Internal.createUniqueKey(UserFavoriteProject.USER_FAVORITE_PROJECT, DSL.name("KEY_user_favorite_project_PRIMARY"), new TableField[] { UserFavoriteProject.USER_FAVORITE_PROJECT.ID }, true);
     public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_PRIMARY = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_PRIMARY"), new TableField[] { UserRole.USER_ROLE.ID }, true);
     public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_UK_USER_ID_GROUP_ID_ROLE = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_uk_user_id_group_id_role"), new TableField[] { UserRole.USER_ROLE.USER_ID, UserRole.USER_ROLE.GROUP_ID, UserRole.USER_ROLE.ROLE }, true);
 }

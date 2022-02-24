@@ -28,6 +28,10 @@ public abstract class BaseDao<R> {
         return getDslContext().fetchExists(table, identity().eq(id));
     }
 
+    public boolean exists(Condition condition) {
+        return getDslContext().fetchExists(table, condition);
+    }
+
     public <T> T insertAndReturnId(R pojo) {
         Record record = getDslContext().newRecord(table, pojo);
         UpdatableRecord<?> updatableRecord = (UpdatableRecord<?>) record;
@@ -44,6 +48,12 @@ public abstract class BaseDao<R> {
                 })
                 .collect(Collectors.toList());
         return Arrays.stream(getDslContext().batchInsert(records).execute()).sum();
+    }
+
+    public int delete(Condition condition) {
+        return getDslContext()
+                .deleteFrom(table).where(condition)
+                .execute();
     }
 
     public <T extends Serializable> int deleteById(T id) {

@@ -21,6 +21,7 @@ import com.databasir.dao.tables.TableDocument;
 import com.databasir.dao.tables.TableIndexDocument;
 import com.databasir.dao.tables.TableTriggerDocument;
 import com.databasir.dao.tables.User;
+import com.databasir.dao.tables.UserFavoriteProject;
 import com.databasir.dao.tables.UserRole;
 
 
@@ -114,6 +115,11 @@ public class Tables {
      * The table <code>databasir.user</code>.
      */
     public static final User USER = User.USER;
+
+    /**
+     * The table <code>databasir.user_favorite_project</code>.
+     */
+    public static final UserFavoriteProject USER_FAVORITE_PROJECT = UserFavoriteProject.USER_FAVORITE_PROJECT;
 
     /**
      * The table <code>databasir.user_role</code>.
