@@ -21,6 +21,7 @@ import com.databasir.dao.tables.TableDocument;
 import com.databasir.dao.tables.TableIndexDocument;
 import com.databasir.dao.tables.TableTriggerDocument;
 import com.databasir.dao.tables.User;
+import com.databasir.dao.tables.UserFavoriteProject;
 import com.databasir.dao.tables.UserRole;
 
 import java.util.Arrays;
@@ -130,6 +131,11 @@ public class Databasir extends SchemaImpl {
     public final User USER = User.USER;
 
     /**
+     * The table <code>databasir.user_favorite_project</code>.
+     */
+    public final UserFavoriteProject USER_FAVORITE_PROJECT = UserFavoriteProject.USER_FAVORITE_PROJECT;
+
+    /**
      * The table <code>databasir.user_role</code>.
      */
     public final UserRole USER_ROLE = UserRole.USER_ROLE;
@@ -167,6 +173,7 @@ public class Databasir extends SchemaImpl {
             TableIndexDocument.TABLE_INDEX_DOCUMENT,
             TableTriggerDocument.TABLE_TRIGGER_DOCUMENT,
             User.USER,
+            UserFavoriteProject.USER_FAVORITE_PROJECT,
             UserRole.USER_ROLE
         );
     }

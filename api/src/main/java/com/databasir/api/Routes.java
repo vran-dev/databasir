@@ -25,6 +25,15 @@ public interface Routes {
         String ADD_OR_REMOVE_SYS_OWNER = BASE + "/users/{userId}/sys_owners";
     }
 
+    interface UserProject {
+
+        String LIST = BASE + "/user_projects/favorites";
+
+        String ADD = BASE + "/user_projects/favorites/{projectId}";
+
+        String REMOVE = BASE + "/user_projects/favorites/{projectId}";
+    }
+
     interface Group {
 
         String LIST = BASE + "/groups";
