@@ -33,5 +33,6 @@ public interface ProjectResponseConverter {
     @Mapping(target = "createAt", source = "project.createAt")
     ProjectSimpleResponse toSimple(ProjectPojo project,
                                    DataSourcePojo dataSource,
-                                   ProjectSyncRulePojo syncRule);
+                                   ProjectSyncRulePojo syncRule,
+                                   Boolean isFavorite);
 }

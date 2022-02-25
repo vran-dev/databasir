@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.databasir.dao.Tables.*;
@@ -58,5 +59,15 @@ public class UserFavoriteProjectDao extends BaseDao<UserFavoriteProjectPojo> {
                 .offset(request.getOffset()).limit(request.getPageSize())
                 .fetchInto(UserFavoriteProjectPojo.class);
         return new PageImpl<>(data, request, total);
+    }
+
+    public List<UserFavoriteProjectPojo> selectByUserIdAndProjectIds(Integer userId, List<Integer> projectIds) {
+        if (projectIds == null || projectIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.getDslContext()
+                .select(USER_FAVORITE_PROJECT.fields()).from(USER_FAVORITE_PROJECT)
+                .where(USER_FAVORITE_PROJECT.USER_ID.eq(userId).and(USER_FAVORITE_PROJECT.PROJECT_ID.in(projectIds)))
+                .fetchInto(UserFavoriteProjectPojo.class);
     }
 }

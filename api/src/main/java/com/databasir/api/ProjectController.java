@@ -1,5 +1,6 @@
 package com.databasir.api;
 
+import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.api.validator.CronExpressionValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.log.annotation.Operation;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,7 +73,11 @@ public class ProjectController {
     public JsonData<Page<ProjectSimpleResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
                                                               Pageable page,
                                                       ProjectListCondition condition) {
-        return JsonData.ok(projectService.list(page, condition));
+        DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        Integer userId = user.getUserPojo().getId();
+        return JsonData.ok(projectService.list(userId, page, condition));
     }
 
     @PostMapping(Routes.GroupProject.TEST_CONNECTION)

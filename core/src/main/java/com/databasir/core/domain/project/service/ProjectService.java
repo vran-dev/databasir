@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,6 +34,8 @@ public class ProjectService {
     private final SysKeyDao sysKeyDao;
 
     private final DataSourcePropertyDao dataSourcePropertyDao;
+
+    private final UserFavoriteProjectDao userFavoriteProjectDao;
 
     private final DataSourcePojoConverter dataSourcePojoConverter;
 
@@ -128,7 +127,7 @@ public class ProjectService {
         projectSyncRuleDao.disableAutoSyncByProjectId(projectId);
     }
 
-    public Page<ProjectSimpleResponse> list(Pageable page, ProjectListCondition condition) {
+    public Page<ProjectSimpleResponse> list(Integer userId, Pageable page, ProjectListCondition condition) {
         Page<ProjectPojo> pageData = projectDao.selectByCondition(page, condition.toCondition());
         List<Integer> projectIds = pageData.getContent()
                 .stream()
@@ -140,10 +139,15 @@ public class ProjectService {
         Map<Integer, ProjectSyncRulePojo> syncRuleMapByProjectId = projectSyncRuleDao.selectInProjectIds(projectIds)
                 .stream()
                 .collect(Collectors.toMap(ProjectSyncRulePojo::getProjectId, Function.identity()));
+        Set<Integer> favoriteProjectIds = userFavoriteProjectDao.selectByUserIdAndProjectIds(userId, projectIds)
+                .stream()
+                .map(UserFavoriteProjectPojo::getProjectId)
+                .collect(Collectors.toSet());
         return pageData.map(project -> {
             DataSourcePojo dataSource = dataSourceMapByProjectId.get(project.getId());
             ProjectSyncRulePojo syncRule = syncRuleMapByProjectId.get(project.getId());
-            return projectResponseConverter.toSimple(project, dataSource, syncRule);
+            Boolean isFavorite = favoriteProjectIds.contains(project.getId());
+            return projectResponseConverter.toSimple(project, dataSource, syncRule, isFavorite);
         });
     }
 

@@ -19,6 +19,8 @@ public class ProjectSimpleResponse {
 
     private Boolean isAutoSync;
 
+    private Boolean isFavorite;
+
     private String autoSyncCron;
 
     private LocalDateTime createAt;
