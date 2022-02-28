@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login", Routes.Login.REFRESH_ACCESS_TOKEN).permitAll()
+                .antMatchers("/oauth2/apps", "/oauth2/failure", "/oauth2/authorization/*", "/oauth2/login/*").permitAll()
                 .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico").permitAll()
                 .anyRequest().authenticated()
                 .and()

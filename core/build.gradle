@@ -31,6 +31,9 @@ dependencies {
     implementation 'org.commonmark:commonmark:0.18.1'
     implementation 'org.freemarker:freemarker:2.3.31'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+
     // test
     testImplementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
 }

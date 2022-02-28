@@ -65,14 +65,14 @@ public class UserService {
     }
 
     @Transactional
-    public void create(UserCreateRequest userCreateRequest) {
+    public Integer create(UserCreateRequest userCreateRequest) {
         userDao.selectByEmailOrUsername(userCreateRequest.getUsername()).ifPresent(data -> {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         });
         String hashedPassword = bCryptPasswordEncoder.encode(userCreateRequest.getPassword());
         UserPojo pojo = userPojoConverter.of(userCreateRequest, hashedPassword);
         try {
-            userDao.insertAndReturnId(pojo);
+            return userDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         }
