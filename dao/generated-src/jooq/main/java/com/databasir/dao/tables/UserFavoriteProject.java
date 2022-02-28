@@ -5,7 +5,6 @@ package com.databasir.dao.tables;
 
 
 import com.databasir.dao.Databasir;
-import com.databasir.dao.Indexes;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.UserFavoriteProjectRecord;
 
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -112,11 +110,6 @@ public class UserFavoriteProject extends TableImpl<UserFavoriteProjectRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.USER_FAVORITE_PROJECT_IDX_USER_ID);
-    }
-
-    @Override
     public Identity<UserFavoriteProjectRecord, Integer> getIdentity() {
         return (Identity<UserFavoriteProjectRecord, Integer>) super.getIdentity();
     }
@@ -124,6 +117,11 @@ public class UserFavoriteProject extends TableImpl<UserFavoriteProjectRecord> {
     @Override
     public UniqueKey<UserFavoriteProjectRecord> getPrimaryKey() {
         return Keys.KEY_USER_FAVORITE_PROJECT_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<UserFavoriteProjectRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_USER_FAVORITE_PROJECT_UK_USER_ID_PROJECT_ID);
     }
 
     @Override

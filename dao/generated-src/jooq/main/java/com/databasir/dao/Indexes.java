@@ -11,7 +11,6 @@ import com.databasir.dao.tables.TableColumnDocument;
 import com.databasir.dao.tables.TableDocument;
 import com.databasir.dao.tables.TableIndexDocument;
 import com.databasir.dao.tables.TableTriggerDocument;
-import com.databasir.dao.tables.UserFavoriteProject;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -39,5 +38,4 @@ public class Indexes {
     public static final Index TABLE_COLUMN_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableColumnDocument.TABLE_COLUMN_DOCUMENT, new OrderField[] { TableColumnDocument.TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID }, false);
     public static final Index TABLE_INDEX_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableIndexDocument.TABLE_INDEX_DOCUMENT, new OrderField[] { TableIndexDocument.TABLE_INDEX_DOCUMENT.TABLE_DOCUMENT_ID }, false);
     public static final Index TABLE_TRIGGER_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableTriggerDocument.TABLE_TRIGGER_DOCUMENT, new OrderField[] { TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID }, false);
-    public static final Index USER_FAVORITE_PROJECT_IDX_USER_ID = Internal.createIndex(DSL.name("idx_user_id"), UserFavoriteProject.USER_FAVORITE_PROJECT, new OrderField[] { UserFavoriteProject.USER_FAVORITE_PROJECT.USER_ID }, false);
 }

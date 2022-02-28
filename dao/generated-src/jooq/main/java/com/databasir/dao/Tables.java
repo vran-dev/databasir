@@ -11,6 +11,7 @@ import com.databasir.dao.tables.DatabaseDocumentHistory;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
@@ -65,6 +66,11 @@ public class Tables {
      * The table <code>databasir.login</code>.
      */
     public static final Login LOGIN = Login.LOGIN;
+
+    /**
+     * oauth app info
+     */
+    public static final OauthApp OAUTH_APP = OauthApp.OAUTH_APP;
 
     /**
      * The table <code>databasir.operation_log</code>.
