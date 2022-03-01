@@ -7,6 +7,7 @@ import com.databasir.core.domain.login.data.UserLoginResponse;
 import com.databasir.core.domain.login.service.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +35,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         LoginKeyResponse loginKey = loginService.generate(details.getUserPojo().getId());
         UserLoginResponse data = loginService.getUserLoginData(details.getUserPojo().getId())
                 .orElseThrow(() -> new CredentialsExpiredException("请重新登陆"));
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
     }
 }
