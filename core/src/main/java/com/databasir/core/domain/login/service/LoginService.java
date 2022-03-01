@@ -4,11 +4,14 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.login.data.AccessTokenRefreshRequest;
 import com.databasir.core.domain.login.data.AccessTokenRefreshResponse;
 import com.databasir.core.domain.login.data.LoginKeyResponse;
+import com.databasir.core.domain.login.data.UserLoginResponse;
 import com.databasir.core.infrastructure.jwt.JwtTokens;
 import com.databasir.dao.impl.LoginDao;
 import com.databasir.dao.impl.UserDao;
+import com.databasir.dao.impl.UserRoleDao;
 import com.databasir.dao.tables.pojos.LoginPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.UserRolePojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,8 +19,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +33,8 @@ public class LoginService {
     private final LoginDao loginDao;
 
     private final UserDao userDao;
+
+    private final UserRoleDao userRoleDao;
 
     private final JwtTokens jwtTokens;
 
@@ -91,4 +99,34 @@ public class LoginService {
                 .refreshTokenExpireAt(refreshTokenExpireAt)
                 .build();
     }
+
+    public Optional<UserLoginResponse> getUserLoginData(Integer userId) {
+        return loginDao.selectByUserId(userId)
+                .map(login -> {
+                    UserPojo user = userDao.selectById(login.getUserId());
+                    UserLoginResponse data = new UserLoginResponse();
+                    data.setId(user.getId());
+                    data.setNickname(user.getNickname());
+                    data.setEmail(user.getEmail());
+                    data.setUsername(user.getUsername());
+                    data.setAccessToken(login.getAccessToken());
+                    data.setAvatar(user.getAvatar());
+                    long expireAt = login.getAccessTokenExpireAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                    data.setAccessTokenExpireAt(expireAt);
+                    data.setRefreshToken(login.getRefreshToken());
+                    List<UserRolePojo> rolePojoList = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+                    List<UserLoginResponse.RoleResponse> roles = rolePojoList
+                            .stream()
+                            .map(ur -> {
+                                UserLoginResponse.RoleResponse roleResponse = new UserLoginResponse.RoleResponse();
+                                roleResponse.setRole(ur.getRole());
+                                roleResponse.setGroupId(ur.getGroupId());
+                                return roleResponse;
+                            })
+                            .collect(Collectors.toList());
+                    data.setRoles(roles);
+                    return data;
+                });
+    }
+
 }

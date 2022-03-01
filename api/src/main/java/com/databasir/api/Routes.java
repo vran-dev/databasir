@@ -102,6 +102,9 @@ public interface Routes {
         String LOGOUT = "/logout";
 
         String REFRESH_ACCESS_TOKEN = "/access_tokens";
+
+        String LOGIN_INFO = "/login_info";
+
     }
 
     interface OperationLog {

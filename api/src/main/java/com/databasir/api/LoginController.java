@@ -1,5 +1,6 @@
 package com.databasir.api;
 
+import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.DatabasirException;
 import com.databasir.common.JsonData;
 import com.databasir.common.exception.InvalidTokenException;
@@ -7,10 +8,10 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.login.data.AccessTokenRefreshRequest;
 import com.databasir.core.domain.login.data.AccessTokenRefreshResponse;
+import com.databasir.core.domain.login.data.UserLoginResponse;
 import com.databasir.core.domain.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,6 @@ import java.util.Objects;
 @Slf4j
 public class LoginController {
 
-    private final AuthenticationManager authenticationManager;
-
     private final LoginService loginService;
 
     @GetMapping(Routes.Login.LOGOUT)
@@ -39,8 +38,8 @@ public class LoginController {
     }
 
     @PostMapping(Routes.Login.REFRESH_ACCESS_TOKEN)
-    public JsonData<AccessTokenRefreshResponse> refreshAccessTokens(@RequestBody @Valid
-                                                                            AccessTokenRefreshRequest request) {
+    public JsonData<AccessTokenRefreshResponse> refreshAccessTokens(@RequestBody
+                                                                    @Valid AccessTokenRefreshRequest request) {
         try {
             return JsonData.ok(loginService.refreshAccessTokens(request));
         } catch (DatabasirException e) {
@@ -52,6 +51,15 @@ public class LoginController {
             }
             throw e;
         }
+    }
+
+    @GetMapping(Routes.Login.LOGIN_INFO)
+    public JsonData<UserLoginResponse> getUserLoginData() {
+        DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        Integer userId = user.getUserPojo().getId();
+        return JsonData.ok(loginService.getUserLoginData(userId));
     }
 
 }

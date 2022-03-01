@@ -17,6 +17,6 @@ public class OAuthProcessContext {
     private String registrationId;
 
     @Builder.Default
-    private Map<String, String> callbackParameters = new HashMap<>();
+    private Map<String, String[]> callbackParameters = new HashMap<>();
 
 }

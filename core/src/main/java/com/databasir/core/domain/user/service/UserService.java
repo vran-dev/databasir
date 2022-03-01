@@ -91,6 +91,21 @@ public class UserService {
         return userResponseConverter.detailResponse(pojo, roles, groupNameMapById);
     }
 
+    public Optional<UserDetailResponse> get(String email) {
+        return userDao.selectByEmail(email)
+                .map(user -> {
+                    List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+                    List<Integer> groupIds = roles.stream()
+                            .map(UserRolePojo::getGroupId)
+                            .filter(Objects::nonNull)
+                            .collect(toList());
+                    Map<Integer, String> groupNameMapById = groupDao.selectInIds(groupIds)
+                            .stream()
+                            .collect(toMap(GroupPojo::getId, GroupPojo::getName));
+                    return userResponseConverter.detailResponse(user, roles, groupNameMapById);
+                });
+    }
+
     @Transactional
     public String renewPassword(Integer userId) {
         UserPojo userPojo = userDao.selectById(userId);

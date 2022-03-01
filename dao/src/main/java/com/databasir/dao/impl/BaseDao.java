@@ -90,6 +90,12 @@ public abstract class BaseDao<R> {
                 .fetchInto(pojoType);
     }
 
+    public List<R> selectAll() {
+        return this.getDslContext()
+                .selectFrom(table())
+                .fetchInto(pojoType);
+    }
+
     public Page<R> selectByPage(Pageable request, Condition condition) {
         Integer count = getDslContext()
                 .selectCount().from(table).where(condition)

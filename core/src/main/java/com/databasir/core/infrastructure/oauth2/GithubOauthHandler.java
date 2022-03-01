@@ -7,6 +7,8 @@ import com.databasir.dao.impl.OAuthAppDao;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.jooq.tools.StringUtils;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -47,16 +49,22 @@ public class GithubOauthHandler implements OAuthHandler {
         String clientSecret = authApp.getClientSecret();
         String baseUrl = authApp.getResourceUrl();
 
-        Map<String, String> params = context.getCallbackParameters();
-        String code = params.get("code");
+        Map<String, String[]> params = context.getCallbackParameters();
+        String code = params.get("code")[0];
         String accessToken = githubRemoteService.getToken(baseUrl, clientId, clientSecret, code)
                 .get("access_token")
                 .asText();
+        if (StringUtils.isBlank(accessToken)) {
+            throw new CredentialsExpiredException("授权失效，请重新登陆");
+        }
         String email = null;
         for (JsonNode node : githubRemoteService.getEmail(baseUrl, accessToken)) {
             if (node.get("primary").asBoolean()) {
                 email = node.get("email").asText();
             }
+        }
+        if (StringUtils.isBlank(email)) {
+            throw new CredentialsExpiredException("授权失效，请重新登陆");
         }
         JsonNode profile = githubRemoteService.getProfile(baseUrl, accessToken);
         String nickname = profile.get("name").asText();

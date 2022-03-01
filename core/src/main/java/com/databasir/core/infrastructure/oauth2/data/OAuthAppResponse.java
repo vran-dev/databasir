@@ -15,17 +15,13 @@ public class OAuthAppResponse {
 
     private Integer id;
 
-    private String name;
+    private String appName;
 
-    private String icon;
+    private String appIcon;
+
+    private String appType;
 
     private String registrationId;
-
-    private String clientId;
-
-    private String clientSecret;
-
-    private LocalDateTime updateAt;
 
     private LocalDateTime createAt;
 
