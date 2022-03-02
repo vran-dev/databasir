@@ -38,7 +38,6 @@ public class JsonData<T> {
         return jsonData;
     }
 
-
     public static <T> JsonData<T> error(String errorCode, String errMessage) {
         JsonData<T> jsonData = new JsonData<>();
         jsonData.setErrCode(errorCode);

@@ -12,13 +12,13 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.OAUTH_APP;
 
 @Repository
-public class OAuthAppDao extends BaseDao<OauthAppPojo> {
+public class OauthAppDao extends BaseDao<OauthAppPojo> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
-    public OAuthAppDao() {
+    public OauthAppDao() {
         super(OAUTH_APP, OauthAppPojo.class);
     }
 

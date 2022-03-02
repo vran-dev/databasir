@@ -111,10 +111,12 @@ public class LoginService {
                     data.setUsername(user.getUsername());
                     data.setAccessToken(login.getAccessToken());
                     data.setAvatar(user.getAvatar());
-                    long expireAt = login.getAccessTokenExpireAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                    long expireAt = login.getAccessTokenExpireAt()
+                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                     data.setAccessTokenExpireAt(expireAt);
                     data.setRefreshToken(login.getRefreshToken());
-                    List<UserRolePojo> rolePojoList = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+                    List<UserRolePojo> rolePojoList =
+                            userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
                     List<UserLoginResponse.RoleResponse> roles = rolePojoList
                             .stream()
                             .map(ur -> {

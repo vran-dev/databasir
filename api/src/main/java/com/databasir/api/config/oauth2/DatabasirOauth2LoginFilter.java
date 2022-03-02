@@ -2,7 +2,7 @@ package com.databasir.api.config.oauth2;
 
 import com.databasir.api.config.security.DatabasirUserDetailService;
 import com.databasir.core.domain.user.data.UserDetailResponse;
-import com.databasir.core.domain.app.OAuthAppService;
+import com.databasir.core.domain.app.OpenAuthAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,16 +28,16 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
     public static final String OAUTH_LOGIN_URI = "/oauth2/login/*";
 
     @Autowired
-    private OAuthAppService oAuthAppService;
+    private OpenAuthAppService openAuthAppService;
 
     @Autowired
     private DatabasirUserDetailService databasirUserDetailService;
 
     public DatabasirOauth2LoginFilter(AuthenticationManager authenticationManager,
-                                      OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                                      OAuth2AuthenticationSuccessHandler auth2AuthenticationSuccessHandler,
                                       AuthenticationFailureHandler authenticationFailureHandler) {
         super(OAUTH_LOGIN_URI, authenticationManager);
-        this.setAuthenticationSuccessHandler(oAuth2AuthenticationSuccessHandler);
+        this.setAuthenticationSuccessHandler(auth2AuthenticationSuccessHandler);
         this.setAuthenticationFailureHandler(authenticationFailureHandler);
     }
 
@@ -46,7 +46,7 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
             throws AuthenticationException, IOException, ServletException {
         Map<String, String[]> params = request.getParameterMap();
         String registrationId = new AntPathMatcher().extractPathWithinPattern(OAUTH_LOGIN_URI, request.getRequestURI());
-        UserDetailResponse userDetailResponse = oAuthAppService.oauthCallback(registrationId, params);
+        UserDetailResponse userDetailResponse = openAuthAppService.oauthCallback(registrationId, params);
         UserDetails details = databasirUserDetailService.loadUserByUsername(userDetailResponse.getUsername());
         DatabasirOAuth2Authentication authentication = new DatabasirOAuth2Authentication(details);
         if (!userDetailResponse.getEnabled()) {

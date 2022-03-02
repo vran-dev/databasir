@@ -1,7 +1,6 @@
 package com.databasir.api.config;
 
 import com.databasir.api.Routes;
-import com.databasir.api.config.oauth2.DatabasirOauth2LoginFilter;
 import com.databasir.api.config.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login", Routes.Login.REFRESH_ACCESS_TOKEN).permitAll()
-                .antMatchers("/oauth2/apps", "/oauth2/failure", "/oauth2/authorization/*", "/oauth2/login/*").permitAll()
+                .antMatchers("/oauth2/apps", "/oauth2/failure", "/oauth2/authorization/*", "/oauth2/login/*")
+                .permitAll()
                 .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -1,11 +1,10 @@
 package com.databasir.core.domain.app.handler;
 
-
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
-import com.databasir.dao.impl.OAuthAppDao;
+import com.databasir.dao.impl.OauthAppDao;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +17,11 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class GithubOauthHandler implements OAuthHandler {
+public class GithubOpenAuthHandler implements OpenAuthHandler {
 
     private final GithubRemoteService githubRemoteService;
 
-    private final OAuthAppDao oAuthAppDao;
+    private final OauthAppDao oauthAppDao;
 
     @Override
     public boolean support(String oauthAppType) {
@@ -31,7 +30,7 @@ public class GithubOauthHandler implements OAuthHandler {
 
     @Override
     public String authorization(String registrationId) {
-        OauthAppPojo app = oAuthAppDao.selectByRegistrationId(registrationId);
+        OauthAppPojo app = oauthAppDao.selectByRegistrationId(registrationId);
         String authUrl = app.getAuthUrl();
         String clientId = app.getClientId();
         String authorizeUrl = authUrl + "/login/oauth/authorize";
@@ -46,7 +45,7 @@ public class GithubOauthHandler implements OAuthHandler {
 
     @Override
     public OAuthProcessResult process(OAuthProcessContext context) {
-        OauthAppPojo authApp = oAuthAppDao.selectByRegistrationId(context.getRegistrationId());
+        OauthAppPojo authApp = oauthAppDao.selectByRegistrationId(context.getRegistrationId());
         String clientId = authApp.getClientId();
         String clientSecret = authApp.getClientSecret();
         String baseUrl = authApp.getResourceUrl();

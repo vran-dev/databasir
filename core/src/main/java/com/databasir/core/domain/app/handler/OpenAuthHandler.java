@@ -1,6 +1,6 @@
 package com.databasir.core.domain.app.handler;
 
-public interface OAuthHandler {
+public interface OpenAuthHandler {
 
     boolean support(String oauthAppType);
 

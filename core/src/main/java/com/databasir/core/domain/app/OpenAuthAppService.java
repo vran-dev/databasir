@@ -4,13 +4,13 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.converter.OAuthAppPojoConverter;
 import com.databasir.core.domain.app.converter.OAuthAppResponseConverter;
 import com.databasir.core.domain.app.data.*;
-import com.databasir.core.domain.app.handler.OAuthHandler;
+import com.databasir.core.domain.app.handler.OpenAuthHandler;
 import com.databasir.core.domain.app.handler.OAuthProcessContext;
 import com.databasir.core.domain.app.handler.OAuthProcessResult;
 import com.databasir.core.domain.user.data.UserCreateRequest;
 import com.databasir.core.domain.user.data.UserDetailResponse;
 import com.databasir.core.domain.user.service.UserService;
-import com.databasir.dao.impl.OAuthAppDao;
+import com.databasir.dao.impl.OauthAppDao;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,23 +27,23 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OAuthAppService {
+public class OpenAuthAppService {
 
-    private final List<OAuthHandler> oAuthHandlers;
+    private final List<OpenAuthHandler> openAuthHandlers;
 
-    private final OAuthAppDao oAuthAppDao;
+    private final OauthAppDao oauthAppDao;
 
     private final UserService userService;
 
-    private final OAuthAppResponseConverter oAuthAppResponseConverter;
+    private final OAuthAppResponseConverter oauthAppResponseConverter;
 
-    private final OAuthAppPojoConverter oAuthAppPojoConverter;
+    private final OAuthAppPojoConverter oauthAppPojoConverter;
 
     public UserDetailResponse oauthCallback(String registrationId, Map<String, String[]> params) {
 
         // match handler
-        OauthAppPojo app = oAuthAppDao.selectByRegistrationId(registrationId);
-        OAuthHandler oAuthHandler = oAuthHandlers.stream()
+        OauthAppPojo app = oauthAppDao.selectByRegistrationId(registrationId);
+        OpenAuthHandler openAuthHandler = openAuthHandlers.stream()
                 .filter(handler -> handler.support(app.getAppType()))
                 .findFirst()
                 .orElseThrow(() -> new UsernameNotFoundException("暂不支持该类型登陆"));
@@ -53,7 +53,7 @@ public class OAuthAppService {
                 .callbackParameters(params)
                 .registrationId(registrationId)
                 .build();
-        OAuthProcessResult result = oAuthHandler.process(context);
+        OAuthProcessResult result = openAuthHandler.process(context);
 
         // get  or create new user
         return userService.get(result.getEmail())
@@ -71,41 +71,41 @@ public class OAuthAppService {
     }
 
     public List<OAuthAppResponse> listAll() {
-        List<OauthAppPojo> apps = oAuthAppDao.selectAll();
+        List<OauthAppPojo> apps = oauthAppDao.selectAll();
         return apps.stream()
-                .map(oAuthAppResponseConverter::to)
+                .map(oauthAppResponseConverter::to)
                 .collect(Collectors.toList());
     }
 
     public void deleteById(Integer id) {
-        if (oAuthAppDao.existsById(id)) {
-            oAuthAppDao.deleteById(id);
+        if (oauthAppDao.existsById(id)) {
+            oauthAppDao.deleteById(id);
         }
     }
 
     public void updateById(OAuthAppUpdateRequest request) {
-        OauthAppPojo pojo = oAuthAppPojoConverter.of(request);
+        OauthAppPojo pojo = oauthAppPojoConverter.of(request);
         try {
-            oAuthAppDao.updateById(pojo);
+            oauthAppDao.updateById(pojo);
         } catch (DuplicateKeyException e) {
             throw DomainErrors.REGISTRATION_ID_DUPLICATE.exception();
         }
     }
 
     public Integer create(OAuthAppCreateRequest request) {
-        OauthAppPojo pojo = oAuthAppPojoConverter.of(request);
+        OauthAppPojo pojo = oauthAppPojoConverter.of(request);
         try {
-            return oAuthAppDao.insertAndReturnId(pojo);
+            return oauthAppDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
             throw DomainErrors.REGISTRATION_ID_DUPLICATE.exception();
         }
     }
 
     public Page<OAuthAppPageResponse> listPage(Pageable page, OAuthAppPageCondition condition) {
-        return oAuthAppDao.selectByPage(page, condition.toCondition()).map(oAuthAppPojoConverter::toPageResponse);
+        return oauthAppDao.selectByPage(page, condition.toCondition()).map(oauthAppPojoConverter::toPageResponse);
     }
 
     public Optional<OAuthAppDetailResponse> getOne(Integer id) {
-        return oAuthAppDao.selectOptionalById(id).map(oAuthAppPojoConverter::toDetailResponse);
+        return oauthAppDao.selectOptionalById(id).map(oauthAppPojoConverter::toDetailResponse);
     }
 }

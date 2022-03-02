@@ -1,9 +1,9 @@
 package com.databasir.api;
 
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.app.OAuthAppService;
+import com.databasir.core.domain.app.OpenAuthAppService;
 import com.databasir.core.domain.app.data.*;
-import com.databasir.core.domain.app.handler.OAuthHandler;
+import com.databasir.core.domain.app.handler.OpenAuthHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +19,11 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Controller
 @RequiredArgsConstructor
-public class OAuth2AppController {
+public class OpenAuth2AppController {
 
-    private final OAuthHandler oAuthHandler;
+    private final OpenAuthHandler openAuthHandler;
 
-    private final OAuthAppService oAuthAppService;
+    private final OpenAuthAppService openAuthAppService;
 
     /**
      * 无需授权
@@ -31,7 +31,7 @@ public class OAuth2AppController {
     @GetMapping("/oauth2/authorization/{registrationId}")
     @ResponseBody
     public JsonData<String> authorization(@PathVariable String registrationId) {
-        String authorization = oAuthHandler.authorization(registrationId);
+        String authorization = openAuthHandler.authorization(registrationId);
         return JsonData.ok(authorization);
     }
 
@@ -41,7 +41,7 @@ public class OAuth2AppController {
     @GetMapping("/oauth2/apps")
     @ResponseBody
     public JsonData<List<OAuthAppResponse>> listApps() {
-        return JsonData.ok(oAuthAppService.listAll());
+        return JsonData.ok(openAuthAppService.listAll());
     }
 
     @GetMapping(Routes.OAuth2App.LIST_PAGE)
@@ -50,14 +50,14 @@ public class OAuth2AppController {
     public JsonData<Page<OAuthAppPageResponse>> listPage(@PageableDefault(sort = "id", direction = DESC)
                                                                  Pageable page,
                                                          OAuthAppPageCondition condition) {
-        return JsonData.ok(oAuthAppService.listPage(page, condition));
+        return JsonData.ok(openAuthAppService.listPage(page, condition));
     }
 
     @GetMapping(Routes.OAuth2App.GET_ONE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
     public JsonData<OAuthAppDetailResponse> getOne(@PathVariable Integer id) {
-        return JsonData.ok(oAuthAppService.getOne(id));
+        return JsonData.ok(openAuthAppService.getOne(id));
 
     }
 
@@ -65,7 +65,7 @@ public class OAuth2AppController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
     public JsonData<Integer> create(@RequestBody @Valid OAuthAppCreateRequest request) {
-        Integer id = oAuthAppService.create(request);
+        Integer id = openAuthAppService.create(request);
         return JsonData.ok(id);
     }
 
@@ -73,7 +73,7 @@ public class OAuth2AppController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
     public JsonData<Void> updateById(@RequestBody @Valid OAuthAppUpdateRequest request) {
-        oAuthAppService.updateById(request);
+        openAuthAppService.updateById(request);
         return JsonData.ok();
     }
 
@@ -81,7 +81,7 @@ public class OAuth2AppController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
     public JsonData<Void> deleteById(@PathVariable Integer id) {
-        oAuthAppService.deleteById(id);
+        openAuthAppService.deleteById(id);
         return JsonData.ok();
     }
 }
