@@ -2,6 +2,7 @@ package com.databasir.core.infrastructure.remote;
 
 import com.databasir.core.infrastructure.remote.github.GithubApiClient;
 import com.databasir.core.infrastructure.remote.github.GithubOauthClient;
+import com.databasir.core.infrastructure.remote.gitlab.GitlabApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +31,14 @@ public class ClientConfig {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         return retrofit.create(GithubOauthClient.class);
+    }
+
+    @Bean
+    public GitlabApiClient gitlabApiClient() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://gitlab.com")
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+        return retrofit.create(GitlabApiClient.class);
     }
 }

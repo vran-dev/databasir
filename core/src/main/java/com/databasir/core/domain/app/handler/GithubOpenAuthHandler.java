@@ -4,7 +4,6 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
-import com.databasir.dao.impl.OauthAppDao;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +20,13 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
 
     private final GithubRemoteService githubRemoteService;
 
-    private final OauthAppDao oauthAppDao;
-
     @Override
     public boolean support(String oauthAppType) {
         return OAuthAppType.GITHUB.isSame(oauthAppType);
     }
 
     @Override
-    public String authorization(String registrationId) {
-        OauthAppPojo app = oauthAppDao.selectByRegistrationId(registrationId);
+    public String authorizationUrl(OauthAppPojo app, Map<String, String[]> requestParams) {
         String authUrl = app.getAuthUrl();
         String clientId = app.getClientId();
         String authorizeUrl = authUrl + "/login/oauth/authorize";
@@ -44,14 +40,12 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public OAuthProcessResult process(OAuthProcessContext context) {
-        OauthAppPojo authApp = oauthAppDao.selectByRegistrationId(context.getRegistrationId());
-        String clientId = authApp.getClientId();
-        String clientSecret = authApp.getClientSecret();
-        String baseUrl = authApp.getResourceUrl();
+    public OAuthProcessResult process(OauthAppPojo app, Map<String, String[]> requestParams) {
+        String clientId = app.getClientId();
+        String clientSecret = app.getClientSecret();
+        String baseUrl = app.getResourceUrl();
 
-        Map<String, String[]> params = context.getCallbackParameters();
-        String code = params.get("code")[0];
+        String code = requestParams.get("code")[0];
         JsonNode tokenNode = githubRemoteService.getToken(baseUrl, clientId, clientSecret, code)
                 .get("access_token");
         if (tokenNode == null) {
