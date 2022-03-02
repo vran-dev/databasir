@@ -11,6 +11,7 @@ import com.databasir.dao.tables.DatabaseDocumentHistory;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
@@ -30,6 +31,7 @@ import com.databasir.dao.tables.records.DatabaseDocumentRecord;
 import com.databasir.dao.tables.records.DocumentRemarkRecord;
 import com.databasir.dao.tables.records.GroupRecord;
 import com.databasir.dao.tables.records.LoginRecord;
+import com.databasir.dao.tables.records.OauthAppRecord;
 import com.databasir.dao.tables.records.OperationLogRecord;
 import com.databasir.dao.tables.records.ProjectRecord;
 import com.databasir.dao.tables.records.ProjectSyncRuleRecord;
@@ -71,6 +73,8 @@ public class Keys {
     public static final UniqueKey<GroupRecord> KEY_GROUP_PRIMARY = Internal.createUniqueKey(Group.GROUP, DSL.name("KEY_group_PRIMARY"), new TableField[] { Group.GROUP.ID }, true);
     public static final UniqueKey<LoginRecord> KEY_LOGIN_PRIMARY = Internal.createUniqueKey(Login.LOGIN, DSL.name("KEY_login_PRIMARY"), new TableField[] { Login.LOGIN.ID }, true);
     public static final UniqueKey<LoginRecord> KEY_LOGIN_UK_USER_ID = Internal.createUniqueKey(Login.LOGIN, DSL.name("KEY_login_uk_user_id"), new TableField[] { Login.LOGIN.USER_ID }, true);
+    public static final UniqueKey<OauthAppRecord> KEY_OAUTH_APP_PRIMARY = Internal.createUniqueKey(OauthApp.OAUTH_APP, DSL.name("KEY_oauth_app_PRIMARY"), new TableField[] { OauthApp.OAUTH_APP.ID }, true);
+    public static final UniqueKey<OauthAppRecord> KEY_OAUTH_APP_UK_REGISTRATION_ID = Internal.createUniqueKey(OauthApp.OAUTH_APP, DSL.name("KEY_oauth_app_uk_registration_id"), new TableField[] { OauthApp.OAUTH_APP.REGISTRATION_ID }, true);
     public static final UniqueKey<OperationLogRecord> KEY_OPERATION_LOG_PRIMARY = Internal.createUniqueKey(OperationLog.OPERATION_LOG, DSL.name("KEY_operation_log_PRIMARY"), new TableField[] { OperationLog.OPERATION_LOG.ID }, true);
     public static final UniqueKey<ProjectRecord> KEY_PROJECT_PRIMARY = Internal.createUniqueKey(Project.PROJECT, DSL.name("KEY_project_PRIMARY"), new TableField[] { Project.PROJECT.ID }, true);
     public static final UniqueKey<ProjectRecord> KEY_PROJECT_UK_GROUP_ID_NAME = Internal.createUniqueKey(Project.PROJECT, DSL.name("KEY_project_uk_group_id_name"), new TableField[] { Project.PROJECT.GROUP_ID, Project.PROJECT.NAME }, true);
@@ -86,6 +90,7 @@ public class Keys {
     public static final UniqueKey<UserRecord> KEY_USER_UK_EMAIL = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_uk_email"), new TableField[] { User.USER.EMAIL }, true);
     public static final UniqueKey<UserRecord> KEY_USER_UK_USERNAME = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_uk_username"), new TableField[] { User.USER.USERNAME }, true);
     public static final UniqueKey<UserFavoriteProjectRecord> KEY_USER_FAVORITE_PROJECT_PRIMARY = Internal.createUniqueKey(UserFavoriteProject.USER_FAVORITE_PROJECT, DSL.name("KEY_user_favorite_project_PRIMARY"), new TableField[] { UserFavoriteProject.USER_FAVORITE_PROJECT.ID }, true);
+    public static final UniqueKey<UserFavoriteProjectRecord> KEY_USER_FAVORITE_PROJECT_UK_USER_ID_PROJECT_ID = Internal.createUniqueKey(UserFavoriteProject.USER_FAVORITE_PROJECT, DSL.name("KEY_user_favorite_project_uk_user_id_project_id"), new TableField[] { UserFavoriteProject.USER_FAVORITE_PROJECT.USER_ID, UserFavoriteProject.USER_FAVORITE_PROJECT.PROJECT_ID }, true);
     public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_PRIMARY = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_PRIMARY"), new TableField[] { UserRole.USER_ROLE.ID }, true);
     public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_UK_USER_ID_GROUP_ID_ROLE = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_uk_user_id_group_id_role"), new TableField[] { UserRole.USER_ROLE.USER_ID, UserRole.USER_ROLE.GROUP_ID, UserRole.USER_ROLE.ROLE }, true);
 }

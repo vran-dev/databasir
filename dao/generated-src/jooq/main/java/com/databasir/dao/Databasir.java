@@ -11,6 +11,7 @@ import com.databasir.dao.tables.DatabaseDocumentHistory;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
@@ -79,6 +80,11 @@ public class Databasir extends SchemaImpl {
      * The table <code>databasir.login</code>.
      */
     public final Login LOGIN = Login.LOGIN;
+
+    /**
+     * oauth app info
+     */
+    public final OauthApp OAUTH_APP = OauthApp.OAUTH_APP;
 
     /**
      * The table <code>databasir.operation_log</code>.
@@ -163,6 +169,7 @@ public class Databasir extends SchemaImpl {
             DocumentRemark.DOCUMENT_REMARK,
             Group.GROUP,
             Login.LOGIN,
+            OauthApp.OAUTH_APP,
             OperationLog.OPERATION_LOG,
             Project.PROJECT,
             ProjectSyncRule.PROJECT_SYNC_RULE,

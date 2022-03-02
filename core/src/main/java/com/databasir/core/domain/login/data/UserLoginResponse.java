@@ -1,4 +1,4 @@
-package com.databasir.core.domain.user.data;
+package com.databasir.core.domain.login.data;
 
 import lombok.Data;
 
@@ -14,6 +14,8 @@ public class UserLoginResponse {
     private String email;
 
     private String username;
+
+    private String avatar;
 
     private String accessToken;
 

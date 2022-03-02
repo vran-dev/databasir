@@ -65,14 +65,14 @@ public class UserService {
     }
 
     @Transactional
-    public void create(UserCreateRequest userCreateRequest) {
+    public Integer create(UserCreateRequest userCreateRequest) {
         userDao.selectByEmailOrUsername(userCreateRequest.getUsername()).ifPresent(data -> {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         });
         String hashedPassword = bCryptPasswordEncoder.encode(userCreateRequest.getPassword());
         UserPojo pojo = userPojoConverter.of(userCreateRequest, hashedPassword);
         try {
-            userDao.insertAndReturnId(pojo);
+            return userDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         }
@@ -89,6 +89,21 @@ public class UserService {
                 .stream()
                 .collect(toMap(GroupPojo::getId, GroupPojo::getName));
         return userResponseConverter.detailResponse(pojo, roles, groupNameMapById);
+    }
+
+    public Optional<UserDetailResponse> get(String email) {
+        return userDao.selectByEmail(email)
+                .map(user -> {
+                    List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+                    List<Integer> groupIds = roles.stream()
+                            .map(UserRolePojo::getGroupId)
+                            .filter(Objects::nonNull)
+                            .collect(toList());
+                    Map<Integer, String> groupNameMapById = groupDao.selectInIds(groupIds)
+                            .stream()
+                            .collect(toMap(GroupPojo::getId, GroupPojo::getName));
+                    return userResponseConverter.detailResponse(user, roles, groupNameMapById);
+                });
     }
 
     @Transactional

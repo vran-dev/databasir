@@ -40,6 +40,13 @@ public class LoginDao extends BaseDao<LoginPojo> {
                 .fetchOptionalInto(LoginPojo.class);
     }
 
+    public Optional<LoginPojo> selectByAccessToken(String accessToken) {
+        return getDslContext()
+                .selectFrom(LOGIN).where(LOGIN.ACCESS_TOKEN.eq(accessToken)
+                        .and(LOGIN.ACCESS_TOKEN_EXPIRE_AT.ge(LocalDateTime.now())))
+                .fetchOptionalInto(LoginPojo.class);
+    }
+
     public void updateAccessToken(String accessToken, LocalDateTime accessTokenExpireAt, Integer userId) {
         getDslContext()
                 .update(LOGIN)

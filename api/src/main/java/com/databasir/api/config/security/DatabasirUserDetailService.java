@@ -1,6 +1,5 @@
 package com.databasir.api.config.security;
 
-import com.databasir.dao.impl.LoginDao;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
 import com.databasir.dao.tables.pojos.UserPojo;
@@ -21,8 +20,6 @@ public class DatabasirUserDetailService implements UserDetailsService {
     private final UserDao userDao;
 
     private final UserRoleDao userRoleDao;
-
-    private final LoginDao loginDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

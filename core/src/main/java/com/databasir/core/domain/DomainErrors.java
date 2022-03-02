@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 public enum DomainErrors implements DatabasirErrors {
     REFRESH_TOKEN_EXPIRED("X_0001", "refresh token expired"),
     INVALID_REFRESH_TOKEN_OPERATION("X_0002", "invalid refresh token operation"),
+    NETWORK_ERROR("X_0003", "网络似乎不稳定，请稍后再试"),
 
     NOT_SUPPORT_DATABASE_TYPE("A_10000", "不支持的数据库类型, 请检查项目配置"),
     PROJECT_NOT_FOUND("A_10001", "项目不存在"),
@@ -23,7 +24,8 @@ public enum DomainErrors implements DatabasirErrors {
     CANNOT_UPDATE_SELF_ROLE("A_10009", "无法对自己执行角色变更的操作"),
     UPDATE_PASSWORD_CONFIRM_FAILED("A_10010", "两次密码输入不一致"),
     ORIGIN_PASSWORD_NOT_CORRECT("A_10011", "原密码不正确"),
-    INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式");
+    INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式"),
+    REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复");
 
     private final String errCode;
 
