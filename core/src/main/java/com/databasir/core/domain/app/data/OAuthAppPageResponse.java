@@ -1,17 +1,11 @@
-package com.databasir.core.infrastructure.oauth2.data;
+package com.databasir.core.domain.app.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class OAuthAppResponse {
+public class OAuthAppPageResponse {
 
     private Integer id;
 
@@ -22,6 +16,14 @@ public class OAuthAppResponse {
     private String appType;
 
     private String registrationId;
+
+    private String clientId;
+
+    private String authUrl;
+
+    private String resourceUrl;
+
+    private LocalDateTime updateAt;
 
     private LocalDateTime createAt;
 

@@ -1,4 +1,4 @@
-package com.databasir.core.infrastructure.oauth2;
+package com.databasir.core.domain.app.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,18 +1,27 @@
-package com.databasir.core.infrastructure.oauth2;
+package com.databasir.core.domain.app;
 
+import com.databasir.core.domain.DomainErrors;
+import com.databasir.core.domain.app.converter.OAuthAppPojoConverter;
+import com.databasir.core.domain.app.converter.OAuthAppResponseConverter;
+import com.databasir.core.domain.app.data.*;
+import com.databasir.core.domain.app.handler.OAuthHandler;
+import com.databasir.core.domain.app.handler.OAuthProcessContext;
+import com.databasir.core.domain.app.handler.OAuthProcessResult;
 import com.databasir.core.domain.user.data.UserCreateRequest;
 import com.databasir.core.domain.user.data.UserDetailResponse;
 import com.databasir.core.domain.user.service.UserService;
-import com.databasir.core.infrastructure.oauth2.converter.OAuthAppResponseConverter;
-import com.databasir.core.infrastructure.oauth2.data.OAuthAppResponse;
 import com.databasir.dao.impl.OAuthAppDao;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,6 +36,8 @@ public class OAuthAppService {
     private final UserService userService;
 
     private final OAuthAppResponseConverter oAuthAppResponseConverter;
+
+    private final OAuthAppPojoConverter oAuthAppPojoConverter;
 
     public UserDetailResponse oauthCallback(String registrationId, Map<String, String[]> params) {
 
@@ -66,4 +77,35 @@ public class OAuthAppService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteById(Integer id) {
+        if (oAuthAppDao.existsById(id)) {
+            oAuthAppDao.deleteById(id);
+        }
+    }
+
+    public void updateById(OAuthAppUpdateRequest request) {
+        OauthAppPojo pojo = oAuthAppPojoConverter.of(request);
+        try {
+            oAuthAppDao.updateById(pojo);
+        } catch (DuplicateKeyException e) {
+            throw DomainErrors.REGISTRATION_ID_DUPLICATE.exception();
+        }
+    }
+
+    public Integer create(OAuthAppCreateRequest request) {
+        OauthAppPojo pojo = oAuthAppPojoConverter.of(request);
+        try {
+            return oAuthAppDao.insertAndReturnId(pojo);
+        } catch (DuplicateKeyException e) {
+            throw DomainErrors.REGISTRATION_ID_DUPLICATE.exception();
+        }
+    }
+
+    public Page<OAuthAppPageResponse> listPage(Pageable page, OAuthAppPageCondition condition) {
+        return oAuthAppDao.selectByPage(page, condition.toCondition()).map(oAuthAppPojoConverter::toPageResponse);
+    }
+
+    public Optional<OAuthAppDetailResponse> getOne(Integer id) {
+        return oAuthAppDao.selectOptionalById(id).map(oAuthAppPojoConverter::toDetailResponse);
+    }
 }

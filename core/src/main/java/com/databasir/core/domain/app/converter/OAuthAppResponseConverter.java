@@ -1,6 +1,6 @@
-package com.databasir.core.infrastructure.oauth2.converter;
+package com.databasir.core.domain.app.converter;
 
-import com.databasir.core.infrastructure.oauth2.data.OAuthAppResponse;
+import com.databasir.core.domain.app.data.OAuthAppResponse;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 import org.mapstruct.Mapper;
 

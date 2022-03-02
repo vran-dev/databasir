@@ -24,7 +24,8 @@ public enum DomainErrors implements DatabasirErrors {
     CANNOT_UPDATE_SELF_ROLE("A_10009", "无法对自己执行角色变更的操作"),
     UPDATE_PASSWORD_CONFIRM_FAILED("A_10010", "两次密码输入不一致"),
     ORIGIN_PASSWORD_NOT_CORRECT("A_10011", "原密码不正确"),
-    INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式");
+    INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式"),
+    REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复");
 
     private final String errCode;
 

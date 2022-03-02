@@ -1,6 +1,6 @@
 package com.databasir.api.config.security;
 
-import com.databasir.core.infrastructure.oauth2.exception.DatabasirAuthenticationException;
+import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.common.JsonData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

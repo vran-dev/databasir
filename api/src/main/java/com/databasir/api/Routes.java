@@ -110,4 +110,18 @@ public interface Routes {
     interface OperationLog {
         String LIST = BASE + "/operation_logs";
     }
+
+    interface OAuth2App {
+
+        String LIST_PAGE = BASE + "/oauth2_apps";
+
+        String CREATE = BASE + "/oauth2_apps";
+
+        String UPDATE = BASE + "/oauth2_apps";
+
+        String DELETE = BASE + "/oauth2_apps/{id}";
+
+        String GET_ONE = BASE + "/oauth2_apps/{id}";
+
+    }
 }

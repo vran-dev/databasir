@@ -1,8 +1,8 @@
-package com.databasir.core.infrastructure.oauth2;
+package com.databasir.core.domain.app.handler;
 
 
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.infrastructure.oauth2.exception.DatabasirAuthenticationException;
+import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
 import com.databasir.dao.impl.OAuthAppDao;

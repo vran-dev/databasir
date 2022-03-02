@@ -2,7 +2,7 @@ package com.databasir.api.config.oauth2;
 
 import com.databasir.api.config.security.DatabasirUserDetailService;
 import com.databasir.core.domain.user.data.UserDetailResponse;
-import com.databasir.core.infrastructure.oauth2.OAuthAppService;
+import com.databasir.core.domain.app.OAuthAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

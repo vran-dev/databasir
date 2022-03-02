@@ -1,4 +1,4 @@
-package com.databasir.core.infrastructure.oauth2.exception;
+package com.databasir.core.domain.app.exception;
 
 import com.databasir.common.DatabasirException;
 import org.springframework.security.core.AuthenticationException;
