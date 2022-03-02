@@ -1,6 +1,8 @@
 package com.databasir.core.infrastructure.oauth2;
 
 
+import com.databasir.core.domain.DomainErrors;
+import com.databasir.core.infrastructure.oauth2.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
 import com.databasir.dao.impl.OAuthAppDao;
@@ -51,9 +53,12 @@ public class GithubOauthHandler implements OAuthHandler {
 
         Map<String, String[]> params = context.getCallbackParameters();
         String code = params.get("code")[0];
-        String accessToken = githubRemoteService.getToken(baseUrl, clientId, clientSecret, code)
-                .get("access_token")
-                .asText();
+        JsonNode tokenNode = githubRemoteService.getToken(baseUrl, clientId, clientSecret, code)
+                .get("access_token");
+        if (tokenNode == null) {
+            throw new DatabasirAuthenticationException(DomainErrors.NETWORK_ERROR.exception());
+        }
+        String accessToken = tokenNode.asText();
         if (StringUtils.isBlank(accessToken)) {
             throw new CredentialsExpiredException("授权失效，请重新登陆");
         }

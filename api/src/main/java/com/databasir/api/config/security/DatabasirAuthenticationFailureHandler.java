@@ -1,5 +1,6 @@
 package com.databasir.api.config.security;
 
+import com.databasir.core.infrastructure.oauth2.exception.DatabasirAuthenticationException;
 import com.databasir.common.JsonData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,12 @@ public class DatabasirAuthenticationFailureHandler implements AuthenticationFail
             response.getOutputStream().write(jsonString.getBytes(StandardCharsets.UTF_8));
         } else if (exception instanceof DisabledException) {
             JsonData<Void> data = JsonData.error("-1", "用户已禁用");
+            String jsonString = objectMapper.writeValueAsString(data);
+            response.setStatus(HttpStatus.OK.value());
+            response.getOutputStream().write(jsonString.getBytes(StandardCharsets.UTF_8));
+        } else if (exception instanceof DatabasirAuthenticationException) {
+            DatabasirAuthenticationException bizException = (DatabasirAuthenticationException) exception;
+            JsonData<Void> data = JsonData.error("-1", bizException.getMessage());
             String jsonString = objectMapper.writeValueAsString(data);
             response.setStatus(HttpStatus.OK.value());
             response.getOutputStream().write(jsonString.getBytes(StandardCharsets.UTF_8));

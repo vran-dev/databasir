@@ -6,10 +6,12 @@ import com.databasir.core.infrastructure.oauth2.OAuthAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
@@ -32,9 +34,11 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
     private DatabasirUserDetailService databasirUserDetailService;
 
     public DatabasirOauth2LoginFilter(AuthenticationManager authenticationManager,
-                                      OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
+                                      OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                                      AuthenticationFailureHandler authenticationFailureHandler) {
         super(OAUTH_LOGIN_URI, authenticationManager);
         this.setAuthenticationSuccessHandler(oAuth2AuthenticationSuccessHandler);
+        this.setAuthenticationFailureHandler(authenticationFailureHandler);
     }
 
     @Override
@@ -45,6 +49,9 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
         UserDetailResponse userDetailResponse = oAuthAppService.oauthCallback(registrationId, params);
         UserDetails details = databasirUserDetailService.loadUserByUsername(userDetailResponse.getUsername());
         DatabasirOAuth2Authentication authentication = new DatabasirOAuth2Authentication(details);
+        if (!userDetailResponse.getEnabled()) {
+            throw new DisabledException("账号已禁用");
+        }
         authentication.setAuthenticated(true);
         if (log.isDebugEnabled()) {
             log.debug("login {} success", registrationId);

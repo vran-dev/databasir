@@ -52,6 +52,7 @@ public class OAuthAppService {
                     user.setNickname(result.getNickname());
                     user.setEmail(result.getEmail());
                     user.setAvatar(result.getAvatar());
+                    user.setEnabled(true);
                     user.setPassword(UUID.randomUUID().toString().substring(0, 6));
                     Integer id = userService.create(user);
                     return userService.get(id);

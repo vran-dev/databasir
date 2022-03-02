@@ -61,7 +61,7 @@ public class GithubRemoteService {
         try {
             Response<T> response = call.execute();
             if (!response.isSuccessful()) {
-                log.error("request error: " + call.request());
+                log.error("request error: " + call.request() + ", response = " + response);
                 throw new SystemException("Call Remote Error");
             } else {
                 T body = response.body();
