@@ -37,6 +37,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("response_type", "code")
                 .queryParam("state", redirectUri)
+                .queryParam("scope", "read_user")
                 .encode()
                 .build()
                 .toUriString();
