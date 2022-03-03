@@ -4,6 +4,7 @@
 package com.databasir.dao.tables.records;
 
 
+import com.databasir.dao.enums.OAuthAppType;
 import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.pojos.OauthAppPojo;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
  * oauth app info
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implements Record12<Integer, String, String, String, String, String, String, String, String, String, LocalDateTime, LocalDateTime> {
+public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implements Record12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -83,15 +84,15 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     /**
      * Setter for <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
-    public void setAppType(String value) {
+    public void setAppType(OAuthAppType value) {
         set(4, value);
     }
 
     /**
      * Getter for <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
-    public String getAppType() {
-        return (String) get(4);
+    public OAuthAppType getAppType() {
+        return (OAuthAppType) get(4);
     }
 
     /**
@@ -206,12 +207,12 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, String, String, LocalDateTime, LocalDateTime> valuesRow() {
+    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> valuesRow() {
         return (Row12) super.valuesRow();
     }
 
@@ -236,7 +237,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public Field<String> field5() {
+    public Field<OAuthAppType> field5() {
         return OauthApp.OAUTH_APP.APP_TYPE;
     }
 
@@ -296,7 +297,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public String component5() {
+    public OAuthAppType component5() {
         return getAppType();
     }
 
@@ -356,7 +357,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public String value5() {
+    public OAuthAppType value5() {
         return getAppType();
     }
 
@@ -420,7 +421,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public OauthAppRecord value5(String value) {
+    public OauthAppRecord value5(OAuthAppType value) {
         setAppType(value);
         return this;
     }
@@ -468,7 +469,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public OauthAppRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, String value10, LocalDateTime value11, LocalDateTime value12) {
+    public OauthAppRecord values(Integer value1, String value2, String value3, String value4, OAuthAppType value5, String value6, String value7, String value8, String value9, String value10, LocalDateTime value11, LocalDateTime value12) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -498,7 +499,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     /**
      * Create a detached, initialised OauthAppRecord
      */
-    public OauthAppRecord(Integer id, String registrationId, String appName, String appIcon, String appType, String clientId, String clientSecret, String authUrl, String resourceUrl, String scope, LocalDateTime updateAt, LocalDateTime createAt) {
+    public OauthAppRecord(Integer id, String registrationId, String appName, String appIcon, OAuthAppType appType, String clientId, String clientSecret, String authUrl, String resourceUrl, String scope, LocalDateTime updateAt, LocalDateTime createAt) {
         super(OauthApp.OAUTH_APP);
 
         setId(id);

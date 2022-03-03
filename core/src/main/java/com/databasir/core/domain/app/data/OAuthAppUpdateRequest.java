@@ -1,5 +1,6 @@
 package com.databasir.core.domain.app.data;
 
+import com.databasir.dao.enums.OAuthAppType;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,8 +18,8 @@ public class OAuthAppUpdateRequest {
     @NotBlank
     private String appName;
 
-    @NotBlank
-    private String appType;
+    @NotNull
+    private OAuthAppType appType;
 
     private String appIcon;
 

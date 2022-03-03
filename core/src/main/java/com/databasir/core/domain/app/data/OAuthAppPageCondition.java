@@ -1,6 +1,7 @@
 package com.databasir.core.domain.app.data;
 
 import com.databasir.dao.Tables;
+import com.databasir.dao.enums.OAuthAppType;
 import lombok.Data;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
@@ -13,7 +14,7 @@ public class OAuthAppPageCondition {
 
     private String appNameContains;
 
-    private String appType;
+    private OAuthAppType appType;
 
     public Condition toCondition() {
         List<Condition> conditions = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.databasir.core.domain.app.data;
 
+import com.databasir.dao.enums.OAuthAppType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class OAuthAppResponse {
 
     private String appIcon;
 
-    private String appType;
+    private OAuthAppType appType;
 
     private String registrationId;
 

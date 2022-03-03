@@ -21,8 +21,8 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     private final GithubRemoteService githubRemoteService;
 
     @Override
-    public boolean support(String oauthAppType) {
-        return OAuthAppType.GITHUB.isSame(oauthAppType);
+    public boolean support(OAuthAppType oauthAppType) {
+        return OAuthAppType.GITHUB == oauthAppType;
     }
 
     @Override

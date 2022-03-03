@@ -60,6 +60,12 @@ jooq {
                                 includeExpression = '.*'
                                 includeTypes = 'INET'
                             }
+                            forcedType {
+                                userType = 'com.databasir.dao.enums.OAuthAppType'
+                                converter  = 'com.databasir.dao.converter.OAuthAppTypeConverter'
+                                includeExpression = 'app_type'
+                                includeTypes = '.*'
+                            }
                         }
                     }
                     generate {

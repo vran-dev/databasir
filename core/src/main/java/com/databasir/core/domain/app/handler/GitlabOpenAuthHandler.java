@@ -19,8 +19,8 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
     private final GitlabRemoteService gitlabRemoteService;
 
     @Override
-    public boolean support(String oauthAppType) {
-        return OAuthAppType.GITLAB.isSame(oauthAppType);
+    public boolean support(OAuthAppType oauthAppType) {
+        return OAuthAppType.GITLAB == oauthAppType;
     }
 
     @Override
