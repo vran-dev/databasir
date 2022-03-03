@@ -43,10 +43,10 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     public OAuthProcessResult process(OauthAppPojo app, Map<String, String[]> requestParams) {
         String clientId = app.getClientId();
         String clientSecret = app.getClientSecret();
-        String baseUrl = app.getResourceUrl();
+        String authUrl = app.getAuthUrl();
 
         String code = requestParams.get("code")[0];
-        JsonNode tokenNode = githubRemoteService.getToken(baseUrl, clientId, clientSecret, code)
+        JsonNode tokenNode = githubRemoteService.getToken(authUrl, clientId, clientSecret, code)
                 .get("access_token");
         if (tokenNode == null) {
             throw new DatabasirAuthenticationException(DomainErrors.NETWORK_ERROR.exception());
@@ -55,8 +55,9 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
         if (StringUtils.isBlank(accessToken)) {
             throw new CredentialsExpiredException("授权失效，请重新登陆");
         }
+        String resourceUrl = app.getResourceUrl();
         String email = null;
-        for (JsonNode node : githubRemoteService.getEmail(baseUrl, accessToken)) {
+        for (JsonNode node : githubRemoteService.getEmail(resourceUrl, accessToken)) {
             if (node.get("primary").asBoolean()) {
                 email = node.get("email").asText();
             }
@@ -64,7 +65,7 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
         if (StringUtils.isBlank(email)) {
             throw new CredentialsExpiredException("授权失效，请重新登陆");
         }
-        JsonNode profile = githubRemoteService.getProfile(baseUrl, accessToken);
+        JsonNode profile = githubRemoteService.getProfile(resourceUrl, accessToken);
         String nickname = profile.get("name").asText();
         String avatar = profile.get("avatar_url").asText();
         OAuthProcessResult result = new OAuthProcessResult();
