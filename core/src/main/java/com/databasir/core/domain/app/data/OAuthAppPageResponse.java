@@ -1,5 +1,6 @@
 package com.databasir.core.domain.app.data;
 
+import com.databasir.dao.enums.OAuthAppType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ public class OAuthAppPageResponse {
 
     private String appIcon;
 
-    private String appType;
+    private OAuthAppType appType;
 
     private String registrationId;
 

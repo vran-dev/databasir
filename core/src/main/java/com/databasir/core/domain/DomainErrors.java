@@ -25,7 +25,8 @@ public enum DomainErrors implements DatabasirErrors {
     UPDATE_PASSWORD_CONFIRM_FAILED("A_10010", "两次密码输入不一致"),
     ORIGIN_PASSWORD_NOT_CORRECT("A_10011", "原密码不正确"),
     INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式"),
-    REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复");
+    REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复"),
+    MISS_REQUIRED_PARAMETERS("A_10014", "缺少必填参数");
 
     private final String errCode;
 

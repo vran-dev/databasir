@@ -1,10 +1,15 @@
 package com.databasir.core.domain.app.handler;
 
+import com.databasir.dao.enums.OAuthAppType;
+import com.databasir.dao.tables.pojos.OauthAppPojo;
+
+import java.util.Map;
+
 public interface OpenAuthHandler {
 
-    boolean support(String oauthAppType);
+    boolean support(OAuthAppType oauthAppType);
 
-    String authorization(String registrationId);
+    String authorizationUrl(OauthAppPojo app, Map<String, String[]> requestParams);
 
-    OAuthProcessResult process(OAuthProcessContext context);
+    OAuthProcessResult process(OauthAppPojo app, Map<String, String[]> requestParams);
 }

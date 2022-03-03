@@ -4,9 +4,8 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.converter.OAuthAppPojoConverter;
 import com.databasir.core.domain.app.converter.OAuthAppResponseConverter;
 import com.databasir.core.domain.app.data.*;
-import com.databasir.core.domain.app.handler.OpenAuthHandler;
-import com.databasir.core.domain.app.handler.OAuthProcessContext;
 import com.databasir.core.domain.app.handler.OAuthProcessResult;
+import com.databasir.core.domain.app.handler.OpenAuthHandlers;
 import com.databasir.core.domain.user.data.UserCreateRequest;
 import com.databasir.core.domain.user.data.UserDetailResponse;
 import com.databasir.core.domain.user.service.UserService;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OpenAuthAppService {
 
-    private final List<OpenAuthHandler> openAuthHandlers;
+    private final OpenAuthHandlers openAuthHandlers;
 
     private final OauthAppDao oauthAppDao;
 
@@ -40,20 +38,8 @@ public class OpenAuthAppService {
     private final OAuthAppPojoConverter oauthAppPojoConverter;
 
     public UserDetailResponse oauthCallback(String registrationId, Map<String, String[]> params) {
-
-        // match handler
-        OauthAppPojo app = oauthAppDao.selectByRegistrationId(registrationId);
-        OpenAuthHandler openAuthHandler = openAuthHandlers.stream()
-                .filter(handler -> handler.support(app.getAppType()))
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("暂不支持该类型登陆"));
-
         // process by handler
-        OAuthProcessContext context = OAuthProcessContext.builder()
-                .callbackParameters(params)
-                .registrationId(registrationId)
-                .build();
-        OAuthProcessResult result = openAuthHandler.process(context);
+        OAuthProcessResult result = openAuthHandlers.process(registrationId, params);
 
         // get  or create new user
         return userService.get(result.getEmail())

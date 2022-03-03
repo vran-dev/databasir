@@ -6,6 +6,8 @@ package com.databasir.dao.tables;
 
 import com.databasir.dao.Databasir;
 import com.databasir.dao.Keys;
+import com.databasir.dao.converter.OAuthAppTypeConverter;
+import com.databasir.dao.enums.OAuthAppType;
 import com.databasir.dao.tables.records.OauthAppRecord;
 
 import java.time.LocalDateTime;
@@ -72,7 +74,7 @@ public class OauthApp extends TableImpl<OauthAppRecord> {
     /**
      * The column <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
-    public final TableField<OauthAppRecord, String> APP_TYPE = createField(DSL.name("app_type"), SQLDataType.VARCHAR(64).nullable(false), this, "github, gitlab");
+    public final TableField<OauthAppRecord, OAuthAppType> APP_TYPE = createField(DSL.name("app_type"), SQLDataType.VARCHAR(64).nullable(false), this, "github, gitlab", new OAuthAppTypeConverter());
 
     /**
      * The column <code>databasir.oauth_app.client_id</code>.
@@ -193,7 +195,7 @@ public class OauthApp extends TableImpl<OauthAppRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 }

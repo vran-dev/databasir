@@ -3,7 +3,7 @@ package com.databasir.api;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.app.OpenAuthAppService;
 import com.databasir.core.domain.app.data.*;
-import com.databasir.core.domain.app.handler.OpenAuthHandler;
+import com.databasir.core.domain.app.handler.OpenAuthHandlers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -21,17 +23,19 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 public class OpenAuth2AppController {
 
-    private final OpenAuthHandler openAuthHandler;
-
     private final OpenAuthAppService openAuthAppService;
+
+    private final OpenAuthHandlers openAuthHandlers;
 
     /**
      * 无需授权
      */
     @GetMapping("/oauth2/authorization/{registrationId}")
     @ResponseBody
-    public JsonData<String> authorization(@PathVariable String registrationId) {
-        String authorization = openAuthHandler.authorization(registrationId);
+    public JsonData<String> authorization(@PathVariable String registrationId,
+                                          HttpServletRequest request) {
+        Map<String, String[]> parameters = request.getParameterMap();
+        String authorization = openAuthHandlers.authorizeUrl(registrationId, parameters);
         return JsonData.ok(authorization);
     }
 

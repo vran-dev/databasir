@@ -4,6 +4,8 @@
 package com.databasir.dao.tables.pojos;
 
 
+import com.databasir.dao.enums.OAuthAppType;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -20,7 +22,7 @@ public class OauthAppPojo implements Serializable {
     private String        registrationId;
     private String        appName;
     private String        appIcon;
-    private String        appType;
+    private OAuthAppType  appType;
     private String        clientId;
     private String        clientSecret;
     private String        authUrl;
@@ -51,7 +53,7 @@ public class OauthAppPojo implements Serializable {
         String        registrationId,
         String        appName,
         String        appIcon,
-        String        appType,
+        OAuthAppType  appType,
         String        clientId,
         String        clientSecret,
         String        authUrl,
@@ -133,14 +135,14 @@ public class OauthAppPojo implements Serializable {
     /**
      * Getter for <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
-    public String getAppType() {
+    public OAuthAppType getAppType() {
         return this.appType;
     }
 
     /**
      * Setter for <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
-    public void setAppType(String appType) {
+    public void setAppType(OAuthAppType appType) {
         this.appType = appType;
     }
 
