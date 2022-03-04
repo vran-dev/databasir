@@ -95,6 +95,8 @@ public interface Routes {
         String GET_SYS_EMAIL = BASE + "/settings/sys_email";
 
         String UPDATE_SYS_EMAIL = BASE + "/settings/sys_email";
+
+        String DELETE_SYS_EMAIL = BASE + "/settings/sys_email";
     }
 
     interface Login {
