@@ -83,6 +83,12 @@ public class SystemService {
                 });
     }
 
+    public void deleteSystemEmail() {
+        sysMailDao.selectOptionTopOne().ifPresent(d -> {
+            sysMailDao.deleteById(d.getId());
+        });
+    }
+
     public void updateEmailSetting(SystemEmailUpdateRequest request) {
         SysMailPojo sysMailPojo = new SysMailPojo();
         sysMailPojo.setSmtpHost(request.getSmtpHost());

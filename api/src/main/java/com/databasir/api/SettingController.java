@@ -27,6 +27,12 @@ public class SettingController {
                 .orElseGet(JsonData::ok);
     }
 
+    @DeleteMapping(Routes.Setting.DELETE_SYS_EMAIL)
+    public JsonData<Void> deleteSysEmail() {
+        systemService.deleteSystemEmail();
+        return JsonData.ok();
+    }
+
     @PostMapping(Routes.Setting.UPDATE_SYS_EMAIL)
     @Operation(module = Operation.Modules.PROJECT, name = "更新邮件配置")
     public JsonData<Void> updateSystemEmailSetting(@RequestBody @Valid SystemEmailUpdateRequest request) {
