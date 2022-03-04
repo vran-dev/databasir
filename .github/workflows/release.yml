@@ -21,18 +21,17 @@ jobs:
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: add permission to gradle;
+      - name: add permission to gradle
         run: chmod +x ./gradlew
 
       - name: build with gradle
-        with:
-          arguments: ./gradlew api:build
+        run: ./gradlew api:build -x checkstyleMain -x checkstyleTest
 
       - name: release jar
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: app/build/libs/databasir.jar
+          files: api/build/libs/databasir.jar
           draft: true
           fail_on_unmatched_files: true
         env:
