@@ -56,4 +56,17 @@ public class GroupDao extends BaseDao<GroupPojo> {
                 .where(GROUP.ID.in(ids)).and(GROUP.DELETED.eq(false))
                 .fetchInto(GroupPojo.class);
     }
+
+    /**
+     * with deleted
+     */
+    public List<GroupPojo> selectAllInIds(List<? extends Serializable> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getDslContext()
+                .select(GROUP.fields()).from(GROUP)
+                .where(GROUP.ID.in(ids))
+                .fetchInto(GroupPojo.class);
+    }
 }

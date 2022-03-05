@@ -4,6 +4,7 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.app.OpenAuthAppService;
 import com.databasir.core.domain.app.data.*;
 import com.databasir.core.domain.app.handler.OpenAuthHandlers;
+import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +22,20 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Controller
 @RequiredArgsConstructor
-public class OpenAuth2AppController {
+public class LoginAppController {
 
     private final OpenAuthAppService openAuthAppService;
 
     private final OpenAuthHandlers openAuthHandlers;
+
+    /**
+     * 无需授权
+     */
+    @GetMapping("/oauth2/apps")
+    @ResponseBody
+    public JsonData<List<OAuthAppResponse>> listApps() {
+        return JsonData.ok(openAuthAppService.listAll());
+    }
 
     /**
      * 无需授权
@@ -37,15 +47,6 @@ public class OpenAuth2AppController {
         Map<String, String[]> parameters = request.getParameterMap();
         String authorization = openAuthHandlers.authorizeUrl(registrationId, parameters);
         return JsonData.ok(authorization);
-    }
-
-    /**
-     * 无需授权
-     */
-    @GetMapping("/oauth2/apps")
-    @ResponseBody
-    public JsonData<List<OAuthAppResponse>> listApps() {
-        return JsonData.ok(openAuthAppService.listAll());
     }
 
     @GetMapping(Routes.OAuth2App.LIST_PAGE)
@@ -68,6 +69,7 @@ public class OpenAuth2AppController {
     @PostMapping(Routes.OAuth2App.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
+    @Operation(module = Operation.Modules.LOGIN_APP, name = "创建登录应用")
     public JsonData<Integer> create(@RequestBody @Valid OAuthAppCreateRequest request) {
         Integer id = openAuthAppService.create(request);
         return JsonData.ok(id);
@@ -76,6 +78,7 @@ public class OpenAuth2AppController {
     @PatchMapping(Routes.OAuth2App.UPDATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
+    @Operation(module = Operation.Modules.LOGIN_APP, name = "更新登录应用")
     public JsonData<Void> updateById(@RequestBody @Valid OAuthAppUpdateRequest request) {
         openAuthAppService.updateById(request);
         return JsonData.ok();
@@ -84,6 +87,7 @@ public class OpenAuth2AppController {
     @DeleteMapping(Routes.OAuth2App.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
+    @Operation(module = Operation.Modules.LOGIN_APP, name = "删除登录应用")
     public JsonData<Void> deleteById(@PathVariable Integer id) {
         openAuthAppService.deleteById(id);
         return JsonData.ok();
