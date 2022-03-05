@@ -4,7 +4,6 @@ import com.databasir.common.DatabasirException;
 import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 
-
 @Getter
 public class DatabasirAuthenticationException extends AuthenticationException {
 
