@@ -19,7 +19,7 @@ public class DatabasirAuthenticationEntryPoint implements AuthenticationEntryPoi
     public void commence(javax.servlet.http.HttpServletRequest request,
                          javax.servlet.http.HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        log.warn("验证未通过. 提示信息 - {}", authException.getMessage());
+        log.warn("验证未通过. 提示信息 - {} - {}", request.getRequestURI(), authException.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
     }
 
