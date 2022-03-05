@@ -28,13 +28,14 @@ public class SettingController {
     }
 
     @DeleteMapping(Routes.Setting.DELETE_SYS_EMAIL)
+    @Operation(module = Operation.Modules.SETTING, name = "重置系统邮箱")
     public JsonData<Void> deleteSysEmail() {
         systemService.deleteSystemEmail();
         return JsonData.ok();
     }
 
     @PostMapping(Routes.Setting.UPDATE_SYS_EMAIL)
-    @Operation(module = Operation.Modules.PROJECT, name = "更新邮件配置")
+    @Operation(module = Operation.Modules.SETTING, name = "更新邮件配置")
     public JsonData<Void> updateSystemEmailSetting(@RequestBody @Valid SystemEmailUpdateRequest request) {
         systemService.updateEmailSetting(request);
         return JsonData.ok();

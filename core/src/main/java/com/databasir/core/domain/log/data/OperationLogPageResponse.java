@@ -1,8 +1,10 @@
 package com.databasir.core.domain.log.data;
 
 import com.databasir.common.JsonData;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -28,12 +30,43 @@ public class OperationLogPageResponse {
 
     private Boolean isSuccess;
 
-    private Integer involvedProjectId;
+    private InvolvedProjectData involvedProject;
 
-    private Integer involvedGroupId;
+    private InvolvedGroupData involvedGroup;
 
-    private Integer involvedUserId;
+    private InvolvedUserData involvedUser;
 
     private LocalDateTime createAt;
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InvolvedProjectData {
+
+        private Integer id;
+
+        private String name;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InvolvedGroupData {
+
+        private Integer id;
+
+        private String name;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InvolvedUserData {
+
+        private Integer id;
+
+        private String email;
+
+        private String nickname;
+    }
 }

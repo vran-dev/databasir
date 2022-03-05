@@ -33,6 +33,7 @@ public @interface Operation {
         String PROJECT = "project";
         String USER = "user";
         String GROUP = "group";
+        String LOGIN_APP = "login_app";
         String SETTING = "setting";
     }
 
