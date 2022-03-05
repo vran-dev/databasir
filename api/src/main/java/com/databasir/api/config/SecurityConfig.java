@@ -44,14 +44,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(databasirAuthenticationSuccessHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", Routes.Login.REFRESH_ACCESS_TOKEN).permitAll()
-                .antMatchers("/oauth2/apps", "/oauth2/failure", "/oauth2/authorization/*",
-                        "/oauth2/login/*", "/login/oauth2/*")
+                // 登录和 Token 刷新无需授权
+                .antMatchers("/login", Routes.Login.REFRESH_ACCESS_TOKEN)
                 .permitAll()
-                .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico").permitAll()
-                .anyRequest().authenticated()
+                // oauth 回调地址无需鉴权
+                .antMatchers("/oauth2/apps", "/oauth2/authorization/*", "/oauth2/login/*")
+                .permitAll()
+                // 静态资源无需鉴权
+                .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico")
+                .permitAll()
+                // api 请求需要授权
+                .antMatchers("/api/**").authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(databasirAuthenticationEntryPoint);
+                .exceptionHandling()
+                .authenticationEntryPoint(databasirAuthenticationEntryPoint);
 
         http.addFilterBefore(
                 databasirJwtTokenFilter,

@@ -105,7 +105,7 @@ public interface Routes {
 
         String REFRESH_ACCESS_TOKEN = "/access_tokens";
 
-        String LOGIN_INFO = "/login_info";
+        String LOGIN_INFO = BASE + "/login_info";
 
     }
 
