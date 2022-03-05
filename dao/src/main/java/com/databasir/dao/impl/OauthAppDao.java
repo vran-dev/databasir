@@ -29,9 +29,7 @@ public class OauthAppDao extends BaseDao<OauthAppPojo> {
     }
 
     public OauthAppPojo selectByRegistrationId(String registrationId) {
-        return this.getDslContext()
-                .select(OAUTH_APP.fields()).from(OAUTH_APP).where(OAUTH_APP.REGISTRATION_ID.eq(registrationId))
-                .fetchOptionalInto(OauthAppPojo.class)
+        return this.selectOptionByRegistrationId(registrationId)
                 .orElseThrow(() -> new DataNotExistsException("can not found oauth app by " + registrationId));
     }
 }
