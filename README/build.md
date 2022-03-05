@@ -7,8 +7,6 @@ Databasir 采用了前后端分离的模式进行开发和部署，项目仓库�
 - 后端应用： https://github.com/vran-dev/databasir
 - 前端应用： https://github.com/vran-dev/databasir-frontend
 
-
-
 ## 后端
 
 **一、环境要求**
@@ -17,21 +15,17 @@ Databasir 采用了前后端分离的模式进行开发和部署，项目仓库�
 2. Mysql
 3. Intellij IDEA
 
-
-
 **二、主要框架**
 
 1. Gradle：构建工具
 2. Spring-boot：核心框架
-   1. Web
-   2. Security
+    1. Web
+    2. Security
 3. Quartz：定时任务调度
 4. JOOQ：ORM 框架
 5. Lombok：代码生成
 6. Mapstruct：代码生成
 7. Flyway：数据库脚本管理
-
-
 
 **三、项目结构**
 
@@ -48,8 +42,6 @@ Databasir 采用了前后端分离的模式进行开发和部署，项目仓库�
 前端静态文件放在 api/src/main/resources/static 目录下
 
 项目数据库脚本放在 dao/src/main/resources/db/migration 目录下
-
-
 
 **四、项目启动**
 
@@ -78,8 +70,6 @@ spring.flyway.locations=classpath:db/migration
 
 启动完成后，可以通过 http://localhost:8080 访问
 
-
-
 2、通过 Gradle 启动
 
 与 Java 启动模式一样，首先需要准备配置文件
@@ -89,14 +79,12 @@ spring.flyway.locations=classpath:db/migration
 ```properties
 server.port=8080
 logging.level.org.jooq=INFO
-
 # 必须：数据库配置
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.username=root
 spring.datasource.password=123456
 spring.datasource.url=jdbc:mysql://localhost:3306/databasir
 spring.jooq.sql-dialect=mysql
-
 # 可选：flyway 配置
 spring.flyway.enabled=true
 spring.flyway.baseline-on-migrate=true
@@ -111,8 +99,6 @@ spring.flyway.locations=classpath:db/migration
 
 启动完成后，可以通过 http://localhost:8080 访问
 
-
-
 ## 前端
 
 一、依赖
@@ -121,8 +107,6 @@ spring.flyway.locations=classpath:db/migration
 2. vuex
 3. element-plus
 4. axios
-
-
 
 二、运行
 
