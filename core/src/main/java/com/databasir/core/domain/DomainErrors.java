@@ -26,7 +26,8 @@ public enum DomainErrors implements DatabasirErrors {
     ORIGIN_PASSWORD_NOT_CORRECT("A_10011", "原密码不正确"),
     INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式"),
     REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复"),
-    MISS_REQUIRED_PARAMETERS("A_10014", "缺少必填参数");
+    REGISTRATION_ID_NOT_FOUND("A_10014", "应用 ID 不存在"),
+    MISS_REQUIRED_PARAMETERS("A_10015", "缺少必填参数");
 
     private final String errCode;
 
@@ -42,5 +43,9 @@ public enum DomainErrors implements DatabasirErrors {
 
     public DatabasirException exception(String message, Throwable origin) {
         return new DatabasirException(this, message, origin);
+    }
+
+    public DatabasirException exception(String s) {
+        return exception(s, (Throwable) null);
     }
 }

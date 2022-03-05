@@ -1,19 +1,25 @@
 package com.databasir.core.domain.app.exception;
 
 import com.databasir.common.DatabasirException;
+import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 
+
+@Getter
 public class DatabasirAuthenticationException extends AuthenticationException {
+
+    private final DatabasirException databasirException;
 
     public DatabasirAuthenticationException(DatabasirException databasirException) {
         super(databasirException.getErrMessage(), databasirException);
+        this.databasirException = databasirException;
     }
 
-    public DatabasirAuthenticationException(String msg) {
-        super(msg);
+    public String getErrMessage() {
+        return databasirException.getErrMessage();
     }
 
-    public DatabasirAuthenticationException(String msg, Throwable cause) {
-        super(msg, cause);
+    public String getErrCode() {
+        return databasirException.getErrCode();
     }
 }
