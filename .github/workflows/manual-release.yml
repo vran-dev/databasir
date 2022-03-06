@@ -28,7 +28,6 @@ jobs:
 
       - name: Application Jar Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ github.event.inputs.tag }}
           files: api/build/libs/databasir.jar
