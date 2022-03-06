@@ -6,10 +6,10 @@
 - [部署指引](README/deploy.md)
 - [构建指引](README/build.md)
 
-## 快速上手
-
+更多指引
 - [Databasir 之 Github 一键登录（OAuth2）配置](README/github-oauth2/github-oauth2.md)
 - [Databasir 之 Gitlab 一键登录（OAuth2）配置](README/gitlab-oauth2/gitlab-oauth2.md)
+- [Databasir 保姆级教程之 Docker 一键部署](README/docker-deploy/docker-deploy.md)
 
 ## 简介
 
@@ -62,6 +62,10 @@
 ![](README/project-sync.gif)
 
 
+
+- 模型 UML 生成
+
+![uml](README/document-uml.gif)
 
 - 项目批注
 
