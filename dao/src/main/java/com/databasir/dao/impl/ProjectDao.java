@@ -31,9 +31,10 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
         super(PROJECT, ProjectPojo.class);
     }
 
-    public int updateDeletedById(boolean b, Integer databaseId) {
+    public int updateDeletedById(boolean b, Integer projectId) {
         return dslContext
-                .update(PROJECT).set(PROJECT.DELETED, b).where(PROJECT.ID.eq(databaseId))
+                .update(PROJECT).set(PROJECT.DELETED, b).set(PROJECT.DELETED_TOKEN, projectId)
+                .where(PROJECT.ID.eq(projectId))
                 .execute();
     }
 

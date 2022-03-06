@@ -65,7 +65,7 @@ public class ProjectService {
         try {
             projectId = projectDao.insertAndReturnId(project);
         } catch (DuplicateKeyException e) {
-            throw DomainErrors.PROJECT_NOT_FOUND.exception();
+            throw DomainErrors.PROJECT_NAME_DUPLICATE.exception();
         }
 
         String newPassword = encryptPassword(request.getDataSource().getPassword()).get();
@@ -122,6 +122,7 @@ public class ProjectService {
         return Optional.of(Aes.encryptToBase64Data(password, sysKey.getAesKey()));
     }
 
+    @Transactional
     public void delete(Integer projectId) {
         projectDao.updateDeletedById(true, projectId);
         projectSyncRuleDao.disableAutoSyncByProjectId(projectId);
