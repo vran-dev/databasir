@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -75,6 +75,12 @@ public class Project extends TableImpl<ProjectRecord> {
     public final TableField<ProjectRecord, Boolean> DELETED = createField(DSL.name("deleted"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
 
     /**
+     * The column <code>databasir.project.deleted_token</code>. default is 0, it
+     * will be set to {id} when deleted
+     */
+    public final TableField<ProjectRecord, Integer> DELETED_TOKEN = createField(DSL.name("deleted_token"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "default is 0, it will be set to {id} when deleted");
+
+    /**
      * The column <code>databasir.project.create_at</code>.
      */
     public final TableField<ProjectRecord, LocalDateTime> CREATE_AT = createField(DSL.name("create_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
@@ -129,7 +135,7 @@ public class Project extends TableImpl<ProjectRecord> {
 
     @Override
     public List<UniqueKey<ProjectRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_PROJECT_UK_GROUP_ID_NAME);
+        return Arrays.asList(Keys.KEY_PROJECT_UK_GROUP_ID_NAME_DELETED_TOKEN);
     }
 
     @Override
@@ -159,11 +165,11 @@ public class Project extends TableImpl<ProjectRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, Integer, Boolean, LocalDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, String, String, Integer, Boolean, Integer, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

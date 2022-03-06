@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS databasir;
 USE databasir;
 
-CREATE TABLE sys_key
+CREATE TABLE IF NOT EXISTS sys_key
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
     rsa_public_key  TEXT      NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE sys_key
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE sys_mail
+CREATE TABLE IF NOT EXISTS sys_mail
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
     username  TEXT         NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE sys_mail
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE user
+CREATE TABLE IF NOT EXISTS user
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
     email     VARCHAR(512) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE user
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE user_role
+CREATE TABLE IF NOT EXISTS user_role
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
     user_id   INT          NOT NULL,
@@ -51,31 +51,31 @@ CREATE TABLE user_role
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `group`
+CREATE TABLE IF NOT EXISTS `group`
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(255) NOT NULL,
     description VARCHAR(512) NOT NULL,
     deleted     BOOLEAN      NOT NULL DEFAULT FALSE,
     update_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT UNIQUE uk_name (name)
+    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `project`
+CREATE TABLE IF NOT EXISTS `project`
 (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(255) NOT NULL,
-    description TEXT         NOT NULL,
-    group_id    INT          NOT NULL,
-    deleted     BOOLEAN      NOT NULL DEFAULT FALSE,
-    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT UNIQUE uk_group_id_name (group_id, name)
+    id            INT PRIMARY KEY AUTO_INCREMENT,
+    name          VARCHAR(255) NOT NULL,
+    description   TEXT         NOT NULL,
+    group_id      INT          NOT NULL,
+    deleted       BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted_token INT          NOT NULL DEFAULT 0 COMMENT 'default is 0, it will be set to {id} when deleted',
+    create_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT UNIQUE uk_group_id_name_deleted_token (group_id, name, deleted_token)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `project_sync_rule`
+CREATE TABLE IF NOT EXISTS `project_sync_rule`
 (
     id                             INT PRIMARY KEY AUTO_INCREMENT,
     project_id                     INT          NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `project_sync_rule`
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `data_source`
+CREATE TABLE IF NOT EXISTS `data_source`
 (
     id            INT PRIMARY KEY AUTO_INCREMENT,
     project_id    INT          NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `data_source`
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `data_source_property`
+CREATE TABLE IF NOT EXISTS `data_source_property`
 (
     id             INT PRIMARY KEY AUTO_INCREMENT,
     data_source_id INT       NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `data_source_property`
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE database_document
+CREATE TABLE IF NOT EXISTS database_document
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
     project_id      INT       NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE database_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE database_document_history
+CREATE TABLE IF NOT EXISTS database_document_history
 (
     id                       INT PRIMARY KEY AUTO_INCREMENT,
     project_id               INT       NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE database_document_history
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE table_document
+CREATE TABLE IF NOT EXISTS table_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
@@ -155,7 +155,7 @@ CREATE TABLE table_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE table_column_document
+CREATE TABLE IF NOT EXISTS table_column_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
@@ -176,7 +176,7 @@ CREATE TABLE table_column_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE table_index_document
+CREATE TABLE IF NOT EXISTS table_index_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
@@ -191,7 +191,7 @@ CREATE TABLE table_index_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE table_trigger_document
+CREATE TABLE IF NOT EXISTS table_trigger_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
@@ -207,7 +207,7 @@ CREATE TABLE table_trigger_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE login
+CREATE TABLE IF NOT EXISTS login
 (
     id                      INT PRIMARY KEY AUTO_INCREMENT,
     user_id                 INT       NOT NULL,
@@ -233,3 +233,50 @@ CREATE TABLE IF NOT EXISTS document_remark
     INDEX idx_project_id (project_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS operation_log
+(
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+
+    operator_user_id    INT                               NOT NULL COMMENT 'ref to user.id',
+    operator_username   VARCHAR(128)                      NOT NULL COMMENT 'user.username',
+    operator_nickname   VARCHAR(255)                      NOT NULL COMMENT 'user.nickname',
+    operation_module    VARCHAR(128)                      NOT NULL,
+    operation_code      VARCHAR(255)                      NOT NULL,
+    operation_name      VARCHAR(255)                      NOT NULL,
+    operation_response  JSON                              NOT NULL,
+    is_success          BOOLEAN                           NOT NULL DEFAULT FALSE,
+    involved_project_id INT                                        DEFAULT NULL COMMENT 'ref to project.id',
+    involved_group_id   INT                                        DEFAULT NULL COMMENT 'ref to group.id',
+    involved_user_id    INT                                        DEFAULT NULL COMMENT 'ref to user.id',
+    create_at           TIMESTAMP                         NOT NULL DEFAULT CURRENT_TIMESTAMP
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_favorite_project
+(
+    id         INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id    INT             NOT NULL,
+    project_id INT             NOT NULL,
+    create_at  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE uk_user_id_project_id (user_id, project_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS oauth_app
+(
+    id              INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    registration_id VARCHAR(100)    NOT NULL,
+    app_name        VARCHAR(128)    NOT NULL,
+    app_icon        VARCHAR(256)    NOT NULL DEFAULT '',
+    app_type        VARCHAR(64)     NOT NULL COMMENT 'github, gitlab',
+    client_id       VARCHAR(256),
+    client_secret   VARCHAR(256),
+    auth_url        VARCHAR(256),
+    resource_url    VARCHAR(256),
+    scope           VARCHAR(256),
+    update_at       TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at       TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE uk_registration_id (registration_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'oauth app info';
