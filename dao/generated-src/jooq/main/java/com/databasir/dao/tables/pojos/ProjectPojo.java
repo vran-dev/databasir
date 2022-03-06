@@ -21,6 +21,7 @@ public class ProjectPojo implements Serializable {
     private String        description;
     private Integer       groupId;
     private Boolean       deleted;
+    private Integer       deletedToken;
     private LocalDateTime createAt;
 
     public ProjectPojo() {}
@@ -31,6 +32,7 @@ public class ProjectPojo implements Serializable {
         this.description = value.description;
         this.groupId = value.groupId;
         this.deleted = value.deleted;
+        this.deletedToken = value.deletedToken;
         this.createAt = value.createAt;
     }
 
@@ -40,6 +42,7 @@ public class ProjectPojo implements Serializable {
         String        description,
         Integer       groupId,
         Boolean       deleted,
+        Integer       deletedToken,
         LocalDateTime createAt
     ) {
         this.id = id;
@@ -47,6 +50,7 @@ public class ProjectPojo implements Serializable {
         this.description = description;
         this.groupId = groupId;
         this.deleted = deleted;
+        this.deletedToken = deletedToken;
         this.createAt = createAt;
     }
 
@@ -121,6 +125,22 @@ public class ProjectPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.project.deleted_token</code>. default is 0, it
+     * will be set to {id} when deleted
+     */
+    public Integer getDeletedToken() {
+        return this.deletedToken;
+    }
+
+    /**
+     * Setter for <code>databasir.project.deleted_token</code>. default is 0, it
+     * will be set to {id} when deleted
+     */
+    public void setDeletedToken(Integer deletedToken) {
+        this.deletedToken = deletedToken;
+    }
+
+    /**
      * Getter for <code>databasir.project.create_at</code>.
      */
     public LocalDateTime getCreateAt() {
@@ -143,6 +163,7 @@ public class ProjectPojo implements Serializable {
         sb.append(", ").append(description);
         sb.append(", ").append(groupId);
         sb.append(", ").append(deleted);
+        sb.append(", ").append(deletedToken);
         sb.append(", ").append(createAt);
 
         sb.append(")");
