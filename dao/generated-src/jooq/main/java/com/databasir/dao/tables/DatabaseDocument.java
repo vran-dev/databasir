@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -88,6 +88,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
      * The column <code>databasir.database_document.create_at</code>.
      */
     public final TableField<DatabaseDocumentRecord, LocalDateTime> CREATE_AT = createField(DSL.name("create_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>databasir.database_document.is_archive</code>.
+     */
+    public final TableField<DatabaseDocumentRecord, Boolean> IS_ARCHIVE = createField(DSL.name("is_archive"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
 
     private DatabaseDocument(Name alias, Table<DatabaseDocumentRecord> aliased) {
         this(alias, aliased, null);
@@ -171,11 +176,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, String, String, String, Long, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, Integer, String, String, String, Long, LocalDateTime, LocalDateTime, Boolean> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

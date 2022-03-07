@@ -24,6 +24,7 @@ public class DatabaseDocumentPojo implements Serializable {
     private Long          version;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
+    private Boolean       isArchive;
 
     public DatabaseDocumentPojo() {}
 
@@ -36,6 +37,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.version = value.version;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
+        this.isArchive = value.isArchive;
     }
 
     public DatabaseDocumentPojo(
@@ -46,7 +48,8 @@ public class DatabaseDocumentPojo implements Serializable {
         String        productVersion,
         Long          version,
         LocalDateTime updateAt,
-        LocalDateTime createAt
+        LocalDateTime createAt,
+        Boolean       isArchive
     ) {
         this.id = id;
         this.projectId = projectId;
@@ -56,6 +59,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.version = version;
         this.updateAt = updateAt;
         this.createAt = createAt;
+        this.isArchive = isArchive;
     }
 
     /**
@@ -170,6 +174,20 @@ public class DatabaseDocumentPojo implements Serializable {
         this.createAt = createAt;
     }
 
+    /**
+     * Getter for <code>databasir.database_document.is_archive</code>.
+     */
+    public Boolean getIsArchive() {
+        return this.isArchive;
+    }
+
+    /**
+     * Setter for <code>databasir.database_document.is_archive</code>.
+     */
+    public void setIsArchive(Boolean isArchive) {
+        this.isArchive = isArchive;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DatabaseDocumentPojo (");
@@ -182,6 +200,7 @@ public class DatabaseDocumentPojo implements Serializable {
         sb.append(", ").append(version);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
+        sb.append(", ").append(isArchive);
 
         sb.append(")");
         return sb.toString();
