@@ -123,21 +123,9 @@ CREATE TABLE IF NOT EXISTS database_document
     product_name    TEXT      NOT NULL,
     product_version TEXT      NOT NULL,
     version         BIGINT    NOT NULL DEFAULT 1,
+    is_archive      BOOLEAN   NOT NULL DEFAULT FALSE,
     update_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     create_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_project_id UNIQUE (project_id)
-) CHARSET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS database_document_history
-(
-    id                       INT PRIMARY KEY AUTO_INCREMENT,
-    project_id               INT       NOT NULL,
-    database_document_id     INT       NOT NULL,
-    database_document_object JSON               DEFAULT NULL,
-    version                  BIGINT    NOT NULL,
-    create_at                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_connection_id_version UNIQUE (database_document_id, version),
     INDEX idx_project_id (project_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;

@@ -3,10 +3,11 @@ package com.databasir.core.domain.document.service;
 import com.databasir.core.Databasir;
 import com.databasir.core.DatabasirConfig;
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.document.converter.DocumentHistoryPojoConverter;
 import com.databasir.core.domain.document.converter.DocumentPojoConverter;
 import com.databasir.core.domain.document.converter.DocumentResponseConverter;
+import com.databasir.core.domain.document.converter.DocumentSimpleResponseConverter;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
+import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
@@ -53,30 +54,28 @@ public class DocumentService {
 
     private final TableTriggerDocumentDao tableTriggerDocumentDao;
 
-    private final DatabaseDocumentHistoryDao databaseDocumentHistoryDao;
-
     private final DocumentPojoConverter documentPojoConverter;
 
     private final DocumentResponseConverter documentResponseConverter;
 
-    private final DocumentHistoryPojoConverter documentHistoryPojoConverter;
+    private final DocumentSimpleResponseConverter documentSimpleResponseConverter;
 
     private final JsonConverter jsonConverter;
 
     @Transactional
     public void syncByProjectId(Integer projectId) {
-        ProjectPojo project = projectDao.selectOptionalById(projectId)
+        projectDao.selectOptionalById(projectId)
                 .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
         DatabaseMeta meta = retrieveDatabaseMeta(projectId);
-        Optional<DatabaseDocumentPojo> historyDocumentOpt = databaseDocumentDao.selectOptionalByProjectId(projectId);
-        if (historyDocumentOpt.isPresent()) {
-            DatabaseDocumentPojo historyDocument = historyDocumentOpt.get();
-            Integer previousDocumentId = historyDocument.getId();
-            saveAsHistory(historyDocument);
-            deleteDeprecatedDocument(previousDocumentId);
-            saveNewDocument(meta, historyDocument.getVersion() + 1, historyDocument.getProjectId(), previousDocumentId);
+        Optional<DatabaseDocumentPojo> latestDocumentOpt = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
+        if (latestDocumentOpt.isPresent()) {
+            DatabaseDocumentPojo latestDocument = latestDocumentOpt.get();
+            Integer previousDocumentId = latestDocument.getId();
+            // archive old version
+            databaseDocumentDao.updateIsArchiveById(previousDocumentId, true);
+            saveNewDocument(meta, latestDocument.getVersion() + 1, latestDocument.getProjectId());
         } else {
-            saveNewDocument(meta, 1L, projectId, null);
+            saveNewDocument(meta, 1L, projectId);
         }
     }
 
@@ -93,42 +92,12 @@ public class DocumentService {
                 .orElseThrow(DomainErrors.DATABASE_META_NOT_FOUND::exception);
     }
 
-    private void saveAsHistory(DatabaseDocumentPojo databaseDocument) {
-        // save history
-        Integer projectId = databaseDocument.getProjectId();
-        Integer databaseMetaId = databaseDocument.getId();
-        DatabaseDocumentResponse databaseDocumentResponse = getOneByProjectId(projectId, null).orElse(null);
-        Long currVersion = databaseDocument.getVersion();
-        DatabaseDocumentHistoryPojo documentHistoryPojo =
-                documentHistoryPojoConverter.of(databaseDocumentResponse, projectId, databaseMetaId, currVersion);
-        databaseDocumentHistoryDao.insertAndReturnId(documentHistoryPojo);
-        log.info("save old meta info to history success");
-    }
-
-    private void deleteDeprecatedDocument(Integer databaseDocumentId) {
-        // delete old meta info
-        tableDocumentDao.deleteByDatabaseDocumentId(databaseDocumentId);
-        tableColumnDocumentDao.deleteByDatabaseDocumentId(databaseDocumentId);
-        tableIndexDocumentDao.deleteByDatabaseMetaId(databaseDocumentId);
-        tableTriggerDocumentDao.deleteByDatabaseDocumentId(databaseDocumentId);
-        log.info("delete old meta info success");
-    }
-
     private void saveNewDocument(DatabaseMeta meta,
                                  Long version,
-                                 Integer projectId,
-                                 Integer databaseDocumentId) {
+                                 Integer projectId) {
 
-        Integer currentDatabaseDocumentId = databaseDocumentId;
-        if (databaseDocumentId == null) {
-            var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, 1L);
-            currentDatabaseDocumentId = databaseDocumentDao.insertAndReturnId(pojo);
-        } else {
-            var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, databaseDocumentId, version);
-            databaseDocumentDao.update(pojo);
-        }
-
-        final Integer docId = currentDatabaseDocumentId;
+        var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, version);
+        final Integer docId = databaseDocumentDao.insertAndReturnId(pojo);
         meta.getTables().forEach(table -> {
             TableDocumentPojo tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
@@ -143,53 +112,98 @@ public class DocumentService {
                     documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
             tableTriggerDocumentDao.batchInsert(tableTriggerMetas);
         });
-        log.info("save new meta info success");
+        log.info("save new version document success: projectId = {}, name = {}, version =  {}",
+                projectId, meta.getDatabaseName(), version);
     }
 
-    public Optional<DatabaseDocumentResponse> getOneByProjectId(Integer projectId, Long version) {
+    public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId, Long version) {
         if (version == null) {
-            return databaseDocumentDao.selectOptionalByProjectId(projectId)
+            return databaseDocumentDao.selectNotArchivedByProjectId(projectId)
                     .map(document -> {
                         Integer id = document.getId();
                         var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
-                        var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(id);
-                        var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
-                        var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
-                        Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
-                                .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
-                        Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
-                                .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
-                        Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
-                                .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
-                        var tableDocumentResponseList = tables.stream()
-                                .map(table -> {
-                                    Integer tableId = table.getId();
-                                    var subColumns =
-                                            columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                                    var subIndexes =
-                                            indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                                    var subTriggers =
-                                            triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                                    return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
-                                })
-                                .collect(Collectors.toList());
-                        return documentResponseConverter.of(document, tableDocumentResponseList);
+                        return documentSimpleResponseConverter.of(document, tables);
                     });
         } else {
-            return databaseDocumentHistoryDao.selectOptionalByProjectIdAndVersion(projectId, version)
-                    .map(obj -> jsonConverter.of(obj.getDatabaseDocumentObject()));
+            return databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version)
+                    .map(document -> {
+                        Integer id = document.getId();
+                        var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
+                        return documentSimpleResponseConverter.of(document, tables);
+                    });
         }
     }
 
-    public Page<DatabaseDocumentVersionResponse> getVersionsBySchemaSourceId(Integer projectId, Pageable page) {
-        return databaseDocumentDao.selectOptionalByProjectId(projectId)
-                .map(schemaMeta ->
-                        databaseDocumentHistoryDao.selectVersionPageByDatabaseDocumentId(page, schemaMeta.getId())
+    public Optional<DatabaseDocumentResponse> getOneByProjectId(Integer projectId, Long version) {
+
+        Optional<DatabaseDocumentPojo> documentOption;
+        if (version == null) {
+            documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
+        } else {
+            documentOption = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version);
+        }
+        return documentOption.map(document -> {
+            Integer id = document.getId();
+            var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
+            var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(id);
+            var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
+            var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
+            Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
+                    .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+            Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
+                    .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+            Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
+                    .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+            var tableDocumentResponseList = tables.stream()
+                    .map(table -> {
+                        Integer tableId = table.getId();
+                        var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
+                    })
+                    .collect(Collectors.toList());
+            return documentResponseConverter.of(document, tableDocumentResponseList);
+        });
+
+    }
+
+    public Page<DatabaseDocumentVersionResponse> getVersionsByProjectId(Integer projectId, Pageable page) {
+        return databaseDocumentDao.selectNotArchivedByProjectId(projectId)
+                .map(databaseDocument ->
+                        databaseDocumentDao.selectVersionPageByProjectId(page, projectId)
                                 .map(history -> DatabaseDocumentVersionResponse.builder()
+                                        .databaseDocumentId(history.getId())
                                         .version(history.getVersion())
                                         .createAt(history.getCreateAt())
                                         .build()))
                 .orElseGet(Page::empty);
+    }
+
+    public Optional<DatabaseDocumentResponse.TableDocumentResponse> getTableDetails(Integer projectId,
+                                                                                    Integer tableId) {
+        // maybe deleted
+        if (!projectDao.existsById(projectId)) {
+            return Optional.empty();
+        }
+
+        return tableDocumentDao.selectOptionalById(tableId)
+                .map(table -> {
+                    Integer documentId = table.getDatabaseDocumentId();
+                    var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(documentId);
+                    var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(documentId);
+                    var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(documentId);
+                    Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
+                            .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+                    Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
+                            .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+                    Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
+                            .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+                    var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                    var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                    var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                    return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
+                });
     }
 
     public Optional<String> toMarkdown(Integer projectId, Long version) {

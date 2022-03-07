@@ -3,6 +3,7 @@ package com.databasir.api;
 import com.databasir.common.JsonData;
 import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
+import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.core.domain.log.annotation.Operation;
@@ -54,7 +55,7 @@ public class DocumentController {
                                                                                   @PageableDefault(sort = "id",
                                                                                           direction = DESC)
                                                                                           Pageable page) {
-        return JsonData.ok(documentService.getVersionsBySchemaSourceId(projectId, page));
+        return JsonData.ok(documentService.getVersionsByProjectId(projectId, page));
     }
 
     @GetMapping(Routes.Document.EXPORT)
@@ -77,6 +78,18 @@ public class DocumentController {
         } catch (IOException e) {
             throw new SystemException("System error");
         }
+    }
+
+    @GetMapping(Routes.Document.GET_SIMPLE_ONE)
+    public JsonData<DatabaseDocumentSimpleResponse> getSimpleByProjectId(@PathVariable Integer projectId,
+                                                                         @RequestParam(required = false) Long version) {
+        return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version));
+    }
+
+    @GetMapping(Routes.Document.GET_TABLE_DETAIL)
+    public JsonData<DatabaseDocumentResponse.TableDocumentResponse> getTableDocument(@PathVariable Integer projectId,
+                                                                                     @PathVariable Integer tableId) {
+        return JsonData.ok(documentService.getTableDetails(projectId, tableId));
     }
 
 }

@@ -5,6 +5,7 @@ package com.databasir.dao.tables;
 
 
 import com.databasir.dao.Databasir;
+import com.databasir.dao.Indexes;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.DatabaseDocumentRecord;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row9;
@@ -80,6 +82,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     public final TableField<DatabaseDocumentRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.inline("1", SQLDataType.BIGINT)), this, "");
 
     /**
+     * The column <code>databasir.database_document.is_archive</code>.
+     */
+    public final TableField<DatabaseDocumentRecord, Boolean> IS_ARCHIVE = createField(DSL.name("is_archive"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
+
+    /**
      * The column <code>databasir.database_document.update_at</code>.
      */
     public final TableField<DatabaseDocumentRecord, LocalDateTime> UPDATE_AT = createField(DSL.name("update_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
@@ -88,11 +95,6 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
      * The column <code>databasir.database_document.create_at</code>.
      */
     public final TableField<DatabaseDocumentRecord, LocalDateTime> CREATE_AT = createField(DSL.name("create_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
-     * The column <code>databasir.database_document.is_archive</code>.
-     */
-    public final TableField<DatabaseDocumentRecord, Boolean> IS_ARCHIVE = createField(DSL.name("is_archive"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
 
     private DatabaseDocument(Name alias, Table<DatabaseDocumentRecord> aliased) {
         this(alias, aliased, null);
@@ -135,6 +137,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.DATABASE_DOCUMENT_IDX_PROJECT_ID);
+    }
+
+    @Override
     public Identity<DatabaseDocumentRecord, Integer> getIdentity() {
         return (Identity<DatabaseDocumentRecord, Integer>) super.getIdentity();
     }
@@ -142,11 +149,6 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     @Override
     public UniqueKey<DatabaseDocumentRecord> getPrimaryKey() {
         return Keys.KEY_DATABASE_DOCUMENT_PRIMARY;
-    }
-
-    @Override
-    public List<UniqueKey<DatabaseDocumentRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_DATABASE_DOCUMENT_UK_PROJECT_ID);
     }
 
     @Override
@@ -180,7 +182,7 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, Integer, String, String, String, Long, LocalDateTime, LocalDateTime, Boolean> fieldsRow() {
+    public Row9<Integer, Integer, String, String, String, Long, Boolean, LocalDateTime, LocalDateTime> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 }

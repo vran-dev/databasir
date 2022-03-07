@@ -78,6 +78,10 @@ public interface Routes {
 
         String LIST_VERSIONS = BASE + "/projects/{projectId}/document_versions";
 
+        String GET_SIMPLE_ONE = BASE + "/projects/{projectId}/documents/simple";
+
+        String GET_TABLE_DETAIL = BASE + "/projects/{projectId}/table_documents/{tableId}";
+
         String EXPORT = BASE + "/projects/{projectId}/document_files";
     }
 

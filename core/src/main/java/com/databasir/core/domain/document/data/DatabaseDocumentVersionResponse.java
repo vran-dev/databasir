@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class DatabaseDocumentVersionResponse {
 
+    private Integer databaseDocumentId;
+
     private Long version;
 
     private LocalDateTime createAt;
