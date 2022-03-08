@@ -23,7 +23,6 @@ public class DatabaseDocumentSimpleResponse {
 
     private LocalDateTime createAt;
 
-
     @Data
     public static class TableData {
 
