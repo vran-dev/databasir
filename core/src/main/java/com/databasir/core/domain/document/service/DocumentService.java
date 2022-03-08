@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Connection;
 import java.util.*;
@@ -180,30 +181,36 @@ public class DocumentService {
                 .orElseGet(Page::empty);
     }
 
-    public Optional<DatabaseDocumentResponse.TableDocumentResponse> getTableDetails(Integer projectId,
-                                                                                    Integer tableId) {
+    public List<DatabaseDocumentResponse.TableDocumentResponse> getTableDetails(Integer projectId,
+                                                                                Integer databaseDocumentId,
+                                                                                List<Integer> tableIds) {
         // maybe deleted
-        if (!projectDao.existsById(projectId)) {
-            return Optional.empty();
+        if (CollectionUtils.isEmpty(tableIds) || !projectDao.existsById(projectId)) {
+            return Collections.emptyList();
         }
-
-        return tableDocumentDao.selectOptionalById(tableId)
+        var tables =
+                tableDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
+        var columns =
+                tableColumnDocumentDao.selectByDatabaseDocumentIdAndTableIdIn(databaseDocumentId, tableIds);
+        var indexes =
+                tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
+        var triggers =
+                tableTriggerDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
+        Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
+                .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
+                .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
+                .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+        return tables.stream()
                 .map(table -> {
-                    Integer documentId = table.getDatabaseDocumentId();
-                    var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(documentId);
-                    var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(documentId);
-                    var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(documentId);
-                    Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
-                            .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
-                    Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
-                            .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
-                    Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
-                            .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+                    Integer tableId = table.getId();
                     var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
-                });
+                })
+                .collect(Collectors.toList());
     }
 
     public Optional<String> toMarkdown(Integer projectId, Long version) {

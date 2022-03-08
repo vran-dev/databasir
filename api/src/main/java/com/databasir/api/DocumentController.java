@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -86,10 +87,11 @@ public class DocumentController {
         return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version));
     }
 
-    @GetMapping(Routes.Document.GET_TABLE_DETAIL)
-    public JsonData<DatabaseDocumentResponse.TableDocumentResponse> getTableDocument(@PathVariable Integer projectId,
-                                                                                     @PathVariable Integer tableId) {
-        return JsonData.ok(documentService.getTableDetails(projectId, tableId));
+    @PostMapping(Routes.Document.GET_TABLE_DETAIL)
+    public JsonData<List<DatabaseDocumentResponse.TableDocumentResponse>> getTableDocument(@PathVariable Integer projectId,
+                                                                                           @PathVariable Integer documentId,
+                                                                                           @RequestBody List<Integer> tableIds) {
+        return JsonData.ok(documentService.getTableDetails(projectId, documentId, tableIds));
     }
 
 }

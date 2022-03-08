@@ -6,6 +6,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.databasir.dao.Tables.TABLE_TRIGGER_DOCUMENT;
@@ -28,10 +29,15 @@ public class TableTriggerDocumentDao extends BaseDao<TableTriggerDocumentPojo> {
                 .fetchInto(TableTriggerDocumentPojo.class);
     }
 
-    public void deleteByDatabaseDocumentId(Integer schemaDocumentId) {
-        getDslContext()
-                .deleteFrom(TABLE_TRIGGER_DOCUMENT)
-                .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
-                .execute();
+    public List<TableTriggerDocumentPojo> selectByDatabaseDocumentIdAndIdIn(Integer documentId,
+                                                                            List<Integer> tableIdIn) {
+        if (tableIdIn == null || tableIdIn.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getDslContext()
+                .select(TABLE_TRIGGER_DOCUMENT.fields()).from(TABLE_TRIGGER_DOCUMENT)
+                .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(documentId)
+                        .and(TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID.in(tableIdIn)))
+                .fetchInto(TableTriggerDocumentPojo.class);
     }
 }

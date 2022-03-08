@@ -80,7 +80,7 @@ public interface Routes {
 
         String GET_SIMPLE_ONE = BASE + "/projects/{projectId}/documents/simple";
 
-        String GET_TABLE_DETAIL = BASE + "/projects/{projectId}/table_documents/{tableId}";
+        String GET_TABLE_DETAIL = BASE + "/projects/{projectId}/documents/{documentId}/table_documents";
 
         String EXPORT = BASE + "/projects/{projectId}/document_files";
     }
