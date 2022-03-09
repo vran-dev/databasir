@@ -83,14 +83,16 @@ public class DocumentController {
 
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)
     public JsonData<DatabaseDocumentSimpleResponse> getSimpleByProjectId(@PathVariable Integer projectId,
-                                                                         @RequestParam(required = false) Long version) {
+                                                                         @RequestParam(required = false)
+                                                                                 Long version) {
         return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version));
     }
 
     @PostMapping(Routes.Document.GET_TABLE_DETAIL)
-    public JsonData<List<DatabaseDocumentResponse.TableDocumentResponse>> getTableDocument(@PathVariable Integer projectId,
-                                                                                           @PathVariable Integer documentId,
-                                                                                           @RequestBody List<Integer> tableIds) {
+    public JsonData<List<DatabaseDocumentResponse.TableDocumentResponse>> getTableDocument(
+            @PathVariable Integer projectId,
+            @PathVariable Integer documentId,
+            @RequestBody List<Integer> tableIds) {
         return JsonData.ok(documentService.getTableDetails(projectId, documentId, tableIds));
     }
 
