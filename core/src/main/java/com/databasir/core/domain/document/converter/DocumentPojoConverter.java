@@ -16,14 +16,9 @@ import java.util.stream.Collectors;
 public interface DocumentPojoConverter extends BaseConverter {
 
     @Mapping(target = "databaseName", source = "meta.databaseName")
+    @Mapping(target = "isArchive", constant = "false")
     DatabaseDocumentPojo toDatabasePojo(Integer projectId,
                                         com.databasir.core.meta.data.DatabaseMeta meta,
-                                        Long version);
-
-    @Mapping(target = "databaseName", source = "meta.databaseName")
-    DatabaseDocumentPojo toDatabasePojo(Integer projectId,
-                                        com.databasir.core.meta.data.DatabaseMeta meta,
-                                        Integer id,
                                         Long version);
 
     @Mapping(target = "comment", qualifiedBy = NullToEmpty.class)

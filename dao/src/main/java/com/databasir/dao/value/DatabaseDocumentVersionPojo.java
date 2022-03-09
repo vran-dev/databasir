@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class DatabaseDocumentVersionPojo {
 
-    private Integer databaseDocumentId;
+    private Integer id;
 
     private Long version;
 

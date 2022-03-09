@@ -22,6 +22,7 @@ public class DatabaseDocumentPojo implements Serializable {
     private String        productName;
     private String        productVersion;
     private Long          version;
+    private Boolean       isArchive;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -34,6 +35,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.productName = value.productName;
         this.productVersion = value.productVersion;
         this.version = value.version;
+        this.isArchive = value.isArchive;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -45,6 +47,7 @@ public class DatabaseDocumentPojo implements Serializable {
         String        productName,
         String        productVersion,
         Long          version,
+        Boolean       isArchive,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -54,6 +57,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.productName = productName;
         this.productVersion = productVersion;
         this.version = version;
+        this.isArchive = isArchive;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -143,6 +147,20 @@ public class DatabaseDocumentPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.database_document.is_archive</code>.
+     */
+    public Boolean getIsArchive() {
+        return this.isArchive;
+    }
+
+    /**
+     * Setter for <code>databasir.database_document.is_archive</code>.
+     */
+    public void setIsArchive(Boolean isArchive) {
+        this.isArchive = isArchive;
+    }
+
+    /**
      * Getter for <code>databasir.database_document.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
@@ -180,6 +198,7 @@ public class DatabaseDocumentPojo implements Serializable {
         sb.append(", ").append(productName);
         sb.append(", ").append(productVersion);
         sb.append(", ").append(version);
+        sb.append(", ").append(isArchive);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 
