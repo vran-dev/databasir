@@ -45,8 +45,8 @@ public class LoginService {
         if (login.getRefreshTokenExpireAt().isBefore(LocalDateTime.now())) {
             throw DomainErrors.REFRESH_TOKEN_EXPIRED.exception();
         }
-        // access-token 未过期就开始刷新有可能是 refresh-token  泄露了，删除 refresh-token
-        if (login.getAccessTokenExpireAt().isAfter(LocalDateTime.now())) {
+        // access-token 未过期（允许一分钟的误差）就开始刷新有可能是 refresh-token  泄露了，删除 refresh-token
+        if (login.getAccessTokenExpireAt().isAfter(LocalDateTime.now().plusMinutes(1))) {
             log.warn("invalid access token refresh operation: request = {}, login = {}", request, login);
             loginDao.deleteByUserId(login.getUserId());
             throw DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
@@ -58,6 +58,10 @@ public class LoginService {
                     log.warn("user not exists but refresh token exists for " + login.getRefreshToken());
                     return DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
                 });
+        if (!user.getEnabled()) {
+            log.warn("user disabled but refresh token exists for " + login.getRefreshToken());
+            throw DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
+        }
         String accessToken = jwtTokens.accessToken(user.getEmail());
         LocalDateTime accessTokenExpireAt = jwtTokens.expireAt(accessToken);
         loginDao.updateAccessToken(accessToken, accessTokenExpireAt, user.getId());

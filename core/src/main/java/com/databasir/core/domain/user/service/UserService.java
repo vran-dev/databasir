@@ -5,10 +5,7 @@ import com.databasir.core.domain.user.converter.UserPojoConverter;
 import com.databasir.core.domain.user.converter.UserResponseConverter;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.infrastructure.mail.MailSender;
-import com.databasir.dao.impl.GroupDao;
-import com.databasir.dao.impl.SysMailDao;
-import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.impl.UserRoleDao;
+import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.GroupPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import com.databasir.dao.tables.pojos.UserRolePojo;
@@ -35,6 +32,8 @@ public class UserService {
     private final GroupDao groupDao;
 
     private final SysMailDao sysMailDao;
+
+    private final LoginDao loginDao;
 
     private final UserPojoConverter userPojoConverter;
 
@@ -123,8 +122,12 @@ public class UserService {
         return randomPassword;
     }
 
+    @Transactional
     public void switchEnableStatus(Integer userId, Boolean enable) {
         userDao.updateEnabledByUserId(userId, enable);
+        if (!enable) {
+            loginDao.deleteByUserId(userId);
+        }
     }
 
     public void removeSysOwnerFrom(Integer userId) {
