@@ -20,7 +20,7 @@
 3. 支持手动、定时同步数据库结构并自动生成可读性优秀的文档、UML 图
 4. 支持多文件格式导出，如 markdown
 5. 历史模型版本化，一键查看历史版本
-6. 多人协作字段批注，不再害怕没有注释
+6. 多人协作字段讨论，口口相传不如立个字据
 7. 扁平化的团队管理模式，灵活适应不同团队组织架构
 
 ## 支持数据库
@@ -45,51 +45,37 @@
 
 ## 展示
 
+- 文档页面
+
+![uml](README/document-uml.gif)
+
 - 分组创建
 
 ![](README/group-create.gif)
-
-
 
 - 项目创建
 
 ![](README/project-create.gif)
 
-
-
 - 项目同步
 
 ![](README/project-sync.gif)
 
+- 协作讨论
 
-
-- 模型 UML 生成
-
-![uml](README/document-uml.gif)
-
-- 项目批注
-
-![](README/document-remark.gif)
-
-
+![](README/document-discussion.gif)
 
 - 分组成员
 
 ![](README/group-member.gif)
 
-
-
 - 用户创建
 
 ![](README/user-create.gif)
 
-
-
 - 用户详情
 
 ![](README/user-detail.gif)
-
-
 
 - 操作日志
 
