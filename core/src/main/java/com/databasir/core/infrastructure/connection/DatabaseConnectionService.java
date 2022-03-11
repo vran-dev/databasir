@@ -32,11 +32,19 @@ public class DatabaseConnectionService {
         Properties info = new Properties();
         dataSourceProperties.forEach(prop -> info.put(prop.getKey(), prop.getValue()));
         try {
+            DatabaseConnectionFactory.Context context = DatabaseConnectionFactory.Context.builder()
+                    .username(username)
+                    .password(password)
+                    .url(url)
+                    .schema(dataSource.getDatabaseName())
+                    .properties(info)
+                    .databaseType(dataSource.getDatabaseType())
+                    .build();
             return factories.stream()
                     .filter(factory -> factory.support(dataSource.getDatabaseType()))
                     .findFirst()
                     .orElseThrow(DomainErrors.NOT_SUPPORT_DATABASE_TYPE::exception)
-                    .getConnection(username, password, url, dataSource.getDatabaseName(), info);
+                    .getConnection(context);
         } catch (SQLException e) {
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage(), e);
         }
@@ -49,11 +57,19 @@ public class DatabaseConnectionService {
                                String databaseType,
                                Properties properties) {
         try {
+            DatabaseConnectionFactory.Context context = DatabaseConnectionFactory.Context.builder()
+                    .username(username)
+                    .password(password)
+                    .url(url)
+                    .schema(databaseName)
+                    .properties(properties)
+                    .databaseType(databaseType)
+                    .build();
             factories.stream()
                     .filter(factory -> factory.support(databaseType))
                     .findFirst()
                     .orElseThrow(DomainErrors.NOT_SUPPORT_DATABASE_TYPE::exception)
-                    .getConnection(username, password, url, databaseName, properties);
+                    .getConnection(context);
         } catch (SQLException e) {
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage(), e);
         }

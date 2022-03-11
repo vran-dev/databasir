@@ -14,3 +14,9 @@ CREATE TABLE IF NOT EXISTS database_type
     CONSTRAINT uk_database_type_deleted_deleted_token UNIQUE (database_type, deleted, deleted_token)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci COMMENT 'customer database types';
+
+REPLACE INTO databasir.database_type (id, database_type, icon, DESCRIPTION, jdbc_driver_file_url,
+                                      jdbc_driver_class_name,
+                                      jdbc_protocol)
+VALUES (1, 'mysql', '', 'system default mysql', 'N/A', 'com.mysql.cj.jdbc.Driver', 'jdbc:mysql'),
+       (2, 'postgresql', '', 'system default postgresql', 'N/A', 'org.postgresql.Driver', 'jdbc:postgresql');

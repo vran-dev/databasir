@@ -16,11 +16,7 @@ public class PostgresqlDatabaseConnectionFactory implements DatabaseConnectionFa
     }
 
     @Override
-    public Connection getConnection(String username,
-                                    String password,
-                                    String url,
-                                    String schema,
-                                    Properties properties) throws SQLException {
+    public Connection getConnection(Context context) throws SQLException {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -28,10 +24,10 @@ public class PostgresqlDatabaseConnectionFactory implements DatabaseConnectionFa
         }
 
         Properties info = new Properties();
-        info.put("user", username);
-        info.put("password", password);
-        info.putAll(properties);
-        String jdbcUrl = "jdbc:postgresql://" + url + "/" + schema;
+        info.put("user", context.getUsername());
+        info.put("password", context.getPassword());
+        info.putAll(context.getProperties());
+        String jdbcUrl = "jdbc:postgresql://" + context.getUrl() + "/" + context.getSchema();
         return DriverManager.getConnection(jdbcUrl, info);
     }
 }

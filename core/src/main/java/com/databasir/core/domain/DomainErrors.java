@@ -27,7 +27,11 @@ public enum DomainErrors implements DatabasirErrors {
     INVALID_CRON_EXPRESSION("A_10012", "不合法的 cron 表达式"),
     REGISTRATION_ID_DUPLICATE("A_10013", "应用注册 ID 不能重复"),
     REGISTRATION_ID_NOT_FOUND("A_10014", "应用 ID 不存在"),
-    MISS_REQUIRED_PARAMETERS("A_10015", "缺少必填参数");
+    MISS_REQUIRED_PARAMETERS("A_10015", "缺少必填参数"),
+    DATABASE_TYPE_NAME_DUPLICATE("A_10016", "数据库类型名已存在"),
+    MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE("A_10017", "禁止修改系统默认数据库类型"),
+    DOWNLOAD_DRIVER_ERROR("A_10018", "驱动下载失败"),
+    ;
 
     private final String errCode;
 
@@ -46,6 +50,6 @@ public enum DomainErrors implements DatabasirErrors {
     }
 
     public DatabasirException exception(String s) {
-        return exception(s, (Throwable) null);
+        return exception(s, null);
     }
 }

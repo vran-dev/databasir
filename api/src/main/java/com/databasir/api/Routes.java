@@ -130,4 +130,19 @@ public interface Routes {
         String GET_ONE = BASE + "/oauth2_apps/{id}";
 
     }
+
+    interface DatabaseType {
+
+        String LIST_SIMPLE = BASE + "/simple_database_types";
+
+        String LIST_PAGE = BASE + "/database_types";
+
+        String GET_ONE = BASE + "/database_types/{id}";
+
+        String DELETE_ONE = BASE + "/database_types/{id}";
+
+        String UPDATE = BASE + "/database_types";
+
+        String CREATE = BASE + "/database_types";
+    }
 }

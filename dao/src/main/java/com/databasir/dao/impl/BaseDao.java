@@ -80,6 +80,20 @@ public abstract class BaseDao<R> {
                         new DataNotExistsException("data not exists in " + table.getName() + " with id = " + id));
     }
 
+    public Optional<R> selectOptionalOne(Condition condition) {
+        return getDslContext()
+                .select(table.fields()).from(table).where(condition)
+                .fetchOptionalInto(pojoType);
+    }
+
+    public R selectOne(Condition condition) {
+        return selectOptionalOne(condition)
+                .orElseThrow(() -> new DataNotExistsException("data not exists in "
+                        + table.getName()
+                        + " with condition  = "
+                        + condition));
+    }
+
     public List<R> selectInIds(List<? extends Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
