@@ -19,14 +19,15 @@ public class RestTemplateConfig {
         restTemplate.getMessageConverters().set(1,
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
         return restTemplate;
-
     }
 
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setReadTimeout(1000 * 30);//单位为ms
-        factory.setConnectTimeout(1000 * 5);//单位为ms
+        //单位为ms
+        factory.setReadTimeout(1000 * 30);
+        //单位为ms
+        factory.setConnectTimeout(1000 * 5);
         return factory;
     }
 }
