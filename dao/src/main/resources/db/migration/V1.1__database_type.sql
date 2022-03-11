@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS database_type
     database_type          VARCHAR(128)  NOT NULL COMMENT 'such as mysql, postgresql, mysql5.5 and so on',
     icon                   VARCHAR(512)  NOT NULL DEFAULT '',
     description            VARCHAR(512)  NOT NULL,
-    jdbc_driver_file       VARCHAR(1024) NOT NULL,
+    jdbc_driver_file_url   VARCHAR(1024) NOT NULL,
     jdbc_driver_class_name VARCHAR(255)  NOT NULL,
     jdbc_protocol          VARCHAR(128)  NOT NULL,
     deleted                BOOLEAN       NOT NULL DEFAULT FALSE,

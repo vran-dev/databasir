@@ -7,14 +7,25 @@ package com.databasir.dao.tables;
 import com.databasir.dao.Databasir;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.DatabaseTypeRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row11;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -60,9 +71,9 @@ public class DatabaseType extends TableImpl<DatabaseTypeRecord> {
     public final TableField<DatabaseTypeRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(512).nullable(false), this, "");
 
     /**
-     * The column <code>databasir.database_type.jdbc_driver_file</code>.
+     * The column <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
-    public final TableField<DatabaseTypeRecord, String> JDBC_DRIVER_FILE = createField(DSL.name("jdbc_driver_file"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
+    public final TableField<DatabaseTypeRecord, String> JDBC_DRIVER_FILE_URL = createField(DSL.name("jdbc_driver_file_url"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
 
     /**
      * The column <code>databasir.database_type.jdbc_driver_class_name</code>.

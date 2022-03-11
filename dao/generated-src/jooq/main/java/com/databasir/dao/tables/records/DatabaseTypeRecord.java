@@ -83,16 +83,16 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     /**
-     * Setter for <code>databasir.database_type.jdbc_driver_file</code>.
+     * Setter for <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
-    public void setJdbcDriverFile(String value) {
+    public void setJdbcDriverFileUrl(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>databasir.database_type.jdbc_driver_file</code>.
+     * Getter for <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
-    public String getJdbcDriverFile() {
+    public String getJdbcDriverFileUrl() {
         return (String) get(4);
     }
 
@@ -225,7 +225,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public Field<String> field5() {
-        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_FILE;
+        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_FILE_URL;
     }
 
     @Override
@@ -280,7 +280,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public String component5() {
-        return getJdbcDriverFile();
+        return getJdbcDriverFileUrl();
     }
 
     @Override
@@ -335,7 +335,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public String value5() {
-        return getJdbcDriverFile();
+        return getJdbcDriverFileUrl();
     }
 
     @Override
@@ -394,7 +394,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public DatabaseTypeRecord value5(String value) {
-        setJdbcDriverFile(value);
+        setJdbcDriverFileUrl(value);
         return this;
     }
 
@@ -464,14 +464,14 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     /**
      * Create a detached, initialised DatabaseTypeRecord
      */
-    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFile, String jdbcDriverClassName, String jdbcProtocol, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
+    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverClassName, String jdbcProtocol, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
         super(DatabaseType.DATABASE_TYPE);
 
         setId(id);
         setDatabaseType(databaseType);
         setIcon(icon);
         setDescription(description);
-        setJdbcDriverFile(jdbcDriverFile);
+        setJdbcDriverFileUrl(jdbcDriverFileUrl);
         setJdbcDriverClassName(jdbcDriverClassName);
         setJdbcProtocol(jdbcProtocol);
         setDeleted(deleted);
@@ -491,7 +491,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
             setDatabaseType(value.getDatabaseType());
             setIcon(value.getIcon());
             setDescription(value.getDescription());
-            setJdbcDriverFile(value.getJdbcDriverFile());
+            setJdbcDriverFileUrl(value.getJdbcDriverFileUrl());
             setJdbcDriverClassName(value.getJdbcDriverClassName());
             setJdbcProtocol(value.getJdbcProtocol());
             setDeleted(value.getDeleted());

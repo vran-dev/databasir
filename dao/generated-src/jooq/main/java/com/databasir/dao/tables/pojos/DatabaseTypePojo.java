@@ -20,7 +20,7 @@ public class DatabaseTypePojo implements Serializable {
     private String        databaseType;
     private String        icon;
     private String        description;
-    private String        jdbcDriverFile;
+    private String        jdbcDriverFileUrl;
     private String        jdbcDriverClassName;
     private String        jdbcProtocol;
     private Boolean       deleted;
@@ -35,7 +35,7 @@ public class DatabaseTypePojo implements Serializable {
         this.databaseType = value.databaseType;
         this.icon = value.icon;
         this.description = value.description;
-        this.jdbcDriverFile = value.jdbcDriverFile;
+        this.jdbcDriverFileUrl = value.jdbcDriverFileUrl;
         this.jdbcDriverClassName = value.jdbcDriverClassName;
         this.jdbcProtocol = value.jdbcProtocol;
         this.deleted = value.deleted;
@@ -49,7 +49,7 @@ public class DatabaseTypePojo implements Serializable {
         String        databaseType,
         String        icon,
         String        description,
-        String        jdbcDriverFile,
+        String        jdbcDriverFileUrl,
         String        jdbcDriverClassName,
         String        jdbcProtocol,
         Boolean       deleted,
@@ -61,7 +61,7 @@ public class DatabaseTypePojo implements Serializable {
         this.databaseType = databaseType;
         this.icon = icon;
         this.description = description;
-        this.jdbcDriverFile = jdbcDriverFile;
+        this.jdbcDriverFileUrl = jdbcDriverFileUrl;
         this.jdbcDriverClassName = jdbcDriverClassName;
         this.jdbcProtocol = jdbcProtocol;
         this.deleted = deleted;
@@ -129,17 +129,17 @@ public class DatabaseTypePojo implements Serializable {
     }
 
     /**
-     * Getter for <code>databasir.database_type.jdbc_driver_file</code>.
+     * Getter for <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
-    public String getJdbcDriverFile() {
-        return this.jdbcDriverFile;
+    public String getJdbcDriverFileUrl() {
+        return this.jdbcDriverFileUrl;
     }
 
     /**
-     * Setter for <code>databasir.database_type.jdbc_driver_file</code>.
+     * Setter for <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
-    public void setJdbcDriverFile(String jdbcDriverFile) {
-        this.jdbcDriverFile = jdbcDriverFile;
+    public void setJdbcDriverFileUrl(String jdbcDriverFileUrl) {
+        this.jdbcDriverFileUrl = jdbcDriverFileUrl;
     }
 
     /**
@@ -234,7 +234,7 @@ public class DatabaseTypePojo implements Serializable {
         sb.append(", ").append(databaseType);
         sb.append(", ").append(icon);
         sb.append(", ").append(description);
-        sb.append(", ").append(jdbcDriverFile);
+        sb.append(", ").append(jdbcDriverFileUrl);
         sb.append(", ").append(jdbcDriverClassName);
         sb.append(", ").append(jdbcProtocol);
         sb.append(", ").append(deleted);
