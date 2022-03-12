@@ -6,6 +6,7 @@ import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.util.Properties;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Order
 public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactory {
 
     private final DatabaseTypeDao databaseTypeDao;
@@ -73,10 +75,13 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常：" + e.getMessage());
         }
 
+        String urlPattern = type.getUrlPattern();
+        String jdbcUrl = urlPattern.replace("{{jdbc.protocol}}", type.getJdbcProtocol())
+                .replace("{{db.url}}", context.getUrl())
+                .replace("{{db.name}}", context.getSchema());
         Properties info = new Properties();
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());
-        String jdbcUrl = type.getJdbcProtocol() + "://" + context.getUrl() + "/" + context.getSchema();
         return driver.connect(jdbcUrl, info);
     }
 

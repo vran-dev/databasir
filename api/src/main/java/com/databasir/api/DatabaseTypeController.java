@@ -1,5 +1,6 @@
 package com.databasir.api;
 
+import com.databasir.api.validator.DatabaseTypeValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.database.data.*;
 import com.databasir.core.domain.database.service.DatabaseTypeService;
@@ -24,6 +25,8 @@ public class DatabaseTypeController {
 
     private final DatabaseTypeService databaseTypeService;
 
+    private final DatabaseTypeValidator databaseTypeValidator;
+
     @GetMapping(Routes.DatabaseType.LIST_SIMPLE)
     public JsonData<List<String>> listSimpleDatabaseTypes() {
         List<String> types = databaseTypeService.listSimpleDatabaseTypes();
@@ -41,6 +44,7 @@ public class DatabaseTypeController {
     @PostMapping(Routes.DatabaseType.CREATE)
     @Operation(module = Operation.Modules.DATABASE_TYPE, name = "创建数据库类型")
     public JsonData<Integer> create(@RequestBody @Valid DatabaseTypeCreateRequest request) {
+        databaseTypeValidator.isValidUrlPattern(request.getUrlPattern());
         Integer id = databaseTypeService.create(request);
         return JsonData.ok(id);
     }
@@ -48,6 +52,7 @@ public class DatabaseTypeController {
     @PatchMapping(Routes.DatabaseType.UPDATE)
     @Operation(module = Operation.Modules.DATABASE_TYPE, name = "更新数据库类型")
     public JsonData<Void> update(@RequestBody @Valid DatabaseTypeUpdateRequest request) {
+        databaseTypeValidator.isValidUrlPattern(request.getUrlPattern());
         databaseTypeService.update(request);
         return JsonData.ok();
     }

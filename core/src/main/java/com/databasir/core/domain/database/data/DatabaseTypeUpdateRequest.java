@@ -27,4 +27,7 @@ public class DatabaseTypeUpdateRequest {
 
     @NotBlank
     private String jdbcProtocol;
+
+    @NotBlank
+    private String urlPattern;
 }

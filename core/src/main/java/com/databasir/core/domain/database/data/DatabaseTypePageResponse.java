@@ -27,6 +27,8 @@ public class DatabaseTypePageResponse {
 
     private Integer projectCount;
 
+    private String urlPattern;
+
     private LocalDateTime updateAt;
 
     private LocalDateTime createAt;

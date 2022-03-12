@@ -23,4 +23,8 @@ public class DatabaseTypeCreateRequest {
 
     @NotBlank
     private String jdbcProtocol;
+
+    @NotBlank
+    private String urlPattern;
+
 }

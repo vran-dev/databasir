@@ -21,6 +21,8 @@ public class DatabaseTypeDetailResponse {
 
     private String jdbcProtocol;
 
+    private String urlPattern;
+
     private Boolean deleted;
 
     private Integer deletedToken;

@@ -31,6 +31,7 @@ public enum DomainErrors implements DatabasirErrors {
     DATABASE_TYPE_NAME_DUPLICATE("A_10016", "数据库类型名已存在"),
     MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE("A_10017", "禁止修改系统默认数据库类型"),
     DOWNLOAD_DRIVER_ERROR("A_10018", "驱动下载失败"),
+    INVALID_DATABASE_TYPE_URL_PATTERN("A_10019", "不合法的 url pattern"),
     ;
 
     private final String errCode;

@@ -1,5 +1,6 @@
 package com.databasir.core.infrastructure.connection;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @Component
+@Order(1)
 public class MysqlDatabaseConnectionFactory implements DatabaseConnectionFactory {
 
     @Override
