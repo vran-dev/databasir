@@ -5,20 +5,20 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class RemarkResponse {
+public class DiscussionResponse {
 
     private Integer id;
 
     private Integer projectId;
 
-    private String remark;
+    private String content;
 
-    private RemarkUser remarkBy;
+    private DiscussByUser discussBy;
 
     private LocalDateTime createAt;
 
     @Data
-    public static class RemarkUser {
+    public static class DiscussByUser {
 
         private Integer userId;
 

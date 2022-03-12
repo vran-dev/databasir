@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class RemarkListCondition {
+public class DiscussionListCondition {
 
     @NotBlank
     private String tableName;

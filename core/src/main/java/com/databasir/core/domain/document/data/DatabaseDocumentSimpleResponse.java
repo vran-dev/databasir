@@ -35,5 +35,7 @@ public class DatabaseDocumentSimpleResponse {
         private String type;
 
         private String comment;
+
+        private Integer discussionCount;
     }
 }
