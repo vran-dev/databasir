@@ -93,7 +93,8 @@ CREATE TABLE IF NOT EXISTS `data_source`
 (
     id            INT PRIMARY KEY AUTO_INCREMENT,
     project_id    INT          NOT NULL,
-    database_name VARCHAR(512) NOT NULL,
+    database_name VARCHAR(255) NOT NULL,
+    schema_name   VARCHAR(255) NOT NULL,
     database_type VARCHAR(255) NOT NULL,
     url           TEXT         NOT NULL,
     username      TEXT         NOT NULL,
@@ -118,14 +119,15 @@ CREATE TABLE IF NOT EXISTS `data_source_property`
 CREATE TABLE IF NOT EXISTS database_document
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
-    project_id      INT       NOT NULL,
-    database_name   TEXT      NOT NULL,
-    product_name    TEXT      NOT NULL,
-    product_version TEXT      NOT NULL,
-    version         BIGINT    NOT NULL DEFAULT 1,
-    is_archive      BOOLEAN   NOT NULL DEFAULT FALSE,
-    update_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    create_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    project_id      INT          NOT NULL,
+    database_name   VARCHAR(255) NOT NULL,
+    schema_name     VARCHAR(255) NOT NULL,
+    product_name    TEXT         NOT NULL,
+    product_version TEXT         NOT NULL,
+    version         BIGINT       NOT NULL DEFAULT 1,
+    is_archive      BOOLEAN      NOT NULL DEFAULT FALSE,
+    update_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_project_id (project_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;

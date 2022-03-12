@@ -19,6 +19,7 @@ public class DataSourcePojo implements Serializable {
     private Integer       id;
     private Integer       projectId;
     private String        databaseName;
+    private String        schemaName;
     private String        databaseType;
     private String        url;
     private String        username;
@@ -32,6 +33,7 @@ public class DataSourcePojo implements Serializable {
         this.id = value.id;
         this.projectId = value.projectId;
         this.databaseName = value.databaseName;
+        this.schemaName = value.schemaName;
         this.databaseType = value.databaseType;
         this.url = value.url;
         this.username = value.username;
@@ -44,6 +46,7 @@ public class DataSourcePojo implements Serializable {
         Integer       id,
         Integer       projectId,
         String        databaseName,
+        String        schemaName,
         String        databaseType,
         String        url,
         String        username,
@@ -54,6 +57,7 @@ public class DataSourcePojo implements Serializable {
         this.id = id;
         this.projectId = projectId;
         this.databaseName = databaseName;
+        this.schemaName = schemaName;
         this.databaseType = databaseType;
         this.url = url;
         this.username = username;
@@ -102,6 +106,20 @@ public class DataSourcePojo implements Serializable {
      */
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
+    }
+
+    /**
+     * Getter for <code>databasir.data_source.schema_name</code>.
+     */
+    public String getSchemaName() {
+        return this.schemaName;
+    }
+
+    /**
+     * Setter for <code>databasir.data_source.schema_name</code>.
+     */
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     /**
@@ -195,6 +213,7 @@ public class DataSourcePojo implements Serializable {
         sb.append(id);
         sb.append(", ").append(projectId);
         sb.append(", ").append(databaseName);
+        sb.append(", ").append(schemaName);
         sb.append(", ").append(databaseType);
         sb.append(", ").append(url);
         sb.append(", ").append(username);

@@ -8,26 +8,14 @@ import com.databasir.dao.Databasir;
 import com.databasir.dao.Indexes;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.DatabaseDocumentRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row9;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -64,7 +52,12 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     /**
      * The column <code>databasir.database_document.database_name</code>.
      */
-    public final TableField<DatabaseDocumentRecord, String> DATABASE_NAME = createField(DSL.name("database_name"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DatabaseDocumentRecord, String> DATABASE_NAME = createField(DSL.name("database_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.database_document.schema_name</code>.
+     */
+    public final TableField<DatabaseDocumentRecord, String> SCHEMA_NAME = createField(DSL.name("schema_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>databasir.database_document.product_name</code>.
@@ -178,11 +171,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, Integer, String, String, String, Long, Boolean, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, Integer, String, String, String, String, Long, Boolean, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }
