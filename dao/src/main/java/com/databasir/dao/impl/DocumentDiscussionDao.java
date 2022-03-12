@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DocumentRemarkPojo;
+import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
 import com.databasir.dao.value.DocumentDiscussionCountPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -12,41 +12,41 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.databasir.dao.Tables.DOCUMENT_REMARK;
+import static com.databasir.dao.Tables.DOCUMENT_DISCUSSION;
 
 @Repository
-public class DocumentDiscussionDao extends BaseDao<DocumentRemarkPojo> {
+public class DocumentDiscussionDao extends BaseDao<DocumentDiscussionPojo> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DocumentDiscussionDao() {
-        super(DOCUMENT_REMARK, DocumentRemarkPojo.class);
+        super(DOCUMENT_DISCUSSION, DocumentDiscussionPojo.class);
     }
 
-    public Optional<DocumentRemarkPojo> selectByProjectIdAndId(Integer projectId, Integer id) {
+    public Optional<DocumentDiscussionPojo> selectByProjectIdAndId(Integer projectId, Integer id) {
         return this.getDslContext()
-                .selectFrom(DOCUMENT_REMARK).where(DOCUMENT_REMARK.PROJECT_ID.eq(projectId)
-                        .and(DOCUMENT_REMARK.ID.eq(id)))
-                .fetchOptionalInto(DocumentRemarkPojo.class);
+                .selectFrom(DOCUMENT_DISCUSSION).where(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId)
+                        .and(DOCUMENT_DISCUSSION.ID.eq(id)))
+                .fetchOptionalInto(DocumentDiscussionPojo.class);
     }
 
     public List<DocumentDiscussionCountPojo> selectTableDiscussionCount(Integer projectId) {
-        return this.selectDiscussionCount(DOCUMENT_REMARK.PROJECT_ID.eq(projectId)
-                .and(DOCUMENT_REMARK.COLUMN_NAME.isNull()));
+        return this.selectDiscussionCount(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId)
+                .and(DOCUMENT_DISCUSSION.COLUMN_NAME.isNull()));
     }
 
     public List<DocumentDiscussionCountPojo> selectAllDiscussionCount(Integer projectId) {
-        return this.selectDiscussionCount(DOCUMENT_REMARK.PROJECT_ID.eq(projectId));
+        return this.selectDiscussionCount(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId));
     }
 
     public List<DocumentDiscussionCountPojo> selectDiscussionCount(Condition condition) {
         return this.getDslContext()
-                .select(DSL.count(), DOCUMENT_REMARK.TABLE_NAME, DOCUMENT_REMARK.COLUMN_NAME)
-                .from(DOCUMENT_REMARK)
+                .select(DSL.count(), DOCUMENT_DISCUSSION.TABLE_NAME, DOCUMENT_DISCUSSION.COLUMN_NAME)
+                .from(DOCUMENT_DISCUSSION)
                 .where(condition)
-                .groupBy(DOCUMENT_REMARK.TABLE_NAME, DOCUMENT_REMARK.COLUMN_NAME)
+                .groupBy(DOCUMENT_DISCUSSION.TABLE_NAME, DOCUMENT_DISCUSSION.COLUMN_NAME)
                 .fetchInto(DocumentDiscussionCountPojo.class);
     }
 }

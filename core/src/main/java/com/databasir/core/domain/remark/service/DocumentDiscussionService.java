@@ -8,7 +8,7 @@ import com.databasir.core.domain.remark.data.DiscussionResponse;
 import com.databasir.dao.impl.DocumentDiscussionDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.tables.pojos.DocumentRemarkPojo;
+import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,18 +47,18 @@ public class DocumentDiscussionService {
                                          Pageable pageable,
                                          DiscussionListCondition condition) {
         if (projectDao.exists(groupId, projectId)) {
-            Page<DocumentRemarkPojo> data = documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
+            Page<DocumentDiscussionPojo> data = documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
             Set<Integer> userIdList = data.getContent()
                     .stream()
-                    .map(DocumentRemarkPojo::getUserId)
+                    .map(DocumentDiscussionPojo::getUserId)
                     .collect(Collectors.toSet());
             Map<Integer, UserPojo> userMapById = userDao.selectUserIdIn(userIdList)
                     .stream()
                     .collect(Collectors.toMap(UserPojo::getId, Function.identity()));
             return data
-                    .map(remarkPojo -> {
-                        UserPojo userPojo = userMapById.get(remarkPojo.getUserId());
-                        return discussionResponseConverter.of(remarkPojo, userPojo);
+                    .map(dicussionPojo -> {
+                        UserPojo userPojo = userMapById.get(dicussionPojo.getUserId());
+                        return discussionResponseConverter.of(dicussionPojo, userPojo);
                     });
         } else {
             throw new Forbidden();
@@ -67,10 +67,10 @@ public class DocumentDiscussionService {
 
     public void create(Integer groupId, Integer projectId, Integer userId, DiscussionCreateRequest request) {
         if (projectDao.exists(groupId, projectId)) {
-            DocumentRemarkPojo pojo = new DocumentRemarkPojo();
+            DocumentDiscussionPojo pojo = new DocumentDiscussionPojo();
             pojo.setUserId(userId);
             pojo.setProjectId(projectId);
-            pojo.setRemark(request.getContent());
+            pojo.setContent(request.getContent());
             pojo.setTableName(request.getTableName());
             pojo.setColumnName(request.getColumnName());
             documentDiscussionDao.insertAndReturnId(pojo);
