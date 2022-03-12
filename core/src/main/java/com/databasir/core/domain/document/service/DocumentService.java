@@ -107,7 +107,18 @@ public class DocumentService {
                     documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
             tableColumnDocumentDao.batchInsert(tableColumnMetas);
             List<TableIndexDocumentPojo> tableIndexMetas =
-                    documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes());
+                    documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes())
+                            .stream()
+                            .filter(index -> {
+                                if (index.getName() != null) {
+                                    return true;
+                                } else {
+                                    log.warn("ignore table {} index {}, cause name is null", table.getName(), index);
+                                    return false;
+                                }
+                            })
+                            .collect(Collectors.toList());
+
             tableIndexDocumentDao.batchInsert(tableIndexMetas);
             List<TableTriggerDocumentPojo> tableTriggerMetas =
                     documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());

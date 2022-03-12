@@ -7,6 +7,7 @@ package com.databasir.dao;
 import com.databasir.dao.tables.DataSource;
 import com.databasir.dao.tables.DataSourceProperty;
 import com.databasir.dao.tables.DatabaseDocument;
+import com.databasir.dao.tables.DatabaseType;
 import com.databasir.dao.tables.DocumentRemark;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
@@ -59,6 +60,11 @@ public class Databasir extends SchemaImpl {
      * The table <code>databasir.database_document</code>.
      */
     public final DatabaseDocument DATABASE_DOCUMENT = DatabaseDocument.DATABASE_DOCUMENT;
+
+    /**
+     * customer database types
+     */
+    public final DatabaseType DATABASE_TYPE = DatabaseType.DATABASE_TYPE;
 
     /**
      * The table <code>databasir.document_remark</code>.
@@ -159,6 +165,7 @@ public class Databasir extends SchemaImpl {
             DataSource.DATA_SOURCE,
             DataSourceProperty.DATA_SOURCE_PROPERTY,
             DatabaseDocument.DATABASE_DOCUMENT,
+            DatabaseType.DATABASE_TYPE,
             DocumentRemark.DOCUMENT_REMARK,
             Group.GROUP,
             Login.LOGIN,

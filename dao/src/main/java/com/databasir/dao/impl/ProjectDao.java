@@ -5,6 +5,7 @@ import com.databasir.dao.value.GroupProjectCountPojo;
 import lombok.Getter;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -99,5 +101,18 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
                 .select(PROJECT.ID).from(PROJECT)
                 .where(PROJECT.GROUP_ID.eq(groupId).and(PROJECT.DELETED.eq(false)))
                 .fetchInto(Integer.class);
+    }
+
+    public Map<String, Integer> countByDatabaseTypes(List<String> databaseTypes) {
+        if (databaseTypes == null || databaseTypes.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return getDslContext()
+                .select(DSL.count(DATA_SOURCE), DATA_SOURCE.DATABASE_TYPE)
+                .from(DATA_SOURCE)
+                .innerJoin(PROJECT).on(PROJECT.ID.eq(DATA_SOURCE.PROJECT_ID))
+                .where(PROJECT.DELETED.eq(false)).and(DATA_SOURCE.DATABASE_TYPE.in(databaseTypes))
+                .groupBy(DATA_SOURCE.DATABASE_TYPE)
+                .fetchMap(DATA_SOURCE.DATABASE_TYPE, DSL.count(DATA_SOURCE));
     }
 }
