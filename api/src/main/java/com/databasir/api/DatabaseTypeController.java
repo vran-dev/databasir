@@ -28,9 +28,8 @@ public class DatabaseTypeController {
     private final DatabaseTypeValidator databaseTypeValidator;
 
     @GetMapping(Routes.DatabaseType.LIST_SIMPLE)
-    public JsonData<List<String>> listSimpleDatabaseTypes() {
-        List<String> types = databaseTypeService.listSimpleDatabaseTypes();
-        return JsonData.ok(types);
+    public JsonData<List<DatabaseTypeSimpleResponse>> listSimpleDatabaseTypes() {
+        return JsonData.ok(databaseTypeService.listSimpleDatabaseTypes());
     }
 
     @GetMapping(Routes.DatabaseType.LIST_PAGE)

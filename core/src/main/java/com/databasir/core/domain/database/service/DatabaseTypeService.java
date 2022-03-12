@@ -89,10 +89,17 @@ public class DatabaseTypeService {
                 });
     }
 
-    public List<String> listSimpleDatabaseTypes() {
+    public List<DatabaseTypeSimpleResponse> listSimpleDatabaseTypes() {
         return databaseTypeDao.selectAll()
                 .stream()
-                .map(DatabaseTypePojo::getDatabaseType)
+                .map(type -> {
+                    DatabaseTypeSimpleResponse response = new DatabaseTypeSimpleResponse();
+                    response.setDatabaseType(type.getDatabaseType());
+                    response.setUrlPattern(type.getUrlPattern());
+                    response.setDescription(type.getDescription());
+                    response.setJdbcProtocol(type.getJdbcProtocol());
+                    return response;
+                })
                 .collect(Collectors.toList());
     }
 
