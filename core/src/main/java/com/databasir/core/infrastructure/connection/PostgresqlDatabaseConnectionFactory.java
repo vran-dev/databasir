@@ -29,7 +29,7 @@ public class PostgresqlDatabaseConnectionFactory implements DatabaseConnectionFa
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());
         info.putAll(context.getProperties());
-        String jdbcUrl = "jdbc:postgresql://" + context.getUrl() + "/" + context.getSchema();
+        String jdbcUrl = "jdbc:postgresql://" + context.getUrl() + "/" + context.getDatabaseName();
         return DriverManager.getConnection(jdbcUrl, info);
     }
 }

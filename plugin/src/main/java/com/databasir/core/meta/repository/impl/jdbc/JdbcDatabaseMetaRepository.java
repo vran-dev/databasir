@@ -33,6 +33,7 @@ public class JdbcDatabaseMetaRepository implements DatabaseMetaRepository {
                             .productName(metaData.getDatabaseProductName())
                             .productVersion(metaData.getDatabaseProductVersion())
                             .databaseName(catalogName)
+                            .schemaName(condition.getSchemaName())
                             .tables(tableDocs)
                             .build();
                     return Optional.of(meta);

@@ -19,6 +19,8 @@ public class DatabaseDocumentResponse {
 
     private String databaseName;
 
+    private String schemaName;
+
     private String productName;
 
     private String productVersion;

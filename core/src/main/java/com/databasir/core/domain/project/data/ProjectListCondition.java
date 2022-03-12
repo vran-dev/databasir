@@ -15,6 +15,8 @@ public class ProjectListCondition {
 
     private String databaseNameContains;
 
+    private String schemaNameContains;
+
     private String databaseType;
 
     private Integer groupId;
@@ -27,6 +29,10 @@ public class ProjectListCondition {
         }
         if (databaseNameContains != null) {
             Condition condition = Tables.DATA_SOURCE.DATABASE_NAME.contains(databaseNameContains);
+            conditions.add(condition);
+        }
+        if (schemaNameContains != null) {
+            Condition condition = Tables.DATA_SOURCE.SCHEMA_NAME.contains(schemaNameContains);
             conditions.add(condition);
         }
         if (databaseType != null) {

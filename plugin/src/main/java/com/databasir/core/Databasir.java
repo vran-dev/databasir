@@ -20,9 +20,10 @@ public class Databasir {
 
     private final DatabasirConfig config;
 
-    public Optional<DatabaseMeta> get(Connection connection, String databaseName) {
+    public Optional<DatabaseMeta> get(Connection connection, String databaseName, String schemaName) {
         Condition condition = Condition.builder()
                 .databaseName(databaseName)
+                .schemaName(schemaName)
                 .ignoreTableNameRegex(config.getIgnoreTableNameRegex())
                 .ignoreTableColumnNameRegex(config.getIgnoreTableColumnNameRegex())
                 .build();

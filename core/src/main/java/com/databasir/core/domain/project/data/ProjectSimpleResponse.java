@@ -15,6 +15,8 @@ public class ProjectSimpleResponse {
 
     private String databaseName;
 
+    private String schemaName;
+
     private String databaseType;
 
     private Boolean isAutoSync;
