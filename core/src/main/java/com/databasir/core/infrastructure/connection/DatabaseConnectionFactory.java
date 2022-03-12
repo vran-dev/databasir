@@ -25,7 +25,9 @@ public interface DatabaseConnectionFactory {
 
         private String url;
 
-        private String schema;
+        private String databaseName;
+
+        private String schemaName;
 
         private Properties properties;
     }

@@ -35,6 +35,11 @@ public class DatabaseMeta {
      */
     private String databaseName;
 
+    /**
+     * schema_name
+     */
+    private String schemaName;
+
     @Builder.Default
     private List<TableMeta> tables = Collections.emptyList();
 

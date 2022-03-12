@@ -36,7 +36,8 @@ public class DatabaseConnectionService {
                     .username(username)
                     .password(password)
                     .url(url)
-                    .schema(dataSource.getDatabaseName())
+                    .databaseName(dataSource.getDatabaseName())
+                    .schemaName(dataSource.getSchemaName())
                     .properties(info)
                     .databaseType(dataSource.getDatabaseType())
                     .build();
@@ -54,6 +55,7 @@ public class DatabaseConnectionService {
                                String password,
                                String url,
                                String databaseName,
+                               String schemaName,
                                String databaseType,
                                Properties properties) {
         try {
@@ -61,7 +63,8 @@ public class DatabaseConnectionService {
                     .username(username)
                     .password(password)
                     .url(url)
-                    .schema(databaseName)
+                    .databaseName(databaseName)
+                    .schemaName(schemaName)
                     .properties(properties)
                     .databaseType(databaseType)
                     .build();

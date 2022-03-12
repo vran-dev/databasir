@@ -40,7 +40,7 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
         List<TableMeta> tableMetas = new ArrayList<>();
         String databaseName = condition.getDatabaseName();
         ResultSet tablesResult = connection.getMetaData()
-                .getTables(databaseName, null, null, new String[]{"TABLE"});
+                .getTables(databaseName, condition.getSchemaName(), null, new String[]{"TABLE"});
         while (tablesResult.next()) {
             String tableName = tablesResult.getString("TABLE_NAME");
             if (condition.tableIsIgnored(tableName)) {

@@ -34,6 +34,8 @@ public class ProjectDetailResponse {
 
         private String databaseName;
 
+        private String schemaName;
+
         private String databaseType;
 
         private List<DataSourcePropertyValue> properties = new ArrayList<>();

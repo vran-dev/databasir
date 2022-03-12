@@ -13,6 +13,8 @@ public class DatabaseDocumentSimpleResponse {
 
     private String databaseName;
 
+    private String schemaName;
+
     private String productName;
 
     private String productVersion;

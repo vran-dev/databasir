@@ -89,7 +89,7 @@ public class DocumentService {
         databasirConfig.setIgnoreTableNameRegex(jsonConverter.fromJson(rule.getIgnoreTableNameRegexArray()));
         databasirConfig.setIgnoreTableColumnNameRegex(jsonConverter.fromJson(rule.getIgnoreColumnNameRegexArray()));
         return Databasir.of(databasirConfig)
-                .get(jdbcConnection, dataSource.getDatabaseName())
+                .get(jdbcConnection, dataSource.getDatabaseName(), dataSource.getSchemaName())
                 .orElseThrow(DomainErrors.DATABASE_META_NOT_FOUND::exception);
     }
 

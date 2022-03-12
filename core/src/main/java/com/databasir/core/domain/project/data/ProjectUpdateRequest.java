@@ -40,6 +40,9 @@ public class ProjectUpdateRequest {
         private String databaseName;
 
         @NotBlank
+        private String schemaName;
+
+        @NotBlank
         private String databaseType;
 
         private List<DataSourcePropertyValue> properties = new ArrayList<>();

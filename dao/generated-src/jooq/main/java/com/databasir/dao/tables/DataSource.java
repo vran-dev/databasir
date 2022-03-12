@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,7 +62,12 @@ public class DataSource extends TableImpl<DataSourceRecord> {
     /**
      * The column <code>databasir.data_source.database_name</code>.
      */
-    public final TableField<DataSourceRecord, String> DATABASE_NAME = createField(DSL.name("database_name"), SQLDataType.VARCHAR(512).nullable(false), this, "");
+    public final TableField<DataSourceRecord, String> DATABASE_NAME = createField(DSL.name("database_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.data_source.schema_name</code>.
+     */
+    public final TableField<DataSourceRecord, String> SCHEMA_NAME = createField(DSL.name("schema_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>databasir.data_source.database_type</code>.
@@ -174,11 +179,11 @@ public class DataSource extends TableImpl<DataSourceRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, Integer, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, Integer, String, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

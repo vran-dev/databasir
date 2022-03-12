@@ -29,7 +29,7 @@ public class MysqlDatabaseConnectionFactory implements DatabaseConnectionFactory
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());
         info.putAll(context.getProperties());
-        String jdbcUrl = "jdbc:mysql://" + context.getUrl() + "/" + context.getSchema();
+        String jdbcUrl = "jdbc:mysql://" + context.getUrl() + "/" + context.getDatabaseName();
         return DriverManager.getConnection(jdbcUrl, info);
     }
 

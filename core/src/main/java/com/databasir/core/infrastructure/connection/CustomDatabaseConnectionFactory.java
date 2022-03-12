@@ -78,7 +78,8 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         String urlPattern = type.getUrlPattern();
         String jdbcUrl = urlPattern.replace("{{jdbc.protocol}}", type.getJdbcProtocol())
                 .replace("{{db.url}}", context.getUrl())
-                .replace("{{db.name}}", context.getSchema());
+                .replace("{{db.name}}", context.getDatabaseName())
+                .replace("{{db.schema}}", context.getSchemaName());
         Properties info = new Properties();
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());

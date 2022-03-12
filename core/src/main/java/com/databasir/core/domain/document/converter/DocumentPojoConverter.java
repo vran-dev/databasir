@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public interface DocumentPojoConverter extends BaseConverter {
 
     @Mapping(target = "databaseName", source = "meta.databaseName")
+    @Mapping(target = "schemaName", source = "meta.schemaName")
     @Mapping(target = "isArchive", constant = "false")
     DatabaseDocumentPojo toDatabasePojo(Integer projectId,
                                         com.databasir.core.meta.data.DatabaseMeta meta,

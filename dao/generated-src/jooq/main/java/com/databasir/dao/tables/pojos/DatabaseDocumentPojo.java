@@ -19,6 +19,7 @@ public class DatabaseDocumentPojo implements Serializable {
     private Integer       id;
     private Integer       projectId;
     private String        databaseName;
+    private String        schemaName;
     private String        productName;
     private String        productVersion;
     private Long          version;
@@ -32,6 +33,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.id = value.id;
         this.projectId = value.projectId;
         this.databaseName = value.databaseName;
+        this.schemaName = value.schemaName;
         this.productName = value.productName;
         this.productVersion = value.productVersion;
         this.version = value.version;
@@ -44,6 +46,7 @@ public class DatabaseDocumentPojo implements Serializable {
         Integer       id,
         Integer       projectId,
         String        databaseName,
+        String        schemaName,
         String        productName,
         String        productVersion,
         Long          version,
@@ -54,6 +57,7 @@ public class DatabaseDocumentPojo implements Serializable {
         this.id = id;
         this.projectId = projectId;
         this.databaseName = databaseName;
+        this.schemaName = schemaName;
         this.productName = productName;
         this.productVersion = productVersion;
         this.version = version;
@@ -102,6 +106,20 @@ public class DatabaseDocumentPojo implements Serializable {
      */
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
+    }
+
+    /**
+     * Getter for <code>databasir.database_document.schema_name</code>.
+     */
+    public String getSchemaName() {
+        return this.schemaName;
+    }
+
+    /**
+     * Setter for <code>databasir.database_document.schema_name</code>.
+     */
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     /**
@@ -195,6 +213,7 @@ public class DatabaseDocumentPojo implements Serializable {
         sb.append(id);
         sb.append(", ").append(projectId);
         sb.append(", ").append(databaseName);
+        sb.append(", ").append(schemaName);
         sb.append(", ").append(productName);
         sb.append(", ").append(productVersion);
         sb.append(", ").append(version);

@@ -169,6 +169,7 @@ public class ProjectService {
                 password,
                 request.getUrl(),
                 request.getDatabaseName(),
+                request.getSchemaName(),
                 request.getDatabaseType(),
                 properties);
     }

@@ -16,6 +16,8 @@ public class Condition {
     @NonNull
     private String databaseName;
 
+    private String schemaName;
+
     @Builder.Default
     private Collection<String> ignoreTableNameRegex = Collections.emptyList();
 
