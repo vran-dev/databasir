@@ -23,6 +23,7 @@ public class DatabaseTypePojo implements Serializable {
     private String        jdbcDriverFileUrl;
     private String        jdbcDriverClassName;
     private String        jdbcProtocol;
+    private String        urlPattern;
     private Boolean       deleted;
     private Integer       deletedToken;
     private LocalDateTime updateAt;
@@ -38,6 +39,7 @@ public class DatabaseTypePojo implements Serializable {
         this.jdbcDriverFileUrl = value.jdbcDriverFileUrl;
         this.jdbcDriverClassName = value.jdbcDriverClassName;
         this.jdbcProtocol = value.jdbcProtocol;
+        this.urlPattern = value.urlPattern;
         this.deleted = value.deleted;
         this.deletedToken = value.deletedToken;
         this.updateAt = value.updateAt;
@@ -52,6 +54,7 @@ public class DatabaseTypePojo implements Serializable {
         String        jdbcDriverFileUrl,
         String        jdbcDriverClassName,
         String        jdbcProtocol,
+        String        urlPattern,
         Boolean       deleted,
         Integer       deletedToken,
         LocalDateTime updateAt,
@@ -64,6 +67,7 @@ public class DatabaseTypePojo implements Serializable {
         this.jdbcDriverFileUrl = jdbcDriverFileUrl;
         this.jdbcDriverClassName = jdbcDriverClassName;
         this.jdbcProtocol = jdbcProtocol;
+        this.urlPattern = urlPattern;
         this.deleted = deleted;
         this.deletedToken = deletedToken;
         this.updateAt = updateAt;
@@ -171,6 +175,20 @@ public class DatabaseTypePojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.database_type.url_pattern</code>.
+     */
+    public String getUrlPattern() {
+        return this.urlPattern;
+    }
+
+    /**
+     * Setter for <code>databasir.database_type.url_pattern</code>.
+     */
+    public void setUrlPattern(String urlPattern) {
+        this.urlPattern = urlPattern;
+    }
+
+    /**
      * Getter for <code>databasir.database_type.deleted</code>.
      */
     public Boolean getDeleted() {
@@ -237,6 +255,7 @@ public class DatabaseTypePojo implements Serializable {
         sb.append(", ").append(jdbcDriverFileUrl);
         sb.append(", ").append(jdbcDriverClassName);
         sb.append(", ").append(jdbcProtocol);
+        sb.append(", ").append(urlPattern);
         sb.append(", ").append(deleted);
         sb.append(", ").append(deletedToken);
         sb.append(", ").append(updateAt);

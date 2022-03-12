@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record11;
-import org.jooq.Row11;
+import org.jooq.Record12;
+import org.jooq.Row12;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -20,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl;
  * customer database types
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> implements Record11<Integer, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> {
+public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> implements Record12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -125,59 +125,73 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     /**
+     * Setter for <code>databasir.database_type.url_pattern</code>.
+     */
+    public void setUrlPattern(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>databasir.database_type.url_pattern</code>.
+     */
+    public String getUrlPattern() {
+        return (String) get(7);
+    }
+
+    /**
      * Setter for <code>databasir.database_type.deleted</code>.
      */
     public void setDeleted(Boolean value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.deleted</code>.
      */
     public Boolean getDeleted() {
-        return (Boolean) get(7);
+        return (Boolean) get(8);
     }
 
     /**
      * Setter for <code>databasir.database_type.deleted_token</code>.
      */
     public void setDeletedToken(Integer value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.deleted_token</code>.
      */
     public Integer getDeletedToken() {
-        return (Integer) get(8);
+        return (Integer) get(9);
     }
 
     /**
      * Setter for <code>databasir.database_type.update_at</code>.
      */
     public void setUpdateAt(LocalDateTime value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
-        return (LocalDateTime) get(9);
+        return (LocalDateTime) get(10);
     }
 
     /**
      * Setter for <code>databasir.database_type.create_at</code>.
      */
     public void setCreateAt(LocalDateTime value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.create_at</code>.
      */
     public LocalDateTime getCreateAt() {
-        return (LocalDateTime) get(10);
+        return (LocalDateTime) get(11);
     }
 
     // -------------------------------------------------------------------------
@@ -190,17 +204,17 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Record11 type implementation
+    // Record12 type implementation
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 
     @Override
-    public Row11<Integer, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> valuesRow() {
-        return (Row11) super.valuesRow();
+    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> valuesRow() {
+        return (Row12) super.valuesRow();
     }
 
     @Override
@@ -239,22 +253,27 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     @Override
-    public Field<Boolean> field8() {
+    public Field<String> field8() {
+        return DatabaseType.DATABASE_TYPE.URL_PATTERN;
+    }
+
+    @Override
+    public Field<Boolean> field9() {
         return DatabaseType.DATABASE_TYPE.DELETED;
     }
 
     @Override
-    public Field<Integer> field9() {
+    public Field<Integer> field10() {
         return DatabaseType.DATABASE_TYPE.DELETED_TOKEN;
     }
 
     @Override
-    public Field<LocalDateTime> field10() {
+    public Field<LocalDateTime> field11() {
         return DatabaseType.DATABASE_TYPE.UPDATE_AT;
     }
 
     @Override
-    public Field<LocalDateTime> field11() {
+    public Field<LocalDateTime> field12() {
         return DatabaseType.DATABASE_TYPE.CREATE_AT;
     }
 
@@ -294,22 +313,27 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     @Override
-    public Boolean component8() {
+    public String component8() {
+        return getUrlPattern();
+    }
+
+    @Override
+    public Boolean component9() {
         return getDeleted();
     }
 
     @Override
-    public Integer component9() {
+    public Integer component10() {
         return getDeletedToken();
     }
 
     @Override
-    public LocalDateTime component10() {
+    public LocalDateTime component11() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime component11() {
+    public LocalDateTime component12() {
         return getCreateAt();
     }
 
@@ -349,22 +373,27 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     @Override
-    public Boolean value8() {
+    public String value8() {
+        return getUrlPattern();
+    }
+
+    @Override
+    public Boolean value9() {
         return getDeleted();
     }
 
     @Override
-    public Integer value9() {
+    public Integer value10() {
         return getDeletedToken();
     }
 
     @Override
-    public LocalDateTime value10() {
+    public LocalDateTime value11() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime value11() {
+    public LocalDateTime value12() {
         return getCreateAt();
     }
 
@@ -411,31 +440,37 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     @Override
-    public DatabaseTypeRecord value8(Boolean value) {
+    public DatabaseTypeRecord value8(String value) {
+        setUrlPattern(value);
+        return this;
+    }
+
+    @Override
+    public DatabaseTypeRecord value9(Boolean value) {
         setDeleted(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value9(Integer value) {
+    public DatabaseTypeRecord value10(Integer value) {
         setDeletedToken(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value10(LocalDateTime value) {
+    public DatabaseTypeRecord value11(LocalDateTime value) {
         setUpdateAt(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value11(LocalDateTime value) {
+    public DatabaseTypeRecord value12(LocalDateTime value) {
         setCreateAt(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, Boolean value8, Integer value9, LocalDateTime value10, LocalDateTime value11) {
+    public DatabaseTypeRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, Boolean value9, Integer value10, LocalDateTime value11, LocalDateTime value12) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -447,6 +482,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
         value9(value9);
         value10(value10);
         value11(value11);
+        value12(value12);
         return this;
     }
 
@@ -464,7 +500,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     /**
      * Create a detached, initialised DatabaseTypeRecord
      */
-    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverClassName, String jdbcProtocol, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
+    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverClassName, String jdbcProtocol, String urlPattern, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
         super(DatabaseType.DATABASE_TYPE);
 
         setId(id);
@@ -474,6 +510,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
         setJdbcDriverFileUrl(jdbcDriverFileUrl);
         setJdbcDriverClassName(jdbcDriverClassName);
         setJdbcProtocol(jdbcProtocol);
+        setUrlPattern(urlPattern);
         setDeleted(deleted);
         setDeletedToken(deletedToken);
         setUpdateAt(updateAt);
@@ -494,6 +531,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
             setJdbcDriverFileUrl(value.getJdbcDriverFileUrl());
             setJdbcDriverClassName(value.getJdbcDriverClassName());
             setJdbcProtocol(value.getJdbcProtocol());
+            setUrlPattern(value.getUrlPattern());
             setDeleted(value.getDeleted());
             setDeletedToken(value.getDeletedToken());
             setUpdateAt(value.getUpdateAt());

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -84,6 +84,11 @@ public class DatabaseType extends TableImpl<DatabaseTypeRecord> {
      * The column <code>databasir.database_type.jdbc_protocol</code>.
      */
     public final TableField<DatabaseTypeRecord, String> JDBC_PROTOCOL = createField(DSL.name("jdbc_protocol"), SQLDataType.VARCHAR(128).nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.database_type.url_pattern</code>.
+     */
+    public final TableField<DatabaseTypeRecord, String> URL_PATTERN = createField(DSL.name("url_pattern"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>databasir.database_type.deleted</code>.
@@ -185,11 +190,11 @@ public class DatabaseType extends TableImpl<DatabaseTypeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }
