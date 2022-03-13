@@ -1,3 +1,5 @@
+# Databasir 配置 Github OAuth2 登录
+
 1.  创建 Gitlab 应用，填写应用名称、回调地址等信息，注意下面授权一定记得勾选上 **read_user**
 
 回调地址填写你访问 databasir 的公网地址 {{ databasir 地址 }}/login/oauth2/{{ 应用ID }}
