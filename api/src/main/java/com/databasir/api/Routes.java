@@ -96,6 +96,13 @@ public interface Routes {
         String DELETE = DISCUSSION_BASE + "/{discussionId}";
     }
 
+    interface DocumentDescription {
+
+        String DISCUSSION_BASE = BASE + "/groups/{groupId}/projects/{projectId}/descriptions";
+
+        String SAVE = DISCUSSION_BASE;
+    }
+
     interface Setting {
 
         String GET_SYS_EMAIL = BASE + "/settings/sys_email";

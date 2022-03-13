@@ -21,14 +21,18 @@ public interface DocumentSimpleResponseConverter {
     DatabaseDocumentSimpleResponse of(DatabaseDocumentPojo databaseDocument,
                                       List<DatabaseDocumentSimpleResponse.TableData> tables);
 
-    DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables, Integer discussionCount);
+    DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables,
+                                                Integer discussionCount,
+                                                String description);
 
     default List<DatabaseDocumentSimpleResponse.TableData> of(List<TableDocumentPojo> tables,
-                                                              Map<String, Integer> discussionCountMapByTableName) {
+                                                              Map<String, Integer> discussionCountMapByTableName,
+                                                              Map<String, String> descriptionMapByTableName) {
         return tables.stream()
                 .map(table -> {
                     Integer count = discussionCountMapByTableName.get(table.getName());
-                    return of(table, count);
+                    String description = descriptionMapByTableName.get(table.getName());
+                    return of(table, count, description);
                 })
                 .collect(Collectors.toList());
     }

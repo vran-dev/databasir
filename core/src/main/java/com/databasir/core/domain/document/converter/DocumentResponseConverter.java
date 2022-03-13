@@ -28,21 +28,25 @@ public interface DocumentResponseConverter {
     @SuppressWarnings("checkstyle:all")
     DatabaseDocumentResponse.TableDocumentResponse of(TableDocumentPojo tableDocument,
                                                       Integer discussionCount,
+                                                      String description,
                                                       List<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse> columns,
                                                       List<TableIndexDocumentPojo> indexes,
                                                       List<TableTriggerDocumentPojo> triggers);
 
     DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocumentPojo pojo,
-                                                                             Integer discussionCount);
+                                                                             Integer discussionCount,
+                                                                             String description);
 
     default List<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse> of(
             List<TableColumnDocumentPojo> columns,
             String tableName,
-            Map<String, Integer> discussionCountMapByJoinName) {
+            Map<String, Integer> discussionCountMapByJoinName,
+            Map<String, String> descriptionMapByJoinName) {
         return columns.stream()
                 .map(column -> {
                     Integer count = discussionCountMapByJoinName.get(tableName + "." + column.getName());
-                    return of(column, count);
+                    String description = descriptionMapByJoinName.get(tableName + "." + column.getName());
+                    return of(column, count, description);
                 })
                 .collect(Collectors.toList());
     }

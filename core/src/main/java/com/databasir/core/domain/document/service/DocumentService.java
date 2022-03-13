@@ -59,6 +59,8 @@ public class DocumentService {
 
     private final DocumentDiscussionDao documentDiscussionDao;
 
+    private final DocumentDescriptionDao documentDescriptionDao;
+
     private final DocumentPojoConverter documentPojoConverter;
 
     private final DocumentResponseConverter documentResponseConverter;
@@ -146,7 +148,15 @@ public class DocumentService {
                     documentDiscussionDao.selectTableDiscussionCount(projectId)
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getCount(), (a, b) -> a));
-            var tableMetas = documentSimpleResponseConverter.of(tables, discussionCountMapByTableName);
+            Map<String, String> descriptionMapByTableName =
+                    documentDescriptionDao.selectTableDescriptionByProjectId(projectId)
+                            .stream()
+                            .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getContent(), (a, b) -> a));
+            var tableMetas = documentSimpleResponseConverter.of(
+                    tables,
+                    discussionCountMapByTableName,
+                    descriptionMapByTableName
+            );
             return documentSimpleResponseConverter.of(document, tableMetas);
         });
     }
@@ -206,19 +216,26 @@ public class DocumentService {
         }
         var tables =
                 tableDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
+        // column
         var columns =
                 tableColumnDocumentDao.selectByDatabaseDocumentIdAndTableIdIn(databaseDocumentId, tableIds);
-        var indexes =
-                tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
-        var triggers =
-                tableTriggerDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
-        var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
         Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
                 .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+
+        // index
+        var indexes =
+                tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
         Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
                 .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+
+        // trigger
+        var triggers =
+                tableTriggerDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
         Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
                 .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+
+        // discussion
+        var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
         Map<String, Integer> discussionCountMapByJoinName = discussions.stream()
                 .collect(Collectors.toMap(
                         d -> String.join(".",
@@ -226,6 +243,17 @@ public class DocumentService {
                                 StringUtils.defaultIfBlank(d.getColumnName(), "")),
                         DocumentDiscussionCountPojo::getCount,
                         (a, b) -> a));
+
+        // description
+        var descriptions = documentDescriptionDao.selectByProjectId(projectId);
+        Map<String, String> descriptionMapByJoinName = descriptions.stream()
+                .collect(Collectors.toMap(
+                        d -> String.join(".",
+                                d.getTableName(),
+                                StringUtils.defaultIfBlank(d.getColumnName(), "")),
+                        DocumentDescriptionPojo::getContent,
+                        (a, b) -> a));
+
         return tables.stream()
                 .map(table -> {
                     Integer tableId = table.getId();
@@ -233,9 +261,14 @@ public class DocumentService {
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var discussionCount = discussionCountMapByJoinName.get(table.getName());
+                    var description= descriptionMapByJoinName.get(table.getName());
                     var columnResponses =
-                            documentResponseConverter.of(subColumns, table.getName(), discussionCountMapByJoinName);
-                    return documentResponseConverter.of(table, discussionCount, columnResponses, subIndexes,
+                            documentResponseConverter.of(
+                                    subColumns,
+                                    table.getName(),
+                                    discussionCountMapByJoinName,
+                                    descriptionMapByJoinName);
+                    return documentResponseConverter.of(table, discussionCount,description, columnResponses, subIndexes,
                             subTriggers);
                 })
                 .collect(Collectors.toList());
