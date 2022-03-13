@@ -233,9 +233,10 @@ public class DocumentService {
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var discussionCount = discussionCountMapByJoinName.get(table.getName());
-                    var columnResponseList =
+                    var columnResponses =
                             documentResponseConverter.of(subColumns, table.getName(), discussionCountMapByJoinName);
-                    return documentResponseConverter.of(table, discussionCount, columnResponseList, subIndexes, subTriggers);
+                    return documentResponseConverter.of(table, discussionCount, columnResponses, subIndexes,
+                            subTriggers);
                 })
                 .collect(Collectors.toList());
     }

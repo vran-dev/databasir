@@ -47,7 +47,8 @@ public class DocumentDiscussionService {
                                          Pageable pageable,
                                          DiscussionListCondition condition) {
         if (projectDao.exists(groupId, projectId)) {
-            Page<DocumentDiscussionPojo> data = documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
+            Page<DocumentDiscussionPojo> data =
+                    documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
             Set<Integer> userIdList = data.getContent()
                     .stream()
                     .map(DocumentDiscussionPojo::getUserId)

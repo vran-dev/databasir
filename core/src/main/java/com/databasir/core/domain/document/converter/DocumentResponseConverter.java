@@ -47,7 +47,6 @@ public interface DocumentResponseConverter {
                 .collect(Collectors.toList());
     }
 
-
     @Mapping(target = "columnNames", source = "columnNameArray")
     DatabaseDocumentResponse.TableDocumentResponse.IndexDocumentResponse of(TableIndexDocumentPojo indexDocument);
 
