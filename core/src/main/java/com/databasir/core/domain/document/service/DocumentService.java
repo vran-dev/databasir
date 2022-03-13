@@ -261,14 +261,15 @@ public class DocumentService {
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var discussionCount = discussionCountMapByJoinName.get(table.getName());
-                    var description= descriptionMapByJoinName.get(table.getName());
+                    var description = descriptionMapByJoinName.get(table.getName());
                     var columnResponses =
                             documentResponseConverter.of(
                                     subColumns,
                                     table.getName(),
                                     discussionCountMapByJoinName,
                                     descriptionMapByJoinName);
-                    return documentResponseConverter.of(table, discussionCount,description, columnResponses, subIndexes,
+                    return documentResponseConverter.of(table, discussionCount, description, columnResponses,
+                            subIndexes,
                             subTriggers);
                 })
                 .collect(Collectors.toList());
