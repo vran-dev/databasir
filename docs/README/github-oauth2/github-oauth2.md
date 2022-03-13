@@ -54,7 +54,3 @@ Authorization callback URL 你可以先填写  {{ databasir 域名 }}/login/oaut
 点击就会进入授权页面，授权完成就会创建一个新的 databasir 用户，并直接登录成功
 
 ![](img/8-github-oauth-create.png)
-
-
-
-## 配置 Gitlab OAuth2 登录
