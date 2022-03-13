@@ -48,6 +48,8 @@ public class DatabaseDocumentResponse {
 
         private Integer discussionCount;
 
+        private String description;
+
         @Builder.Default
         private List<ColumnDocumentResponse> columns = new ArrayList<>();
 
@@ -75,6 +77,8 @@ public class DatabaseDocumentResponse {
             private Integer decimalDigits;
 
             private String comment;
+
+            private String description;
 
             private Boolean isPrimaryKey;
 

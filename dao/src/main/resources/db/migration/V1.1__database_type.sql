@@ -19,5 +19,21 @@ CREATE TABLE IF NOT EXISTS database_type
 REPLACE INTO databasir.database_type (id, database_type, icon, DESCRIPTION, jdbc_driver_file_url,
                                       jdbc_driver_class_name,
                                       jdbc_protocol, url_pattern)
-VALUES (1, 'mysql', '', 'system default mysql', 'N/A', 'com.mysql.cj.jdbc.Driver', 'jdbc:mysql', '{{jdbc.protocol}}://{{db.url}}/{{db.name}}'),
-       (2, 'postgresql', '', 'system default postgresql', 'N/A', 'org.postgresql.Driver', 'jdbc:postgresql', '{{jdbc.protocol}}://{{db.url}}/{{db.name}}');
+VALUES (1, 'mysql', '', 'system default mysql', 'N/A', 'com.mysql.cj.jdbc.Driver', 'jdbc:mysql',
+        '{{jdbc.protocol}}://{{db.url}}/{{db.name}}'),
+       (2, 'postgresql', '', 'system default postgresql', 'N/A', 'org.postgresql.Driver', 'jdbc:postgresql',
+        '{{jdbc.protocol}}://{{db.url}}/{{db.name}}');
+
+CREATE TABLE IF NOT EXISTS document_description
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    content     TEXT         NOT NULL,
+    project_id  INT          NOT NULL,
+    table_name  VARCHAR(255) NOT NULL,
+    column_name VARCHAR(255)          DEFAULT NULL,
+    update_by   INT          NOT NULL,
+    update_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT UNIQUE uk_project_id_table_name_column_name (project_id, table_name, column_name)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'custom document description';

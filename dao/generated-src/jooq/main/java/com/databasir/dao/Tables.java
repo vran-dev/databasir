@@ -8,6 +8,7 @@ import com.databasir.dao.tables.DataSource;
 import com.databasir.dao.tables.DataSourceProperty;
 import com.databasir.dao.tables.DatabaseDocument;
 import com.databasir.dao.tables.DatabaseType;
+import com.databasir.dao.tables.DocumentDescription;
 import com.databasir.dao.tables.DocumentDiscussion;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
@@ -51,6 +52,11 @@ public class Tables {
      * customer database types
      */
     public static final DatabaseType DATABASE_TYPE = DatabaseType.DATABASE_TYPE;
+
+    /**
+     * custom document description
+     */
+    public static final DocumentDescription DOCUMENT_DESCRIPTION = DocumentDescription.DOCUMENT_DESCRIPTION;
 
     /**
      * The table <code>databasir.document_discussion</code>.
