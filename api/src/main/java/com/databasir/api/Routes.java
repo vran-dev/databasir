@@ -85,13 +85,15 @@ public interface Routes {
         String EXPORT = BASE + "/projects/{projectId}/document_files";
     }
 
-    interface DocumentRemark {
+    interface DocumentDiscussion {
 
-        String LIST = BASE + "/groups/{groupId}/projects/{projectId}/remarks";
+        String DISCUSSION_BASE = BASE + "/groups/{groupId}/projects/{projectId}/discussions";
 
-        String CREATE = BASE + "/groups/{groupId}/projects/{projectId}/remarks";
+        String LIST = DISCUSSION_BASE;
 
-        String DELETE = BASE + "/groups/{groupId}/projects/{projectId}/remarks/{remarkId}";
+        String CREATE = DISCUSSION_BASE;
+
+        String DELETE = DISCUSSION_BASE + "/{discussionId}";
     }
 
     interface Setting {

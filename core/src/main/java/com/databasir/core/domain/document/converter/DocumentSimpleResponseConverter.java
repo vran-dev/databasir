@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = JsonConverter.class, unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface DocumentSimpleResponseConverter {
@@ -17,5 +19,17 @@ public interface DocumentSimpleResponseConverter {
     @Mapping(target = "createAt", source = "databaseDocument.createAt")
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
     DatabaseDocumentSimpleResponse of(DatabaseDocumentPojo databaseDocument,
-                                      List<TableDocumentPojo> tables);
+                                      List<DatabaseDocumentSimpleResponse.TableData> tables);
+
+    DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables, Integer discussionCount);
+
+    default List<DatabaseDocumentSimpleResponse.TableData> of(List<TableDocumentPojo> tables,
+                                                              Map<String, Integer> discussionCountMapByTableName) {
+        return tables.stream()
+                .map(table -> {
+                    Integer count = discussionCountMapByTableName.get(table.getName());
+                    return of(table, count);
+                })
+                .collect(Collectors.toList());
+    }
 }

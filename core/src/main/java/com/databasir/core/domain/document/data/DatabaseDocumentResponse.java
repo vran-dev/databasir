@@ -46,6 +46,8 @@ public class DatabaseDocumentResponse {
 
         private String comment;
 
+        private Integer discussionCount;
+
         @Builder.Default
         private List<ColumnDocumentResponse> columns = new ArrayList<>();
 
@@ -81,6 +83,8 @@ public class DatabaseDocumentResponse {
             private String autoIncrement;
 
             private String defaultValue;
+
+            private Integer discussionCount;
 
             private LocalDateTime createAt;
         }

@@ -6,10 +6,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class RemarkCreateRequest {
+public class DiscussionCreateRequest {
 
     @NotBlank
-    private String remark;
+    private String content;
 
     @NotNull
     private String tableName;

@@ -1,14 +1,14 @@
 package com.databasir.core.domain.remark.service;
 
 import com.databasir.common.exception.Forbidden;
-import com.databasir.core.domain.remark.converter.RemarkResponseConverter;
-import com.databasir.core.domain.remark.data.RemarkCreateRequest;
-import com.databasir.core.domain.remark.data.RemarkListCondition;
-import com.databasir.core.domain.remark.data.RemarkResponse;
-import com.databasir.dao.impl.DocumentRemarkDao;
+import com.databasir.core.domain.remark.converter.DiscussionResponseConverter;
+import com.databasir.core.domain.remark.data.DiscussionCreateRequest;
+import com.databasir.core.domain.remark.data.DiscussionListCondition;
+import com.databasir.core.domain.remark.data.DiscussionResponse;
+import com.databasir.dao.impl.DocumentDiscussionDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.tables.pojos.DocumentRemarkPojo;
+import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,58 +22,59 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DocumentRemarkService {
+public class DocumentDiscussionService {
 
-    private final DocumentRemarkDao documentRemarkDao;
+    private final DocumentDiscussionDao documentDiscussionDao;
 
     private final ProjectDao projectDao;
 
     private final UserDao userDao;
 
-    private final RemarkResponseConverter remarkResponseConverter;
+    private final DiscussionResponseConverter discussionResponseConverter;
 
     public void deleteById(Integer groupId,
                            Integer projectId,
-                           Integer remarkId) {
+                           Integer discussionId) {
         if (projectDao.exists(groupId, projectId)) {
-            documentRemarkDao.deleteById(remarkId);
+            documentDiscussionDao.deleteById(discussionId);
         } else {
             throw new Forbidden();
         }
     }
 
-    public Page<RemarkResponse> list(Integer groupId,
-                                     Integer projectId,
-                                     Pageable pageable,
-                                     RemarkListCondition condition) {
+    public Page<DiscussionResponse> list(Integer groupId,
+                                         Integer projectId,
+                                         Pageable pageable,
+                                         DiscussionListCondition condition) {
         if (projectDao.exists(groupId, projectId)) {
-            Page<DocumentRemarkPojo> data = documentRemarkDao.selectByPage(pageable, condition.toCondition(projectId));
+            Page<DocumentDiscussionPojo> data =
+                    documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
             Set<Integer> userIdList = data.getContent()
                     .stream()
-                    .map(DocumentRemarkPojo::getUserId)
+                    .map(DocumentDiscussionPojo::getUserId)
                     .collect(Collectors.toSet());
             Map<Integer, UserPojo> userMapById = userDao.selectUserIdIn(userIdList)
                     .stream()
                     .collect(Collectors.toMap(UserPojo::getId, Function.identity()));
             return data
-                    .map(remarkPojo -> {
-                        UserPojo userPojo = userMapById.get(remarkPojo.getUserId());
-                        return remarkResponseConverter.of(remarkPojo, userPojo);
+                    .map(dicussionPojo -> {
+                        UserPojo userPojo = userMapById.get(dicussionPojo.getUserId());
+                        return discussionResponseConverter.of(dicussionPojo, userPojo);
                     });
         } else {
             throw new Forbidden();
         }
     }
 
-    public void create(Integer groupId, Integer projectId, Integer userId, RemarkCreateRequest request) {
+    public void create(Integer groupId, Integer projectId, Integer userId, DiscussionCreateRequest request) {
         if (projectDao.exists(groupId, projectId)) {
-            DocumentRemarkPojo pojo = new DocumentRemarkPojo();
+            DocumentDiscussionPojo pojo = new DocumentDiscussionPojo();
             pojo.setUserId(userId);
             pojo.setProjectId(projectId);
-            pojo.setRemark(request.getRemark());
+            pojo.setContent(request.getContent());
             pojo.setTableName(request.getTableName());
             pojo.setColumnName(request.getColumnName());
-            documentRemarkDao.insertAndReturnId(pojo);
+            documentDiscussionDao.insertAndReturnId(pojo);
         } else {
             throw new Forbidden();
         }

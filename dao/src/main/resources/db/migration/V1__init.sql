@@ -211,10 +211,10 @@ CREATE TABLE IF NOT EXISTS login
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS document_remark
+CREATE TABLE IF NOT EXISTS document_discussion
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
-    remark      TEXT         NOT NULL,
+    content     TEXT         NOT NULL,
     user_id     INT          NOT NULL COMMENT 'user.id',
     project_id  INT          NOT NULL,
     table_name  VARCHAR(255) NOT NULL,

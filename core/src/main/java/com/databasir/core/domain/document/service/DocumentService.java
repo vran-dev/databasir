@@ -15,8 +15,10 @@ import com.databasir.core.meta.data.DatabaseMeta;
 import com.databasir.core.render.markdown.MarkdownBuilder;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
+import com.databasir.dao.value.DocumentDiscussionCountPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.tools.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,8 @@ public class DocumentService {
     private final TableIndexDocumentDao tableIndexDocumentDao;
 
     private final TableTriggerDocumentDao tableTriggerDocumentDao;
+
+    private final DocumentDiscussionDao documentDiscussionDao;
 
     private final DocumentPojoConverter documentPojoConverter;
 
@@ -129,21 +133,22 @@ public class DocumentService {
     }
 
     public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId, Long version) {
+        Optional<DatabaseDocumentPojo> documentOption;
         if (version == null) {
-            return databaseDocumentDao.selectNotArchivedByProjectId(projectId)
-                    .map(document -> {
-                        Integer id = document.getId();
-                        var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
-                        return documentSimpleResponseConverter.of(document, tables);
-                    });
+            documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
-            return databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version)
-                    .map(document -> {
-                        Integer id = document.getId();
-                        var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
-                        return documentSimpleResponseConverter.of(document, tables);
-                    });
+            documentOption = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version);
         }
+        return documentOption.map(document -> {
+            Integer id = document.getId();
+            var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
+            var discussionCountMapByTableName =
+                    documentDiscussionDao.selectTableDiscussionCount(projectId)
+                            .stream()
+                            .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getCount(), (a, b) -> a));
+            var tableMetas = documentSimpleResponseConverter.of(tables, discussionCountMapByTableName);
+            return documentSimpleResponseConverter.of(document, tableMetas);
+        });
     }
 
     public Optional<DatabaseDocumentResponse> getOneByProjectId(Integer projectId, Long version) {
@@ -207,19 +212,31 @@ public class DocumentService {
                 tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
         var triggers =
                 tableTriggerDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
+        var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
         Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
                 .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
         Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
                 .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
         Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
                 .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+        Map<String, Integer> discussionCountMapByJoinName = discussions.stream()
+                .collect(Collectors.toMap(
+                        d -> String.join(".",
+                                d.getTableName(),
+                                StringUtils.defaultIfBlank(d.getColumnName(), "")),
+                        DocumentDiscussionCountPojo::getCount,
+                        (a, b) -> a));
         return tables.stream()
                 .map(table -> {
                     Integer tableId = table.getId();
                     var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                    return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
+                    var discussionCount = discussionCountMapByJoinName.get(table.getName());
+                    var columnResponses =
+                            documentResponseConverter.of(subColumns, table.getName(), discussionCountMapByJoinName);
+                    return documentResponseConverter.of(table, discussionCount, columnResponses, subIndexes,
+                            subTriggers);
                 })
                 .collect(Collectors.toList());
     }

@@ -3,10 +3,10 @@ package com.databasir.api;
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.log.annotation.Operation;
-import com.databasir.core.domain.remark.data.RemarkCreateRequest;
-import com.databasir.core.domain.remark.data.RemarkListCondition;
-import com.databasir.core.domain.remark.data.RemarkResponse;
-import com.databasir.core.domain.remark.service.DocumentRemarkService;
+import com.databasir.core.domain.remark.data.DiscussionCreateRequest;
+import com.databasir.core.domain.remark.data.DiscussionListCondition;
+import com.databasir.core.domain.remark.data.DiscussionResponse;
+import com.databasir.core.domain.remark.service.DocumentDiscussionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,46 +22,46 @@ import javax.validation.Valid;
 @RestController
 @Validated
 @RequiredArgsConstructor
-public class DocumentRemarkController {
+public class DocumentDiscussionController {
 
-    private final DocumentRemarkService documentRemarkService;
+    private final DocumentDiscussionService documentDiscussionService;
 
-    @GetMapping(Routes.DocumentRemark.LIST)
-    public JsonData<Page<RemarkResponse>> listByProjectId(@PathVariable Integer groupId,
-                                                          @PathVariable Integer projectId,
-                                                          @PageableDefault(sort = "id",
-                                                                  direction = Sort.Direction.DESC)
-                                                                  Pageable request,
-                                                          RemarkListCondition condition) {
-        var data = documentRemarkService.list(groupId, projectId, request, condition);
+    @GetMapping(Routes.DocumentDiscussion.LIST)
+    public JsonData<Page<DiscussionResponse>> listByProjectId(@PathVariable Integer groupId,
+                                                              @PathVariable Integer projectId,
+                                                              @PageableDefault(sort = "id",
+                                                                      direction = Sort.Direction.DESC)
+                                                                      Pageable request,
+                                                              DiscussionListCondition condition) {
+        var data = documentDiscussionService.list(groupId, projectId, request, condition);
         return JsonData.ok(data);
     }
 
-    @DeleteMapping(Routes.DocumentRemark.DELETE)
+    @DeleteMapping(Routes.DocumentDiscussion.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId)")
     @Operation(module = Operation.Modules.PROJECT,
             name = "删除评论",
             involvedProjectId = "#projectId")
     public JsonData<Void> delete(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,
-                                 @PathVariable Integer remarkId) {
-        documentRemarkService.deleteById(groupId, projectId, remarkId);
+                                 @PathVariable Integer discussionId) {
+        documentDiscussionService.deleteById(groupId, projectId, discussionId);
         return JsonData.ok();
     }
 
-    @PostMapping(Routes.DocumentRemark.CREATE)
+    @PostMapping(Routes.DocumentDiscussion.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
     @Operation(module = Operation.Modules.PROJECT,
             name = "新增评论",
             involvedProjectId = "#projectId")
     public JsonData<Void> create(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,
-                                 @RequestBody @Valid RemarkCreateRequest request) {
+                                 @RequestBody @Valid DiscussionCreateRequest request) {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
         Integer userId = principal.getUserPojo().getId();
-        documentRemarkService.create(groupId, projectId, userId, request);
+        documentDiscussionService.create(groupId, projectId, userId, request);
         return JsonData.ok();
     }
 }
