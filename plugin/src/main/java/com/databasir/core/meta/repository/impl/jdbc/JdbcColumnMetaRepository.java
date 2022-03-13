@@ -30,10 +30,11 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
         List<ColumnMeta> columnDocs = new ArrayList<>();
         String databaseName = tableCondition.getDatabaseName();
         String tableName = tableCondition.getTableName();
-        List<String> primaryKeyColumns = selectPrimaryKeyColumns(connection.getMetaData(), databaseName, tableName);
+        List<String> primaryKeyColumns = selectPrimaryKeyColumns(connection.getMetaData(), tableCondition);
         ResultSet columnsResult;
         try {
-            columnsResult = connection.getMetaData().getColumns(databaseName, null, tableName, null);
+            columnsResult = connection.getMetaData()
+                    .getColumns(databaseName, tableCondition.getSchemaName(), tableName, null);
         } catch (SQLException e) {
             log.warn("warn: ignore columns in " + databaseName + "." + tableName);
             return columnDocs;
@@ -85,9 +86,9 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
     }
 
     private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta,
-                                                 String catalog,
-                                                 String tableName) throws SQLException {
-        ResultSet result = meta.getPrimaryKeys(catalog, null, tableName);
+                                                 TableCondition tableCondition) throws SQLException {
+        ResultSet result = meta.getPrimaryKeys(tableCondition.getDatabaseName(),
+                tableCondition.getSchemaName(), tableCondition.getTableName());
         List<String> columns = new ArrayList<>();
         while (result.next()) {
             String columnName = result.getString("COLUMN_NAME");

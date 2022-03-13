@@ -28,7 +28,8 @@ public class JdbcIndexMetaRepository implements IndexMetaRepository {
         List<IndexMeta> indexMetas = new ArrayList<>();
         ResultSet indexResults;
         try {
-            indexResults = connection.getMetaData().getIndexInfo(databaseName, null, tableName, false, false);
+            indexResults = connection.getMetaData()
+                    .getIndexInfo(databaseName, condition.getSchemaName(), tableName, false, false);
         } catch (SQLException e) {
             log.warn("warn: ignore " + databaseName + "." + tableName);
             return indexMetas;

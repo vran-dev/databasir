@@ -15,6 +15,7 @@ public class TableCondition extends Condition {
         return TableCondition.builder()
                 .databaseName(condition.getDatabaseName())
                 .tableName(tableName)
+                .schemaName(condition.getSchemaName())
                 .ignoreTableNameRegex(condition.getIgnoreTableNameRegex())
                 .ignoreTableColumnNameRegex(condition.getIgnoreTableColumnNameRegex())
                 .build();
