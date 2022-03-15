@@ -67,7 +67,6 @@ public interface DocumentPojoConverter extends BaseConverter {
                                            Integer tableDocumentId,
                                            TriggerMeta meta);
 
-
     default List<TableForeignKeyDocumentPojo> toForeignKeyPojo(Integer docId,
                                                                Integer tableMetaId,
                                                                List<ForeignKeyMeta> foreignKeys) {

@@ -196,7 +196,8 @@ public class DocumentService {
                         var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                         var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                         var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                        var subForeignKeys = foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        var subForeignKeys =
+                                foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                         return documentResponseConverter.of(
                                 table,
                                 subColumns,
@@ -208,7 +209,6 @@ public class DocumentService {
                     .collect(Collectors.toList());
             return documentResponseConverter.of(document, tableDocumentResponseList);
         });
-
     }
 
     public Page<DatabaseDocumentVersionResponse> getVersionsByProjectId(Integer projectId, Pageable page) {
