@@ -55,10 +55,18 @@ public class Databasir {
         if (columnMetaRepository == null) {
             columnMetaRepository = new JdbcColumnMetaRepository();
         }
+        ForeignKeyMetaRepository foreignKeyMetaRepository = config.getForeignKeyMetaRepository();
+        if (foreignKeyMetaRepository == null) {
+            foreignKeyMetaRepository = new JdbcForeignKeyMetaRepository();
+        }
         TableMetaRepository tableMetaRepository = config.getTableMetaRepository();
         if (tableMetaRepository == null) {
-            tableMetaRepository =
-                    new JdbcTableMetaRepository(columnMetaRepository, indexMetaRepository, triggerMetaRepository);
+            tableMetaRepository = new JdbcTableMetaRepository(
+                    columnMetaRepository,
+                    indexMetaRepository,
+                    triggerMetaRepository,
+                    foreignKeyMetaRepository
+            );
         }
         DatabaseMetaRepository databaseMetaRepository = config.getDatabaseMetaRepository();
         if (databaseMetaRepository == null) {

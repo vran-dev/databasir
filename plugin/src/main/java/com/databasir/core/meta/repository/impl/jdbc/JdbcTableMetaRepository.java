@@ -2,10 +2,7 @@ package com.databasir.core.meta.repository.impl.jdbc;
 
 import com.databasir.core.meta.data.ColumnMeta;
 import com.databasir.core.meta.data.TableMeta;
-import com.databasir.core.meta.repository.ColumnMetaRepository;
-import com.databasir.core.meta.repository.IndexMetaRepository;
-import com.databasir.core.meta.repository.TableMetaRepository;
-import com.databasir.core.meta.repository.TriggerMetaRepository;
+import com.databasir.core.meta.repository.*;
 import com.databasir.core.meta.repository.condition.Condition;
 import com.databasir.core.meta.repository.condition.TableCondition;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +23,8 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
     private final IndexMetaRepository indexMetaRepository;
 
     private final TriggerMetaRepository triggerMetaRepository;
+
+    private final ForeignKeyMetaRepository foreignKeyMetaRepository;
 
     @Override
     public List<TableMeta> selectTables(Connection connection, Condition condition) {
@@ -63,6 +62,7 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
                         .type(tableType)
                         .comment(tableComment)
                         .columns(columns)
+                        .foreignKeys(foreignKeyMetaRepository.selectForeignKeys(connection, tableCondition))
                         .indexes(indexMetaRepository.selectIndexes(connection, tableCondition))
                         .triggers(triggerMetaRepository.selectTriggers(connection, tableCondition))
                         .build();
