@@ -1,11 +1,11 @@
 package com.databasir.api;
 
 import com.databasir.common.JsonData;
-import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -62,24 +57,18 @@ public class DocumentController {
 
     @GetMapping(Routes.Document.EXPORT)
     public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
-                                                                  @RequestParam(required = false) Long version) {
-        String data = documentService.toMarkdown(projectId, version).get();
-        try {
-            Path path = Files.writeString(Paths.get(UUID.randomUUID().toString() + ".md"), data,
-                    StandardCharsets.UTF_8);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentDisposition(ContentDisposition.attachment()
-                    .filename("demo.md", StandardCharsets.UTF_8)
-                    .build());
-            byte[] bytes = Files.readAllBytes(path);
-            Files.deleteIfExists(path);
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(out -> out.write(bytes));
-        } catch (IOException e) {
-            throw new SystemException("System error");
-        }
+                                                                  @RequestParam(required = false)
+                                                                          Long version,
+                                                                  @RequestParam DocumentFileType fileType) {
+        HttpHeaders headers = new HttpHeaders();
+        String fileName = "project[" + projectId + "]." + fileType.getFileExtension();
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename("demo.md", StandardCharsets.UTF_8)
+                .build());
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(out -> documentService.export(projectId, version, fileType, out));
     }
 
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)

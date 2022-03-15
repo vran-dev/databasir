@@ -34,6 +34,7 @@ subprojects {
         postgresqlConnectorVersion = '42.3.1'
         hikariVersion = '5.0.0'
         jacksonVersion = '2.13.1'
+        easyExcelVersion = '3.0.5'
     }
 
     dependencies {
@@ -47,6 +48,8 @@ subprojects {
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
         implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+        implementation "com.alibaba:easyexcel:${easyExcelVersion}"
+
     }
 
     test {
