@@ -111,7 +111,6 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                 columnContent);
     }
 
-
     private void indexBuild(MarkdownBuilder builder, TableDocumentResponse table) {
         builder.thirdTitle("Indexes");
         List<List<String>> indexContent = new ArrayList<>();
