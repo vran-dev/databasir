@@ -5,6 +5,7 @@ import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
+import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.core.domain.log.annotation.Operation;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +90,7 @@ public class DocumentController {
     }
 
     @PostMapping(Routes.Document.GET_TABLE_DETAIL)
-    public JsonData<List<DatabaseDocumentResponse.TableDocumentResponse>> getTableDocument(
+    public JsonData<List<TableDocumentResponse>> getTableDocument(
             @PathVariable Integer projectId,
             @PathVariable Integer documentId,
             @RequestBody List<Integer> tableIds) {

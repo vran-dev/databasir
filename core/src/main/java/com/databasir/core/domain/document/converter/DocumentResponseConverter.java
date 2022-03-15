@@ -1,6 +1,7 @@
 package com.databasir.core.domain.document.converter;
 
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
+import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.dao.tables.pojos.*;
 import org.mapstruct.Mapper;
@@ -16,28 +17,32 @@ public interface DocumentResponseConverter {
 
     @Mapping(target = "columns", source = "columns")
     @Mapping(target = "indexes", source = "indexes")
+    @Mapping(target = "foreignKeys", source = "foreignKeys")
     @Mapping(target = "triggers", source = "triggers")
-    DatabaseDocumentResponse.TableDocumentResponse of(TableDocumentPojo tableDocument,
-                                                      List<TableColumnDocumentPojo> columns,
-                                                      List<TableIndexDocumentPojo> indexes,
-                                                      List<TableTriggerDocumentPojo> triggers);
+    TableDocumentResponse of(TableDocumentPojo tableDocument,
+                             List<TableColumnDocumentPojo> columns,
+                             List<TableIndexDocumentPojo> indexes,
+                             List<TableForeignKeyDocumentPojo> foreignKeys,
+                             List<TableTriggerDocumentPojo> triggers);
 
     @Mapping(target = "columns", source = "columns")
     @Mapping(target = "indexes", source = "indexes")
+    @Mapping(target = "foreignKeys", source = "foreignKeys")
     @Mapping(target = "triggers", source = "triggers")
     @SuppressWarnings("checkstyle:all")
-    DatabaseDocumentResponse.TableDocumentResponse of(TableDocumentPojo tableDocument,
-                                                      Integer discussionCount,
-                                                      String description,
-                                                      List<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse> columns,
-                                                      List<TableIndexDocumentPojo> indexes,
-                                                      List<TableTriggerDocumentPojo> triggers);
+    TableDocumentResponse of(TableDocumentPojo tableDocument,
+                             Integer discussionCount,
+                             String description,
+                             List<TableDocumentResponse.ColumnDocumentResponse> columns,
+                             List<TableIndexDocumentPojo> indexes,
+                             List<TableForeignKeyDocumentPojo> foreignKeys,
+                             List<TableTriggerDocumentPojo> triggers);
 
-    DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocumentPojo pojo,
-                                                                             Integer discussionCount,
-                                                                             String description);
+    TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocumentPojo pojo,
+                                                    Integer discussionCount,
+                                                    String description);
 
-    default List<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse> of(
+    default List<TableDocumentResponse.ColumnDocumentResponse> of(
             List<TableColumnDocumentPojo> columns,
             String tableName,
             Map<String, Integer> discussionCountMapByJoinName,
@@ -52,11 +57,11 @@ public interface DocumentResponseConverter {
     }
 
     @Mapping(target = "columnNames", source = "columnNameArray")
-    DatabaseDocumentResponse.TableDocumentResponse.IndexDocumentResponse of(TableIndexDocumentPojo indexDocument);
+    TableDocumentResponse.IndexDocumentResponse of(TableIndexDocumentPojo indexDocument);
 
     @Mapping(target = "id", source = "databaseDocument.id")
     @Mapping(target = "createAt", source = "databaseDocument.createAt")
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
     DatabaseDocumentResponse of(DatabaseDocumentPojo databaseDocument,
-                                List<DatabaseDocumentResponse.TableDocumentResponse> tables);
+                                List<TableDocumentResponse> tables);
 }
