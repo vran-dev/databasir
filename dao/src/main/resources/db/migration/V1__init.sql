@@ -166,6 +166,25 @@ CREATE TABLE IF NOT EXISTS table_column_document
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS table_foreign_key_document
+(
+    id                   INT PRIMARY KEY AUTO_INCREMENT,
+    table_document_id    INT          NOT NULL,
+    database_document_id INT          NOT NULL,
+    fk_name              VARCHAR(255)          DEFAULT NULL,
+    fk_table_name        VARCHAR(512) NOT NULL,
+    fk_column_name       VARCHAR(512) NOT NULL,
+    pk_name              VARCHAR(255)          DEFAULT NULL,
+    pk_table_name        VARCHAR(512) NOT NULL,
+    pk_column_name       VARCHAR(512) NOT NULL,
+    update_rule          VARCHAR(128) NOT NULL COMMENT 'NO_ACTION, CASCADE, SET_NULL, SET_DEFAULT',
+    delete_rule          VARCHAR(128) NOT NULL COMMENT 'NO_ACTION, CASCADE, SET_NULL, SET_DEFAULT',
+    create_at            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_table_document_id (table_document_id),
+    INDEX idx_database_document_id (database_document_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS table_index_document
 (
 
@@ -270,3 +289,43 @@ CREATE TABLE IF NOT EXISTS oauth_app
     UNIQUE uk_registration_id (registration_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci COMMENT 'oauth app info';
+
+CREATE TABLE IF NOT EXISTS database_type
+(
+    id                     INT PRIMARY KEY AUTO_INCREMENT,
+    database_type          VARCHAR(128)  NOT NULL COMMENT 'such as mysql, postgresql, mysql5.5 and so on',
+    icon                   VARCHAR(512)  NOT NULL DEFAULT '',
+    description            VARCHAR(512)  NOT NULL,
+    jdbc_driver_file_url   VARCHAR(1024) NOT NULL,
+    jdbc_driver_class_name VARCHAR(255)  NOT NULL,
+    jdbc_protocol          VARCHAR(128)  NOT NULL,
+    url_pattern            VARCHAR(255)  NOT NULL,
+    deleted                BOOLEAN       NOT NULL DEFAULT FALSE,
+    deleted_token          INT           NOT NULL DEFAULT 0,
+    update_at              TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at              TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_database_type_deleted_deleted_token UNIQUE (database_type, deleted, deleted_token)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'customer database types';
+
+REPLACE INTO databasir.database_type (id, database_type, icon, DESCRIPTION, jdbc_driver_file_url,
+                                      jdbc_driver_class_name,
+                                      jdbc_protocol, url_pattern)
+VALUES (1, 'mysql', '', 'system default mysql', 'N/A', 'com.mysql.cj.jdbc.Driver', 'jdbc:mysql',
+        '{{jdbc.protocol}}://{{db.url}}/{{db.name}}'),
+       (2, 'postgresql', '', 'system default postgresql', 'N/A', 'org.postgresql.Driver', 'jdbc:postgresql',
+        '{{jdbc.protocol}}://{{db.url}}/{{db.name}}');
+
+CREATE TABLE IF NOT EXISTS document_description
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    content     TEXT         NOT NULL,
+    project_id  INT          NOT NULL,
+    table_name  VARCHAR(255) NOT NULL,
+    column_name VARCHAR(255)          DEFAULT NULL,
+    update_by   INT          NOT NULL,
+    update_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT UNIQUE uk_project_id_table_name_column_name (project_id, table_name, column_name)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'custom document description';

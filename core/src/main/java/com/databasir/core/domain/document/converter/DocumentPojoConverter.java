@@ -2,6 +2,7 @@ package com.databasir.core.domain.document.converter;
 
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.meta.data.ColumnMeta;
+import com.databasir.core.meta.data.ForeignKeyMeta;
 import com.databasir.core.meta.data.IndexMeta;
 import com.databasir.core.meta.data.TriggerMeta;
 import com.databasir.dao.tables.pojos.*;
@@ -65,5 +66,19 @@ public interface DocumentPojoConverter extends BaseConverter {
     TableTriggerDocumentPojo toTriggerPojo(Integer databaseDocumentId,
                                            Integer tableDocumentId,
                                            TriggerMeta meta);
+
+    default List<TableForeignKeyDocumentPojo> toForeignKeyPojo(Integer docId,
+                                                               Integer tableMetaId,
+                                                               List<ForeignKeyMeta> foreignKeys) {
+        return foreignKeys.stream()
+                .map(key -> toForeignKeyPojo(docId, tableMetaId, key))
+                .collect(Collectors.toList());
+    }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createAt", ignore = true)
+    TableForeignKeyDocumentPojo toForeignKeyPojo(Integer databaseDocumentId,
+                                                 Integer tableDocumentId,
+                                                 ForeignKeyMeta foreignKey);
 
 }

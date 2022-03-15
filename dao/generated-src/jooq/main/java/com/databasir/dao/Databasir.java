@@ -20,6 +20,7 @@ import com.databasir.dao.tables.SysKey;
 import com.databasir.dao.tables.SysMail;
 import com.databasir.dao.tables.TableColumnDocument;
 import com.databasir.dao.tables.TableDocument;
+import com.databasir.dao.tables.TableForeignKeyDocument;
 import com.databasir.dao.tables.TableIndexDocument;
 import com.databasir.dao.tables.TableTriggerDocument;
 import com.databasir.dao.tables.User;
@@ -128,6 +129,11 @@ public class Databasir extends SchemaImpl {
     public final TableDocument TABLE_DOCUMENT = TableDocument.TABLE_DOCUMENT;
 
     /**
+     * The table <code>databasir.table_foreign_key_document</code>.
+     */
+    public final TableForeignKeyDocument TABLE_FOREIGN_KEY_DOCUMENT = TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT;
+
+    /**
      * The table <code>databasir.table_index_document</code>.
      */
     public final TableIndexDocument TABLE_INDEX_DOCUMENT = TableIndexDocument.TABLE_INDEX_DOCUMENT;
@@ -184,6 +190,7 @@ public class Databasir extends SchemaImpl {
             SysMail.SYS_MAIL,
             TableColumnDocument.TABLE_COLUMN_DOCUMENT,
             TableDocument.TABLE_DOCUMENT,
+            TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT,
             TableIndexDocument.TABLE_INDEX_DOCUMENT,
             TableTriggerDocument.TABLE_TRIGGER_DOCUMENT,
             User.USER,

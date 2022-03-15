@@ -17,6 +17,8 @@ public class DatabasirConfig {
 
     private ColumnMetaRepository columnMetaRepository;
 
+    private ForeignKeyMetaRepository foreignKeyMetaRepository;
+
     private TableMetaRepository tableMetaRepository;
 
     private DatabaseMetaRepository databaseMetaRepository;

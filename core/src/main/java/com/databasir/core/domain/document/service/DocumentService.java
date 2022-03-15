@@ -9,6 +9,7 @@ import com.databasir.core.domain.document.converter.DocumentSimpleResponseConver
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
+import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.meta.data.DatabaseMeta;
@@ -56,6 +57,8 @@ public class DocumentService {
     private final TableIndexDocumentDao tableIndexDocumentDao;
 
     private final TableTriggerDocumentDao tableTriggerDocumentDao;
+
+    private final TableForeignKeyDocumentDao tableForeignKeyDocumentDao;
 
     private final DocumentDiscussionDao documentDiscussionDao;
 
@@ -109,26 +112,29 @@ public class DocumentService {
             TableDocumentPojo tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
             Integer tableMetaId = tableDocumentDao.insertAndReturnId(tableMeta);
-            List<TableColumnDocumentPojo> tableColumnMetas =
-                    documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
-            tableColumnDocumentDao.batchInsert(tableColumnMetas);
-            List<TableIndexDocumentPojo> tableIndexMetas =
-                    documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes())
-                            .stream()
-                            .filter(index -> {
-                                if (index.getName() != null) {
-                                    return true;
-                                } else {
-                                    log.warn("ignore table {} index {}, cause name is null", table.getName(), index);
-                                    return false;
-                                }
-                            })
-                            .collect(Collectors.toList());
+            // column
+            var columns = documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
+            tableColumnDocumentDao.batchInsert(columns);
+            // index
+            var indexes = documentPojoConverter.toIndexPojo(docId, tableMetaId, table.getIndexes())
+                    .stream()
+                    .filter(index -> {
+                        if (index.getName() != null) {
+                            return true;
+                        } else {
+                            log.warn("ignore table {} index {}, cause name is null", table.getName(), index);
+                            return false;
+                        }
+                    })
+                    .collect(Collectors.toList());
+            tableIndexDocumentDao.batchInsert(indexes);
+            // foreign key
+            var foreignKeys = documentPojoConverter.toForeignKeyPojo(docId, tableMetaId, table.getForeignKeys());
+            tableForeignKeyDocumentDao.batchInsert(foreignKeys);
 
-            tableIndexDocumentDao.batchInsert(tableIndexMetas);
-            List<TableTriggerDocumentPojo> tableTriggerMetas =
-                    documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
-            tableTriggerDocumentDao.batchInsert(tableTriggerMetas);
+            // trigger
+            var triggers = documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
+            tableTriggerDocumentDao.batchInsert(triggers);
         });
         log.info("save new version document success: projectId = {}, name = {}, version =  {}",
                 projectId, meta.getDatabaseName(), version);
@@ -175,24 +181,34 @@ public class DocumentService {
             var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(id);
             var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
             var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
+            var foreignKeys = tableForeignKeyDocumentDao.selectByDatabaseDocumentId(id);
             Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
                     .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
             Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
                     .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
             Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
                     .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+            Map<Integer, List<TableForeignKeyDocumentPojo>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
+                    .collect(Collectors.groupingBy(TableForeignKeyDocumentPojo::getTableDocumentId));
             var tableDocumentResponseList = tables.stream()
                     .map(table -> {
                         Integer tableId = table.getId();
                         var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                         var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                         var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                        return documentResponseConverter.of(table, subColumns, subIndexes, subTriggers);
+                        var subForeignKeys =
+                                foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        return documentResponseConverter.of(
+                                table,
+                                subColumns,
+                                subIndexes,
+                                subForeignKeys,
+                                subTriggers
+                        );
                     })
                     .collect(Collectors.toList());
             return documentResponseConverter.of(document, tableDocumentResponseList);
         });
-
     }
 
     public Page<DatabaseDocumentVersionResponse> getVersionsByProjectId(Integer projectId, Pageable page) {
@@ -207,9 +223,9 @@ public class DocumentService {
                 .orElseGet(Page::empty);
     }
 
-    public List<DatabaseDocumentResponse.TableDocumentResponse> getTableDetails(Integer projectId,
-                                                                                Integer databaseDocumentId,
-                                                                                List<Integer> tableIds) {
+    public List<TableDocumentResponse> getTableDetails(Integer projectId,
+                                                       Integer databaseDocumentId,
+                                                       List<Integer> tableIds) {
         // maybe deleted
         if (CollectionUtils.isEmpty(tableIds) || !projectDao.existsById(projectId)) {
             return Collections.emptyList();
@@ -227,6 +243,12 @@ public class DocumentService {
                 tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
         Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
                 .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+
+        // foreign keys
+        var foreignKeys =
+                tableForeignKeyDocumentDao.selectByDatabaseDocumentIdAndTableIdIn(databaseDocumentId, tableIds);
+        Map<Integer, List<TableForeignKeyDocumentPojo>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
+                .collect(Collectors.groupingBy(TableForeignKeyDocumentPojo::getTableDocumentId));
 
         // trigger
         var triggers =
@@ -259,18 +281,24 @@ public class DocumentService {
                     Integer tableId = table.getId();
                     var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                    var subForeignKeys = foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
                     var discussionCount = discussionCountMapByJoinName.get(table.getName());
                     var description = descriptionMapByJoinName.get(table.getName());
-                    var columnResponses =
-                            documentResponseConverter.of(
-                                    subColumns,
-                                    table.getName(),
-                                    discussionCountMapByJoinName,
-                                    descriptionMapByJoinName);
-                    return documentResponseConverter.of(table, discussionCount, description, columnResponses,
+                    var columnResponses = documentResponseConverter.of(
+                            subColumns,
+                            table.getName(),
+                            discussionCountMapByJoinName,
+                            descriptionMapByJoinName);
+                    return documentResponseConverter.of(
+                            table,
+                            discussionCount,
+                            description,
+                            columnResponses,
                             subIndexes,
-                            subTriggers);
+                            subForeignKeys,
+                            subTriggers
+                    );
                 })
                 .collect(Collectors.toList());
     }
@@ -284,13 +312,13 @@ public class DocumentService {
                     builder.secondTitle("overview");
                     List<List<String>> overviewContent = new ArrayList<>();
                     for (int i = 0; i < doc.getTables().size(); i++) {
-                        DatabaseDocumentResponse.TableDocumentResponse table = doc.getTables().get(i);
+                        TableDocumentResponse table = doc.getTables().get(i);
                         overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(),
                                 table.getComment()));
                     }
                     builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
 
-                    Function<DatabaseDocumentResponse.TableDocumentResponse.ColumnDocumentResponse, String>
+                    Function<TableDocumentResponse.ColumnDocumentResponse, String>
                             columnDefaultValueMapping = column -> {
                         if (Objects.equals(column.getNullable(), "YES")) {
                             return Objects.requireNonNullElse(column.getDefaultValue(), "null");

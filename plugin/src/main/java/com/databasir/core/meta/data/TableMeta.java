@@ -25,5 +25,8 @@ public class TableMeta {
     @Builder.Default
     private List<IndexMeta> indexes = Collections.emptyList();
 
+    @Builder.Default
+    private List<ForeignKeyMeta> foreignKeys = Collections.emptyList();
+
     private String remark;
 }
