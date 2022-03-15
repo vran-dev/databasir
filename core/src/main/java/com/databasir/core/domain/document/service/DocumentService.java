@@ -10,10 +10,11 @@ import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.generator.DocumentFileGenerator;
+import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.meta.data.DatabaseMeta;
-import com.databasir.core.render.markdown.MarkdownBuilder;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
 import com.databasir.dao.value.DocumentDiscussionCountPojo;
@@ -26,9 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.OutputStream;
 import java.sql.Connection;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,6 +75,8 @@ public class DocumentService {
     private final DocumentSimpleResponseConverter documentSimpleResponseConverter;
 
     private final JsonConverter jsonConverter;
+
+    private final List<DocumentFileGenerator> documentFileGenerators;
 
     @Transactional
     public void syncByProjectId(Integer projectId) {
@@ -303,82 +309,20 @@ public class DocumentService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<String> toMarkdown(Integer projectId, Long version) {
-        return getOneByProjectId(projectId, version)
-                .map(doc -> {
-                    MarkdownBuilder builder = MarkdownBuilder.builder();
-                    builder.primaryTitle(doc.getDatabaseName());
-                    // overview
-                    builder.secondTitle("overview");
-                    List<List<String>> overviewContent = new ArrayList<>();
-                    for (int i = 0; i < doc.getTables().size(); i++) {
-                        TableDocumentResponse table = doc.getTables().get(i);
-                        overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(),
-                                table.getComment()));
-                    }
-                    builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
-
-                    Function<TableDocumentResponse.ColumnDocumentResponse, String>
-                            columnDefaultValueMapping = column -> {
-                        if (Objects.equals(column.getNullable(), "YES")) {
-                            return Objects.requireNonNullElse(column.getDefaultValue(), "null");
-                        } else {
-                            return Objects.requireNonNullElse(column.getDefaultValue(), "");
-                        }
-                    };
-                    // tables
-                    doc.getTables().forEach(table -> {
-                        builder.secondTitle(table.getName());
-
-                        // columns
-                        List<List<String>> columnContent = new ArrayList<>();
-                        for (int i = 0; i < table.getColumns().size(); i++) {
-                            var column = table.getColumns().get(i);
-                            String type;
-                            if (column.getDecimalDigits() == null || column.getDecimalDigits() == 0) {
-                                type = table.getType() + "(" + column.getSize() + ")";
-                            } else {
-                                type = table.getType() + "(" + column.getSize() + "," + column.getDecimalDigits() + ")";
-                            }
-                            columnContent.add(List.of((i + 1) + "",
-                                    column.getName(),
-                                    type,
-                                    column.getIsPrimaryKey() ? "YES" : "NO",
-                                    column.getNullable(),
-                                    column.getAutoIncrement(),
-                                    columnDefaultValueMapping.apply(column),
-                                    column.getComment()));
-                        }
-                        builder.thirdTitle("columns");
-                        builder.table(List.of("", "名称", "类型", "是否为主键", "可为空", "自增", "默认值", "备注"),
-                                columnContent);
-
-                        // indexes
-                        List<List<String>> indexContent = new ArrayList<>();
-                        for (int i = 0; i < table.getIndexes().size(); i++) {
-                            var index = table.getIndexes().get(i);
-                            String columnNames = String.join(", ", index.getColumnNames());
-                            String isUnique = index.getIsUnique() ? "YES" : "NO";
-                            indexContent.add(List.of((i + 1) + "", index.getName(), isUnique, columnNames));
-                        }
-                        builder.thirdTitle("indexes");
-                        builder.table(List.of("", "名称", "是否唯一", "关联列"), indexContent);
-
-                        if (!table.getTriggers().isEmpty()) {
-                            List<List<String>> triggerContent = new ArrayList<>();
-                            for (int i = 0; i < table.getTriggers().size(); i++) {
-                                var trigger = table.getTriggers().get(i);
-                                triggerContent.add(List.of((i + 1) + "",
-                                        trigger.getName(),
-                                        trigger.getTiming(),
-                                        trigger.getManipulation(),
-                                        trigger.getStatement()));
-                            }
-                            builder.thirdTitle("triggers");
-                            builder.table(List.of("", "名称", "timing", "manipulation", "statement"), triggerContent);
-                        }
-                    });
-                    return builder.build();
+    public void export(Integer projectId,
+                       Long version,
+                       DocumentFileType type,
+                       OutputStream out) {
+        getOneByProjectId(projectId, version)
+                .ifPresent(doc -> {
+                    var context = DocumentFileGenerator.DocumentFileGenerateContext.builder()
+                            .documentFileType(type)
+                            .databaseDocument(doc)
+                            .build();
+                    documentFileGenerators.stream()
+                            .filter(g -> g.support(type))
+                            .findFirst()
+                            .ifPresent(generator -> generator.generate(context, out));
                 });
     }
 }

@@ -30,6 +30,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.18.3'
     implementation 'org.commonmark:commonmark:0.18.1'
     implementation 'org.freemarker:freemarker:2.3.31'
+    implementation 'com.alibaba:easyexcel'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
