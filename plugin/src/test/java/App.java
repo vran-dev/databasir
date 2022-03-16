@@ -1,9 +1,3 @@
-import com.databasir.core.Databasir;
-import com.databasir.core.meta.data.DatabaseMeta;
-import org.junit.jupiter.api.Test;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,17 +5,17 @@ import java.util.Properties;
 
 public class App {
 
-    @Test
-    public void testRenderAsMarkdown() throws SQLException, ClassNotFoundException {
-        try (FileOutputStream out = new FileOutputStream("demo.md")) {
-            Connection connection = getJdbcConnection();
-            Databasir databasir = Databasir.of();
-            DatabaseMeta doc = databasir.get(connection, "demo").orElseThrow();
-            databasir.renderAsMarkdown(doc, out);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+//    @Test
+//    public void testRenderAsMarkdown() throws SQLException, ClassNotFoundException {
+//        try (FileOutputStream out = new FileOutputStream("demo.md")) {
+//            Connection connection = getJdbcConnection();
+//            Databasir databasir = Databasir.of();
+//            DatabaseMeta doc = databasir.get(connection, "demo").orElseThrow();
+//            databasir.renderAsMarkdown(doc, out);
+//        } catch (IOException e) {
+//            throw new IllegalStateException(e);
+//        }
+//    }
 
     private static Connection getJdbcConnection() throws SQLException, ClassNotFoundException {
         // get database connection
