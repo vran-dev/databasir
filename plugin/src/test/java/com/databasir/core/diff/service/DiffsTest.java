@@ -175,6 +175,12 @@ class DiffsTest {
         });
     }
 
+    /**
+     * modify three table: departments, dept_emp
+     * - dept_manager: add comment, change table type
+     * - departments: add comment
+     * - dept_emp: add comment
+     */
     @Test
     void diffTableModified() {
         DatabaseMeta original = load("ut/diffsTest/diffTableModified/original.json");
@@ -184,12 +190,6 @@ class DiffsTest {
         RootDiff diff = Diffs.diff(original, current);
         assertEquals(DiffType.MODIFIED, diff.getDiffType());
 
-        /**
-         * modify three table: departments, dept_emp
-         * - dept_manager: add comment, change table type
-         * - departments: add comment
-         * - dept_emp: add comment
-         */
         assertSame(1, diff.getFields().size());
         FieldDiff tableField = diff.getFields().iterator().next();
         assertEquals("tables", tableField.getFieldName());
@@ -211,11 +211,6 @@ class DiffsTest {
                 .stream()
                 .collect(Collectors.toMap(TableMeta::getName, Function.identity()));
 
-        /**
-         * - departments: add comment
-         * - dept_emp: add comment
-         * - dept_manager: add comment, change table type
-         */
         List.of("departments", "dept_emp", "dept_manager").forEach(tableName -> {
             assertTrue(tableFieldMap.containsKey(tableName));
             FieldDiff departments = tableFieldMap.get(tableName);
@@ -380,13 +375,6 @@ class DiffsTest {
                 .findFirst()
                 .orElseThrow();
 
-        /**
-         * dept_emp
-         * fk: dept_emp_ibfk_2
-         * column: from_date, to_date
-         * index: dept_no
-         * trigger: before_insert
-         */
         List.of("dept_emp").forEach(tableName -> {
             assertTrue(tableFieldMap.containsKey(tableName));
             FieldDiff departments = tableFieldMap.get(tableName);
@@ -445,6 +433,21 @@ class DiffsTest {
         });
     }
 
+
+    /**
+     * departments
+     * column: dept_no add comment
+     * column: dept_name add comment
+     * indexes: dept_name change unique=false
+     * <p>
+     * dept_emp
+     * column: emp_no change default value
+     * column: dept_noL change auto increment true
+     * indexes: dept_no
+     * triggers: before_insert
+     * foreignKeys: dept_emp_ibfk_2
+     * </p>
+     */
     @Test
     void diffTableFieldsModified() {
         DatabaseMeta original = load("ut/diffsTest/diffTableFieldsModified/original.json");
@@ -476,19 +479,6 @@ class DiffsTest {
                 .stream()
                 .collect(Collectors.toMap(TableMeta::getName, Function.identity()));
 
-        /**
-         * departments
-         * column: dept_no add comment
-         * column: dept_name add comment
-         * indexes: dept_name change unique=false
-         *
-         * dept_emp
-         * column: emp_no change default value
-         * column: dept_noL change auto increment true
-         * indexes: dept_no
-         * triggers: before_insert
-         * foreignKeys: dept_emp_ibfk_2
-         */
         List.of("departments", "dept_emp").forEach(tableName -> {
             assertTrue(tableFieldMap.containsKey(tableName));
             FieldDiff tableField = tableFieldMap.get(tableName);
@@ -571,7 +561,8 @@ class DiffsTest {
                     assertTrue(currentTableMap.get(tableName)
                             .getForeignKeys().stream().anyMatch(f -> Objects.equals(f, currentFk)));
                 }
-                if (tableName.equals("departments") && List.of("foreignKeys", "triggers").contains(field.getFieldName())) {
+                if (tableName.equals("departments")
+                        && List.of("foreignKeys", "triggers").contains(field.getFieldName())) {
                     assertIsNone(field);
                 }
             }
