@@ -69,12 +69,12 @@ public class TableDocument extends TableImpl<TableDocumentRecord> {
     /**
      * The column <code>databasir.table_document.type</code>.
      */
-    public final TableField<TableDocumentRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TableDocumentRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>databasir.table_document.comment</code>.
      */
-    public final TableField<TableDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TableDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(512), this, "");
 
     /**
      * The column <code>databasir.table_document.create_at</code>.

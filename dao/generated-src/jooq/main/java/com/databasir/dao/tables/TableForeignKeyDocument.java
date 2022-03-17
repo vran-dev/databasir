@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class TableForeignKeyDocument extends TableImpl<TableForeignKeyDocumentRe
      * <code>databasir.table_foreign_key_document.database_document_id</code>.
      */
     public final TableField<TableForeignKeyDocumentRecord, Integer> DATABASE_DOCUMENT_ID = createField(DSL.name("database_document_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.table_foreign_key_document.key_seq</code>.
+     */
+    public final TableField<TableForeignKeyDocumentRecord, Integer> KEY_SEQ = createField(DSL.name("key_seq"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>databasir.table_foreign_key_document.fk_name</code>.
@@ -203,11 +208,11 @@ public class TableForeignKeyDocument extends TableImpl<TableForeignKeyDocumentRe
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, Integer, String, String, String, String, String, String, String, String, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, Integer, Integer, Integer, String, String, String, String, String, String, String, String, LocalDateTime> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

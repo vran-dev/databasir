@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = JsonConverter.class, unmappedTargetPolicy = ReportingPolicy.WARN)
-public interface DocumentPojoConverter extends BaseConverter {
+public interface DocumentPojoConverter {
 
     @Mapping(target = "databaseName", source = "meta.databaseName")
     @Mapping(target = "schemaName", source = "meta.schemaName")
@@ -23,7 +23,6 @@ public interface DocumentPojoConverter extends BaseConverter {
                                         com.databasir.core.meta.data.DatabaseMeta meta,
                                         Long version);
 
-    @Mapping(target = "comment", qualifiedBy = NullToEmpty.class)
     TableDocumentPojo toTablePojo(Integer databaseDocumentId,
                                   com.databasir.core.meta.data.TableMeta meta);
 
@@ -35,7 +34,6 @@ public interface DocumentPojoConverter extends BaseConverter {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(target = "comment", qualifiedBy = NullToEmpty.class)
     TableColumnDocumentPojo toColumnPojo(Integer databaseDocumentId,
                                          Integer tableDocumentId,
                                          ColumnMeta meta);

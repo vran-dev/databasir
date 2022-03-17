@@ -15,7 +15,7 @@ public class ForeignKeyDiffProcessor implements DiffProcessor<ForeignKeyMeta> {
                 "foreignKeys",
                 fk -> {
                     if (fk.getFkName() == null) {
-                        return fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySql();
+                        return fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySeq();
                     } else {
                         return fk.getFkName();
                     }

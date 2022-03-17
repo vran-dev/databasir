@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ForeignKeyMeta {
 
-    private Integer keySql;
+    private Integer keySeq;
 
     /**
      * may null
