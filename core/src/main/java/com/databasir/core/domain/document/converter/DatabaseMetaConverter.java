@@ -31,11 +31,6 @@ public interface DatabaseMetaConverter {
         return of(database, tables, columnMap, indexMap, triggerMap, fkMap);
     }
 
-    default <R> Map<Integer, List<R>> groupBy(List<R> content, Function<R, Integer> idMapping) {
-        return content.stream()
-                .collect(Collectors.groupingBy(idMapping));
-    }
-
     default DatabaseMeta of(DatabaseDocumentPojo database,
                             List<TableDocumentPojo> tables,
                             Map<Integer, List<TableColumnDocumentPojo>> columnGroupByTableId,
@@ -69,4 +64,8 @@ public interface DatabaseMetaConverter {
     @Mapping(target = "columnNames", source = "pojo.columnNameArray")
     IndexMeta of(TableIndexDocumentPojo pojo);
 
+    default <R> Map<Integer, List<R>> groupBy(List<R> content, Function<R, Integer> idMapping) {
+        return content.stream()
+                .collect(Collectors.groupingBy(idMapping));
+    }
 }
