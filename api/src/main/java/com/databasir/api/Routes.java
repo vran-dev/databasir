@@ -82,6 +82,8 @@ public interface Routes {
 
         String GET_TABLE_DETAIL = BASE + "/projects/{projectId}/documents/{documentId}/table_documents";
 
+        String DIFF = BASE + "/projects/{projectId}/diff_documents";
+
         String EXPORT = BASE + "/projects/{projectId}/document_files";
     }
 

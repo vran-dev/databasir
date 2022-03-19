@@ -349,4 +349,20 @@ public class DocumentService {
                             .ifPresent(generator -> generator.generate(context, out));
                 });
     }
+
+    public RootDiff diff(Integer projectId, Long originalVersion, Long currentVersion) {
+        var original = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
+                .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        DatabaseDocumentPojo current;
+        if (currentVersion == null) {
+            current = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        } else {
+            current = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, currentVersion)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        }
+        DatabaseMeta currMeta = retrieveOriginalDatabaseMeta(current);
+        DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
+        return Diffs.diff(originalMeta, currMeta);
+    }
 }

@@ -19,18 +19,26 @@ public class TableDiffProcessor implements DiffProcessor<TableMeta> {
 
     private final ForeignKeyDiffProcessor foreignKeyDiffProcessor = new ForeignKeyDiffProcessor();
 
+    private static final TableMeta EMPTY = new TableMeta();
+
     @Override
     public FieldDiff process(String fieldName, List<TableMeta> original, List<TableMeta> current) {
         // diff tables field
         Map<String, TableMeta> originalMap = toMap(original, TableMeta::getName);
         Map<String, TableMeta> currentMap = toMap(current, TableMeta::getName);
-        List<FieldDiff> tables = new ArrayList<>(32);
-        // removed
-        List<FieldDiff> removedFields = originalRemovedField(originalMap, currentMap);
-        tables.addAll(removedFields);
+        List<FieldDiff> tables = new ArrayList<>();
+        List<TableMeta> added = added(originalMap, currentMap);
+        List<TableMeta> removed = removed(originalMap, currentMap);
         // added
-        List<FieldDiff> addedFields = currentAddedField(originalMap, currentMap);
+        List<FieldDiff> addedFields = added.stream()
+                .map(table -> diffTableField(EMPTY, table))
+                .collect(Collectors.toList());
         tables.addAll(addedFields);
+        // removed
+        List<FieldDiff> removedFields = removed.stream()
+                .map(table -> diffTableField(table, EMPTY))
+                .collect(Collectors.toList());
+        tables.addAll(removedFields);
         // modified
         List<FieldDiff> modified = originalMap.entrySet()
                 .stream()
@@ -61,6 +69,24 @@ public class TableDiffProcessor implements DiffProcessor<TableMeta> {
         return tablesField;
     }
 
+    private List<TableMeta> added(Map<String, TableMeta> originalMap,
+                                  Map<String, TableMeta> currentMap) {
+        return currentMap.entrySet()
+                .stream()
+                .filter(entry -> !originalMap.containsKey(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    private List<TableMeta> removed(Map<String, TableMeta> originalMap,
+                                    Map<String, TableMeta> currentMap) {
+        return originalMap.entrySet()
+                .stream()
+                .filter(entry -> !currentMap.containsKey(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
     private FieldDiff diffTableField(TableMeta original, TableMeta current) {
         FieldDiff columns =
                 columnDiffProcessor.process("columns", original.getColumns(), current.getColumns());
@@ -78,9 +104,19 @@ public class TableDiffProcessor implements DiffProcessor<TableMeta> {
         fields.add(foreignKeys);
         fields.add(triggers);
         fields.addAll(otherFields);
+        DiffType diffType;
+        if (original == EMPTY) {
+            diffType = DiffType.ADDED;
+        } else if (current == EMPTY) {
+            diffType = DiffType.REMOVED;
+        } else {
+            diffType = DiffType.MODIFIED;
+        }
         return FieldDiff.builder()
-                .diffType(DiffType.MODIFIED)
-                .fieldName(original.getName())
+                .diffType(diffType)
+                .fieldName(original == EMPTY ? current.getName() : original.getName())
+                .original(current == EMPTY ? original : null)
+                .current(original == EMPTY ? current : null)
                 .fields(fields)
                 .build();
     }
