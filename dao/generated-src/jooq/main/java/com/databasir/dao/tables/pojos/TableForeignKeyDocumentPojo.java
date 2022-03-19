@@ -19,6 +19,7 @@ public class TableForeignKeyDocumentPojo implements Serializable {
     private Integer       id;
     private Integer       tableDocumentId;
     private Integer       databaseDocumentId;
+    private Integer       keySeq;
     private String        fkName;
     private String        fkTableName;
     private String        fkColumnName;
@@ -35,6 +36,7 @@ public class TableForeignKeyDocumentPojo implements Serializable {
         this.id = value.id;
         this.tableDocumentId = value.tableDocumentId;
         this.databaseDocumentId = value.databaseDocumentId;
+        this.keySeq = value.keySeq;
         this.fkName = value.fkName;
         this.fkTableName = value.fkTableName;
         this.fkColumnName = value.fkColumnName;
@@ -50,6 +52,7 @@ public class TableForeignKeyDocumentPojo implements Serializable {
         Integer       id,
         Integer       tableDocumentId,
         Integer       databaseDocumentId,
+        Integer       keySeq,
         String        fkName,
         String        fkTableName,
         String        fkColumnName,
@@ -63,6 +66,7 @@ public class TableForeignKeyDocumentPojo implements Serializable {
         this.id = id;
         this.tableDocumentId = tableDocumentId;
         this.databaseDocumentId = databaseDocumentId;
+        this.keySeq = keySeq;
         this.fkName = fkName;
         this.fkTableName = fkTableName;
         this.fkColumnName = fkColumnName;
@@ -118,6 +122,20 @@ public class TableForeignKeyDocumentPojo implements Serializable {
      */
     public void setDatabaseDocumentId(Integer databaseDocumentId) {
         this.databaseDocumentId = databaseDocumentId;
+    }
+
+    /**
+     * Getter for <code>databasir.table_foreign_key_document.key_seq</code>.
+     */
+    public Integer getKeySeq() {
+        return this.keySeq;
+    }
+
+    /**
+     * Setter for <code>databasir.table_foreign_key_document.key_seq</code>.
+     */
+    public void setKeySeq(Integer keySeq) {
+        this.keySeq = keySeq;
     }
 
     /**
@@ -265,6 +283,7 @@ public class TableForeignKeyDocumentPojo implements Serializable {
         sb.append(id);
         sb.append(", ").append(tableDocumentId);
         sb.append(", ").append(databaseDocumentId);
+        sb.append(", ").append(keySeq);
         sb.append(", ").append(fkName);
         sb.append(", ").append(fkTableName);
         sb.append(", ").append(fkColumnName);

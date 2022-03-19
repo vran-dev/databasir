@@ -136,11 +136,11 @@ CREATE TABLE IF NOT EXISTS table_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
-    database_document_id INT       NOT NULL,
-    name                 TEXT      NOT NULL,
-    type                 TEXT      NOT NULL,
-    comment              TEXT      NOT NULL,
-    create_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    database_document_id INT          NOT NULL,
+    name                 TEXT         NOT NULL,
+    type                 VARCHAR(255) NOT NULL,
+    comment              VARCHAR(512)          DEFAULT NULL,
+    create_at            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_database_document_id (database_document_id)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS table_column_document
     database_document_id INT          NOT NULL,
     name                 TEXT         NOT NULL,
     type                 VARCHAR(255) NOT NULL,
-    comment              VARCHAR(512) NOT NULL,
+    comment              VARCHAR(512)          DEFAULT NULL,
     default_value        VARCHAR(512)          DEFAULT NULL,
     size                 INT          NOT NULL,
     decimal_digits       INT                   DEFAULT NULL,
@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS table_foreign_key_document
     id                   INT PRIMARY KEY AUTO_INCREMENT,
     table_document_id    INT          NOT NULL,
     database_document_id INT          NOT NULL,
+    key_seq              INT          NOT NULL DEFAULT 0,
     fk_name              VARCHAR(255)          DEFAULT NULL,
     fk_table_name        VARCHAR(512) NOT NULL,
     fk_column_name       VARCHAR(512) NOT NULL,

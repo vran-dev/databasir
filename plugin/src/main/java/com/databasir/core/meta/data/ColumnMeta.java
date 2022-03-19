@@ -1,10 +1,14 @@
 package com.databasir.core.meta.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ColumnMeta {
 
     private String name;

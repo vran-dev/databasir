@@ -81,7 +81,7 @@ public class TableColumnDocument extends TableImpl<TableColumnDocumentRecord> {
     /**
      * The column <code>databasir.table_column_document.comment</code>.
      */
-    public final TableField<TableColumnDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(512).nullable(false), this, "");
+    public final TableField<TableColumnDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(512), this, "");
 
     /**
      * The column <code>databasir.table_column_document.default_value</code>.

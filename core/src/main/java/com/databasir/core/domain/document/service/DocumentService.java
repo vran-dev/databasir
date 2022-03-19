@@ -2,7 +2,11 @@ package com.databasir.core.domain.document.service;
 
 import com.databasir.core.Databasir;
 import com.databasir.core.DatabasirConfig;
+import com.databasir.core.diff.Diffs;
+import com.databasir.core.diff.data.DiffType;
+import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.DomainErrors;
+import com.databasir.core.domain.document.converter.DatabaseMetaConverter;
 import com.databasir.core.domain.document.converter.DocumentPojoConverter;
 import com.databasir.core.domain.document.converter.DocumentResponseConverter;
 import com.databasir.core.domain.document.converter.DocumentSimpleResponseConverter;
@@ -74,6 +78,8 @@ public class DocumentService {
 
     private final DocumentSimpleResponseConverter documentSimpleResponseConverter;
 
+    private final DatabaseMetaConverter databaseMetaConverter;
+
     private final JsonConverter jsonConverter;
 
     private final List<DocumentFileGenerator> documentFileGenerators;
@@ -82,17 +88,35 @@ public class DocumentService {
     public void syncByProjectId(Integer projectId) {
         projectDao.selectOptionalById(projectId)
                 .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
-        DatabaseMeta meta = retrieveDatabaseMeta(projectId);
-        Optional<DatabaseDocumentPojo> latestDocumentOpt = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
-        if (latestDocumentOpt.isPresent()) {
-            DatabaseDocumentPojo latestDocument = latestDocumentOpt.get();
-            Integer previousDocumentId = latestDocument.getId();
+        DatabaseMeta current = retrieveDatabaseMeta(projectId);
+        Optional<DatabaseDocumentPojo> originalOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
+        if (originalOption.isPresent()) {
+            DatabaseDocumentPojo original = originalOption.get();
+            DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
+            RootDiff diff = Diffs.diff(originalMeta, current);
+            if (diff.getDiffType() == DiffType.NONE) {
+                log.info("ignore project {} {} sync data, because without change",
+                        projectId,
+                        original.getDatabaseName());
+                return;
+            }
+            Integer previousDocumentId = original.getId();
             // archive old version
             databaseDocumentDao.updateIsArchiveById(previousDocumentId, true);
-            saveNewDocument(meta, latestDocument.getVersion() + 1, latestDocument.getProjectId());
+            saveNewDocument(current, original.getVersion() + 1, original.getProjectId());
         } else {
-            saveNewDocument(meta, 1L, projectId);
+            saveNewDocument(current, 1L, projectId);
         }
+    }
+
+    private DatabaseMeta retrieveOriginalDatabaseMeta(DatabaseDocumentPojo original) {
+        Integer docId = original.getId();
+        List<TableDocumentPojo> tables = tableDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableIndexDocumentPojo> indexes = tableIndexDocumentDao.selectByDatabaseMetaId(docId);
+        List<TableTriggerDocumentPojo> triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableForeignKeyDocumentPojo> fks = tableForeignKeyDocumentDao.selectByDatabaseDocumentId(docId);
+        return databaseMetaConverter.of(original, tables, columns, indexes, triggers, fks);
     }
 
     private DatabaseMeta retrieveDatabaseMeta(Integer projectId) {
@@ -324,5 +348,21 @@ public class DocumentService {
                             .findFirst()
                             .ifPresent(generator -> generator.generate(context, out));
                 });
+    }
+
+    public RootDiff diff(Integer projectId, Long originalVersion, Long currentVersion) {
+        var original = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
+                .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        DatabaseDocumentPojo current;
+        if (currentVersion == null) {
+            current = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        } else {
+            current = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, currentVersion)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        }
+        DatabaseMeta currMeta = retrieveOriginalDatabaseMeta(current);
+        DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
+        return Diffs.diff(originalMeta, currMeta);
     }
 }

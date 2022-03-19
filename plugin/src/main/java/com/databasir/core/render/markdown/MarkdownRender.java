@@ -51,7 +51,7 @@ public class MarkdownRender implements Render {
 
     private void buildTableName(MarkdownBuilder contentBuilder, TableMeta table) {
         String tableName;
-        if (table.getComment() == null || table.getComment().trim().isEmpty()) {
+        if (table.getComment().isEmpty()) {
             tableName = table.getName();
         } else {
             tableName = table.getName() + "(" + table.getComment() + ")";

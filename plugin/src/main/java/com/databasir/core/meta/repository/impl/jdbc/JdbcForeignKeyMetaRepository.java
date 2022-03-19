@@ -41,8 +41,10 @@ public class JdbcForeignKeyMetaRepository implements ForeignKeyMetaRepository {
                 String pkColumnName = keyResult.getString("PKCOLUMN_NAME");
                 String pkName = keyResult.getString("PK_NAME");
                 int updateRule = keyResult.getInt("UPDATE_RULE");
+                int keySeq = keyResult.getInt("KEY_SEQ");
                 int deleteRule = keyResult.getInt("DELETE_RULE");
                 ForeignKeyMeta meta = ForeignKeyMeta.builder()
+                        .keySeq(keySeq)
                         .fkTableName(fkTableName)
                         .fkColumnName(fkColumnName)
                         .fkName(fkName)

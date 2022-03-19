@@ -1,6 +1,7 @@
 package com.databasir.api;
 
 import com.databasir.common.JsonData;
+import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
@@ -37,6 +38,13 @@ public class DocumentController {
     public JsonData<Void> sync(@PathVariable Integer projectId) {
         documentService.syncByProjectId(projectId);
         return JsonData.ok();
+    }
+
+    @GetMapping(Routes.Document.DIFF)
+    public JsonData<RootDiff> diff(@PathVariable Integer projectId,
+                                   @RequestParam(name = "originalVersion") Long originalVersion,
+                                   @RequestParam(required = false) Long currentVersion) {
+        return JsonData.ok(documentService.diff(projectId, originalVersion, currentVersion));
     }
 
     @GetMapping(Routes.Document.GET_ONE)

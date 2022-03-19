@@ -1,13 +1,17 @@
 package com.databasir.core.meta.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * now: only support mysql, postgresql.
  */
-@Data
 @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TriggerMeta {
 
     private String name;

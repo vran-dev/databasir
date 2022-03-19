@@ -1,13 +1,17 @@
 package com.databasir.core.meta.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
-@Data
 @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TableMeta {
 
     private String name;
@@ -27,6 +31,4 @@ public class TableMeta {
 
     @Builder.Default
     private List<ForeignKeyMeta> foreignKeys = Collections.emptyList();
-
-    private String remark;
 }
