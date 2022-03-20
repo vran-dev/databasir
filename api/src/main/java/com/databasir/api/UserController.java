@@ -3,6 +3,7 @@ package com.databasir.api;
 import com.databasir.api.validator.UserOperationValidator;
 import com.databasir.common.JsonData;
 import com.databasir.common.exception.Forbidden;
+import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.domain.user.service.UserService;
@@ -37,6 +38,9 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @Operation(module = Operation.Modules.USER, name = "禁用用户", involvedUserId = "#userId")
     public JsonData<Void> disableUser(@PathVariable Integer userId) {
+        if (userOperationValidator.isMyself(userId)) {
+            throw DomainErrors.CANNOT_UPDATE_SELF_ENABLED_STATUS.exception();
+        }
         userService.switchEnableStatus(userId, false);
         return JsonData.ok();
     }
@@ -45,6 +49,9 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @Operation(module = Operation.Modules.USER, name = "启用用户", involvedUserId = "#userId")
     public JsonData<Void> enableUser(@PathVariable Integer userId) {
+        if (userOperationValidator.isMyself(userId)) {
+            throw DomainErrors.CANNOT_UPDATE_SELF_ENABLED_STATUS.exception();
+        }
         userService.switchEnableStatus(userId, true);
         return JsonData.ok();
     }
