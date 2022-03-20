@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: databasir
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: databasir
+    tier: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: databasir-mysql
+  labels:
+    app: databasir
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: databasir
+    tier: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: databasir-mysql
+  labels:
+    app: databasir
+spec:
+  selector:
+    matchLabels:
+      app: databasir
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: databasir
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.7
+        name: "databasir-mysql"
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "123456"
+        - name: MYSQL_DATABASE
+          value: databasir
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+        - containerPort: 3306
+          name: databasir-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: databasir
+  labels:
+    app: databasir
+spec:
+  selector:
+    matchLabels:
+      app: databasir
+      tier: backend
+  strategy:
+    type: Recreate
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: databasir
+          tier: backend
+  template:
+    metadata:
+      labels:
+        app: databasir
+        tier: backend
+    spec:
+      containers:
+      - image: vrantt/databasir:latest
+        name: "databasir-sample"
+        env:
+          - name: DATABASIR_DB_URL
+            value: databasir-mysql
+          - name: DATABASIR_DB_USERNAME
+            value: root
+          - name: DATABASIR_DB_PASSWORD
+            value: "123456"
+        ports:
+        - containerPort: 8080
+          name: databasir  
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: databasir
+          servicePort: 8080
