@@ -1,21 +1,45 @@
-# Databasir
-
-
 ## 简介
 
-**Databasir** 是一款集中式的数据库文档管理工具，提供了自动化、版本化、扁平化的数据库文档管理能力，主要功能如下
+**Databasir** 是面向团队的**关系型数据库模型文档管理平台**，旨在通过自动化的方式解决模型文档管理过程中维护成本高、内容更新不及时以及团队协作复杂等问题。
 
-1. 支持所有实现 JDBC 协议的数据库（如 mysql、postgresql、sqlserver等）
-2. 支持 Markdown 文档、Excel 文档(TODO)、UML 图片导出
-3. 支持 Github / Github Enterprise / Gitlab 的 OAuth2 登录配置
-4. 支持文档自动同步、历史版本查看、团队讨论、字段描述等
-5. 扁平化的团队管理模式，灵活适应不同团队组织架构
+平台文档：https://doc.databasir.com
 
-更多内容，请查看[官网](https://blog.cc1234.cc/databasir)
+问题反馈：https://github.com/vran-dev/databasir/issues
 
+平台演示：[https://demo.databasir.com](http://121.4.67.27/)
 
-## 功能展示
+| 账号 | 密码    | 角色       |
+| ---- | ------- | ---------- |
+| demo | demo123 | 系统管理员 |
+| dev  | dev123  | 普通       |
 
-- 文档页面
+## 特性
 
-![uml](docs/README/document-uml.gif)
+1. 兼容市面多数数据库：支持所有拥有 JDBC 驱动的数据库，mysql、postgresql 开箱即用
+2. 丰富的文档管理功能：支持文档自动同步，版本历史回溯，版本差异对比，文档讨论，UML 生成， 文档导出等，应有尽有
+3. 面向团队的专业能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
+
+更多内容请到 https://doc.databasir.com 查看
+
+- 文档页面展示
+
+![](docs/README/document-diff.gif)
+
+更多规划功能，敬请期待
+
+1. 文档导出格式
+    - [x] UML 图片
+    - [x] Markdown
+    - [ ] Excel
+    - [ ] Word
+2. 邮件通知
+    - [ ] 新增讨论
+    - [ ] 版本变更
+
+## 联系作者
+
+![](docs/qrcode.jpg)
+
+## License
+
+Apache License 2.0

@@ -85,6 +85,7 @@ spec:
       containers:
       - image: vrantt/databasir:latest
         name: "databasir-sample"
+        imagePullPolicy: Always
         env:
           - name: DATABASIR_DB_URL
             value: databasir-mysql
