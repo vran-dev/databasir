@@ -30,7 +30,11 @@ public class MailSender {
         }
         sender.setUsername(properties.getUsername());
         sender.setPassword(properties.getPassword());
-        sender.setProtocol("smtp");
+        if (properties.getUseSsl()) {
+            sender.setProtocol("smtps");
+        } else {
+            sender.setProtocol("smtp");
+        }
         sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return sender;
     }

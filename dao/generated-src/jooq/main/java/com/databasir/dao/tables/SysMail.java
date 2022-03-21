@@ -15,7 +15,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -71,6 +71,11 @@ public class SysMail extends TableImpl<SysMailRecord> {
      * The column <code>databasir.sys_mail.smtp_port</code>.
      */
     public final TableField<SysMailRecord, Integer> SMTP_PORT = createField(DSL.name("smtp_port"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.sys_mail.use_ssl</code>.
+     */
+    public final TableField<SysMailRecord, Boolean> USE_SSL = createField(DSL.name("use_ssl"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>databasir.sys_mail.update_at</code>.
@@ -157,11 +162,11 @@ public class SysMail extends TableImpl<SysMailRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, Integer, Boolean, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

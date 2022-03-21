@@ -13,5 +13,7 @@ public class SystemEmailResponse {
 
     private Integer smtpPort;
 
+    private Boolean useSSL;
+
     private LocalDateTime createAt;
 }
