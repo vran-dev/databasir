@@ -1,13 +1,11 @@
 # Docker 部署
 
-[Databasir](https://github.com/vran-dev/databasir) 现在已经准备好了开箱即用的 Docker Image，你只需要简单两步就可以完成一个 Databasir 应用的构建
-
+[Databasir](https://github.com/vran-dev/databasir) 已经准备好了开箱即用的 Docker Image，你只需要简单两步就可以完成一个 Databasir 应用的构建
 
 ## 环境要求
 
 1. Docker
 2. Mysql
-
 
 ## 部署流程
 
@@ -17,15 +15,11 @@
 docker pull vrantt/databasir:latest
 ```
 
-
-
 2. 镜像下载完成以后就可以直接启动了
 
 ```shell
-docker run --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -e DATABASIR_DB_USERNAME=root -e DATABASIR_DB_PASSWORD=123456 databasir:latest -p 8888:8080
+docker run --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -e DATABASIR_DB_USERNAME=root -e DATABASIR_DB_PASSWORD=123456 vrantt/databasir:latest -p 8888:8080
 ```
-
-
 
 这里解释一下各个命令参数
 
@@ -37,21 +31,9 @@ docker run --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -e DATABASIR_D
 
 - `-p` 暴露端口，databasir 默认在容器内部开放了 8080 端口，这里将宿主机的 8888 端口映射到了容器的 8080 端口
 
-
-
 启动后，Databasir 会默认创建一个超级管理员账户
 
 - 用户名：databasir
 - 密码：databasir
 
-这时候访问 http://localhost:8888 进入登录页，输入上面的账号和密码即可成功登入。
-
-
-## 登录验证
-
-应用启动完成后会默认创建 Databasir 管理员用户
-
-- 用户名：databasir
-- 密码：databasir
-
-通过该账号登录应用既可以进行管理
+这时候访问 http://localhost:8888 进入登录页，输入上面的账号和密码即可成功登入，到此就算部署完成。
