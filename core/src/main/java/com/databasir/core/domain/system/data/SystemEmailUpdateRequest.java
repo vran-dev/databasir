@@ -21,4 +21,7 @@ public class SystemEmailUpdateRequest {
     @Max(65535L)
     private Integer smtpPort;
 
+    @NotNull
+    private Boolean useSSL;
+
 }

@@ -21,6 +21,7 @@ public class SysMailPojo implements Serializable {
     private String        password;
     private String        smtpHost;
     private Integer       smtpPort;
+    private Boolean       useSsl;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -32,6 +33,7 @@ public class SysMailPojo implements Serializable {
         this.password = value.password;
         this.smtpHost = value.smtpHost;
         this.smtpPort = value.smtpPort;
+        this.useSsl = value.useSsl;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -42,6 +44,7 @@ public class SysMailPojo implements Serializable {
         String        password,
         String        smtpHost,
         Integer       smtpPort,
+        Boolean       useSsl,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -50,6 +53,7 @@ public class SysMailPojo implements Serializable {
         this.password = password;
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
+        this.useSsl = useSsl;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -125,6 +129,20 @@ public class SysMailPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.sys_mail.use_ssl</code>.
+     */
+    public Boolean getUseSsl() {
+        return this.useSsl;
+    }
+
+    /**
+     * Setter for <code>databasir.sys_mail.use_ssl</code>.
+     */
+    public void setUseSsl(Boolean useSsl) {
+        this.useSsl = useSsl;
+    }
+
+    /**
      * Getter for <code>databasir.sys_mail.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
@@ -161,6 +179,7 @@ public class SysMailPojo implements Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(smtpHost);
         sb.append(", ").append(smtpPort);
+        sb.append(", ").append(useSsl);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 

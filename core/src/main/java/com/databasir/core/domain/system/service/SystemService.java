@@ -79,6 +79,7 @@ public class SystemService {
                     response.setSmtpPort(mail.getSmtpPort());
                     response.setUsername(mail.getUsername());
                     response.setCreateAt(mail.getCreateAt());
+                    response.setUseSSL(mail.getUseSsl());
                     return response;
                 });
     }

@@ -52,7 +52,7 @@ jooq {
                         forcedTypes {
                             forcedType {
                                 name = 'BOOLEAN'
-                                includeExpression = 'deleted|enabled|is.*'
+                                includeExpression = 'deleted|enabled|is.*|use_ssl'
                                 includeTypes = '.*'
                             }
                             forcedType {
@@ -62,7 +62,7 @@ jooq {
                             }
                             forcedType {
                                 userType = 'com.databasir.dao.enums.OAuthAppType'
-                                converter  = 'com.databasir.dao.converter.OAuthAppTypeConverter'
+                                converter = 'com.databasir.dao.converter.OAuthAppTypeConverter'
                                 includeExpression = 'app_type'
                                 includeTypes = '.*'
                             }
