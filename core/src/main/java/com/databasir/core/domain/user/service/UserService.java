@@ -4,8 +4,14 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.user.converter.UserPojoConverter;
 import com.databasir.core.domain.user.converter.UserResponseConverter;
 import com.databasir.core.domain.user.data.*;
-import com.databasir.core.infrastructure.mail.MailSender;
-import com.databasir.dao.impl.*;
+import com.databasir.core.domain.user.event.UserCreated;
+import com.databasir.core.domain.user.event.UserPasswordRenewed;
+import com.databasir.core.domain.user.event.converter.UserEventConverter;
+import com.databasir.core.infrastructure.event.EventPublisher;
+import com.databasir.dao.impl.GroupDao;
+import com.databasir.dao.impl.LoginDao;
+import com.databasir.dao.impl.UserDao;
+import com.databasir.dao.impl.UserRoleDao;
 import com.databasir.dao.tables.pojos.GroupPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import com.databasir.dao.tables.pojos.UserRolePojo;
@@ -17,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
@@ -31,15 +38,15 @@ public class UserService {
 
     private final GroupDao groupDao;
 
-    private final SysMailDao sysMailDao;
-
     private final LoginDao loginDao;
 
     private final UserPojoConverter userPojoConverter;
 
     private final UserResponseConverter userResponseConverter;
 
-    private final MailSender mailSender;
+    private final UserEventConverter userEventConverter;
+
+    private final EventPublisher eventPublisher;
 
     @SuppressWarnings("checkstyle:all")
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -64,14 +71,18 @@ public class UserService {
     }
 
     @Transactional
-    public Integer create(UserCreateRequest userCreateRequest) {
+    public Integer create(UserCreateRequest userCreateRequest, String source) {
         userDao.selectByEmailOrUsername(userCreateRequest.getUsername()).ifPresent(data -> {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         });
         String hashedPassword = bCryptPasswordEncoder.encode(userCreateRequest.getPassword());
         UserPojo pojo = userPojoConverter.of(userCreateRequest, hashedPassword);
         try {
-            return userDao.insertAndReturnId(pojo);
+            Integer id = userDao.insertAndReturnId(pojo);
+            // publish event
+            UserCreated event = userEventConverter.userCreated(pojo, source, userCreateRequest.getPassword(), id);
+            eventPublisher.publish(event);
+            return id;
         } catch (DuplicateKeyException e) {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         }
@@ -106,19 +117,20 @@ public class UserService {
     }
 
     @Transactional
-    public String renewPassword(Integer userId) {
-        UserPojo userPojo = userDao.selectById(userId);
+    public String renewPassword(Integer renewByUserId, Integer userId) {
+        UserPojo pojo = userDao.selectById(userId);
         String randomPassword = UUID.randomUUID().toString()
                 .replace("-", "")
                 .substring(0, 8);
         String hashedPassword = bCryptPasswordEncoder.encode(randomPassword);
         userDao.updatePassword(userId, hashedPassword);
-        sysMailDao.selectOptionTopOne()
-                .ifPresent(mailPojo -> {
-                    String subject = "Databasir 密码重置提醒";
-                    String message = "您的密码已被重置，新密码为：" + randomPassword;
-                    mailSender.send(mailPojo, userPojo.getEmail(), subject, message);
-                });
+
+        // publish event
+        UserPasswordRenewed event = userEventConverter.userPasswordRenewed(pojo,
+                renewByUserId,
+                LocalDateTime.now(),
+                randomPassword);
+        eventPublisher.publish(event);
         return randomPassword;
     }
 

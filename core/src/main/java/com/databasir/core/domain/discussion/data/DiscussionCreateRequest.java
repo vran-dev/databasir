@@ -1,4 +1,4 @@
-package com.databasir.core.domain.remark.data;
+package com.databasir.core.domain.discussion.data;
 
 import lombok.Data;
 

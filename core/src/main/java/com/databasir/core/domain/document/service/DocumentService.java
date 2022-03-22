@@ -14,10 +14,12 @@ import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.core.meta.data.DatabaseMeta;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
@@ -84,6 +86,8 @@ public class DocumentService {
 
     private final List<DocumentFileGenerator> documentFileGenerators;
 
+    private final EventPublisher eventPublisher;
+
     @Transactional
     public void syncByProjectId(Integer projectId) {
         projectDao.selectOptionalById(projectId)
@@ -103,9 +107,12 @@ public class DocumentService {
             Integer previousDocumentId = original.getId();
             // archive old version
             databaseDocumentDao.updateIsArchiveById(previousDocumentId, true);
-            saveNewDocument(current, original.getVersion() + 1, original.getProjectId());
+            Long version = original.getVersion();
+            saveNewDocument(current, version + 1, original.getProjectId());
+            eventPublisher.publish(new DocumentUpdated(diff, version + 1, version, projectId));
         } else {
             saveNewDocument(current, 1L, projectId);
+            eventPublisher.publish(new DocumentUpdated(null, 1L, null, projectId));
         }
     }
 

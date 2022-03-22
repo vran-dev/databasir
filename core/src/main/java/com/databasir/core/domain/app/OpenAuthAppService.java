@@ -51,7 +51,7 @@ public class OpenAuthAppService {
                     user.setAvatar(result.getAvatar());
                     user.setEnabled(true);
                     user.setPassword(UUID.randomUUID().toString().substring(0, 6));
-                    Integer id = userService.create(user);
+                    Integer id = userService.create(user, registrationId);
                     return userService.get(id);
                 });
     }

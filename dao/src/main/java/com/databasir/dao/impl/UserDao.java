@@ -78,6 +78,13 @@ public class UserDao extends BaseDao<UserPojo> {
                 .fetchOptionalInto(UserPojo.class);
     }
 
+    public List<UserPojo> selectEnabledGroupMembers(Integer groupId) {
+        return dslContext.select(USER.fields()).from(USER)
+                .innerJoin(USER_ROLE).on(USER.ID.eq(USER_ROLE.USER_ID))
+                .where(USER_ROLE.GROUP_ID.eq(groupId).and(USER.ENABLED.eq(true)))
+                .fetchInto(UserPojo.class);
+    }
+
     public Page<GroupMemberDetailPojo> selectGroupMembers(Integer groupId, Pageable request, Condition condition) {
         // total
         Integer count = dslContext
