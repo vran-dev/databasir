@@ -331,3 +331,15 @@ CREATE TABLE IF NOT EXISTS document_description
     CONSTRAINT UNIQUE uk_project_id_table_name_column_name (project_id, table_name, column_name)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci COMMENT 'custom document description';
+
+CREATE TABLE IF NOT EXISTS document_template_property
+(
+    `id`            INT PRIMARY KEY AUTO_INCREMENT,
+    `key`           VARCHAR(255) NOT NULL,
+    `value`         VARCHAR(255)          DEFAULT NULL,
+    `default_value` VARCHAR(255) NOT NULL,
+    `type`          VARCHAR(64)  NOT NULL,
+    `create_at`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT UNIQUE uk_type_key (`type`, `key`)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'template property';
