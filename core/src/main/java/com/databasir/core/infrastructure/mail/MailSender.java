@@ -7,19 +7,24 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 
 @Component
 public class MailSender {
 
-    public void send(SysMailPojo mail, String to, String subject, String content) {
+    public void batchSend(SysMailPojo mail, Collection<String> to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mail.getUsername());
-        message.setTo(to);
+        message.setTo(to.toArray(new String[0]));
         message.setSubject(subject);
         message.setText(content);
-
         JavaMailSender sender = initJavaMailSender(mail);
         sender.send(message);
+    }
+
+    public void send(SysMailPojo mail, String to, String subject, String content) {
+        this.batchSend(mail, Collections.singleton(to), subject, content);
     }
 
     private JavaMailSender initJavaMailSender(SysMailPojo properties) {

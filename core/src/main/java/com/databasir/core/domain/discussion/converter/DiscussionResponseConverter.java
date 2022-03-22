@@ -1,6 +1,6 @@
-package com.databasir.core.domain.remark.converter;
+package com.databasir.core.domain.discussion.converter;
 
-import com.databasir.core.domain.remark.data.DiscussionResponse;
+import com.databasir.core.domain.discussion.data.DiscussionResponse;
 import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import org.mapstruct.Mapper;

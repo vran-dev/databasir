@@ -1,10 +1,13 @@
-package com.databasir.core.domain.remark.service;
+package com.databasir.core.domain.discussion.service;
 
 import com.databasir.common.exception.Forbidden;
-import com.databasir.core.domain.remark.converter.DiscussionResponseConverter;
-import com.databasir.core.domain.remark.data.DiscussionCreateRequest;
-import com.databasir.core.domain.remark.data.DiscussionListCondition;
-import com.databasir.core.domain.remark.data.DiscussionResponse;
+import com.databasir.core.domain.discussion.converter.DiscussionResponseConverter;
+import com.databasir.core.domain.discussion.data.DiscussionCreateRequest;
+import com.databasir.core.domain.discussion.data.DiscussionListCondition;
+import com.databasir.core.domain.discussion.data.DiscussionResponse;
+import com.databasir.core.domain.discussion.event.DiscussionCreated;
+import com.databasir.core.domain.discussion.event.converter.DiscussionEventConverter;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.DocumentDiscussionDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.UserDao;
@@ -32,6 +35,10 @@ public class DocumentDiscussionService {
 
     private final DiscussionResponseConverter discussionResponseConverter;
 
+    private final DiscussionEventConverter discussionEventConverter;
+
+    private final EventPublisher eventPublisher;
+
     public void deleteById(Integer groupId,
                            Integer projectId,
                            Integer discussionId) {
@@ -57,9 +64,9 @@ public class DocumentDiscussionService {
                     .stream()
                     .collect(Collectors.toMap(UserPojo::getId, Function.identity()));
             return data
-                    .map(dicussionPojo -> {
-                        UserPojo userPojo = userMapById.get(dicussionPojo.getUserId());
-                        return discussionResponseConverter.of(dicussionPojo, userPojo);
+                    .map(discussionPojo -> {
+                        UserPojo userPojo = userMapById.get(discussionPojo.getUserId());
+                        return discussionResponseConverter.of(discussionPojo, userPojo);
                     });
         } else {
             throw new Forbidden();
@@ -74,7 +81,9 @@ public class DocumentDiscussionService {
             pojo.setContent(request.getContent());
             pojo.setTableName(request.getTableName());
             pojo.setColumnName(request.getColumnName());
-            documentDiscussionDao.insertAndReturnId(pojo);
+            Integer discussionId = documentDiscussionDao.insertAndReturnId(pojo);
+            DiscussionCreated event = discussionEventConverter.of(pojo, discussionId);
+            eventPublisher.publish(event);
         } else {
             throw new Forbidden();
         }

@@ -1,5 +1,6 @@
 package com.databasir.api;
 
+import com.databasir.api.common.LoginUserContext;
 import com.databasir.api.validator.UserOperationValidator;
 import com.databasir.common.JsonData;
 import com.databasir.common.exception.Forbidden;
@@ -7,6 +8,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.domain.user.service.UserService;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,8 @@ public class UserController {
     private final UserService userService;
 
     private final UserOperationValidator userOperationValidator;
+
+    private final EventPublisher eventPublisher;
 
     @GetMapping(Routes.User.LIST)
     public JsonData<Page<UserPageResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
@@ -60,7 +64,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @Operation(module = Operation.Modules.USER, name = "创建用户")
     public JsonData<Void> create(@RequestBody @Valid UserCreateRequest request) {
-        userService.create(request);
+        userService.create(request, UserSource.MANUAL);
         return JsonData.ok();
     }
 
@@ -73,7 +77,8 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @Operation(module = Operation.Modules.USER, name = "重置用户密码", involvedUserId = "#userId")
     public JsonData<Void> renewPassword(@PathVariable Integer userId) {
-        userService.renewPassword(userId);
+        Integer operatorUserId = LoginUserContext.getLoginUserId();
+        userService.renewPassword(operatorUserId, userId);
         return JsonData.ok();
     }
 
