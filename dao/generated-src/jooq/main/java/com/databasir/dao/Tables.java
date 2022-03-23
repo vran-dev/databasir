@@ -10,6 +10,7 @@ import com.databasir.dao.tables.DatabaseDocument;
 import com.databasir.dao.tables.DatabaseType;
 import com.databasir.dao.tables.DocumentDescription;
 import com.databasir.dao.tables.DocumentDiscussion;
+import com.databasir.dao.tables.DocumentTemplateProperty;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
 import com.databasir.dao.tables.OauthApp;
@@ -63,6 +64,11 @@ public class Tables {
      * The table <code>databasir.document_discussion</code>.
      */
     public static final DocumentDiscussion DOCUMENT_DISCUSSION = DocumentDiscussion.DOCUMENT_DISCUSSION;
+
+    /**
+     * template property
+     */
+    public static final DocumentTemplateProperty DOCUMENT_TEMPLATE_PROPERTY = DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY;
 
     /**
      * The table <code>databasir.group</code>.

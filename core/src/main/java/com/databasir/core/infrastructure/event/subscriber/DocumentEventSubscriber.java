@@ -7,7 +7,6 @@ import com.databasir.core.infrastructure.mail.MailSender;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.SysMailDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.impl.UserRoleDao;
 import com.databasir.dao.tables.pojos.ProjectPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,6 @@ public class DocumentEventSubscriber {
     private final ProjectDao projectDao;
 
     private final MailSender mailSender;
-
-    private final UserRoleDao userRoleDao;
 
     private final UserDao userDao;
 

@@ -105,6 +105,10 @@ public interface Routes {
         String SAVE = DISCUSSION_BASE;
     }
 
+    interface DocumentTemplateProperty {
+        String API = BASE + "/document_template/properties";
+    }
+
     interface Setting {
 
         String GET_SYS_EMAIL = BASE + "/settings/sys_email";
