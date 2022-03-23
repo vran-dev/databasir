@@ -66,6 +66,12 @@ jooq {
                                 includeExpression = 'app_type'
                                 includeTypes = '.*'
                             }
+                            forcedType {
+                                userType = 'com.databasir.dao.enums.DocumentTemplatePropertyType'
+                                converter = 'com.databasir.dao.converter.DocumentTemplatePropertyTypeConverter'
+                                includeExpression = 'document_template_property.type'
+                                includeTypes = '.*'
+                            }
                         }
                     }
                     generate {

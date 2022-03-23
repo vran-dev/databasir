@@ -4,6 +4,7 @@
 package com.databasir.dao.tables.records;
 
 
+import com.databasir.dao.enums.DocumentTemplatePropertyType;
 import com.databasir.dao.tables.DocumentTemplateProperty;
 import com.databasir.dao.tables.pojos.DocumentTemplatePropertyPojo;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
  * template property
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<DocumentTemplatePropertyRecord> implements Record6<Integer, String, String, String, String, LocalDateTime> {
+public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<DocumentTemplatePropertyRecord> implements Record6<Integer, String, String, String, DocumentTemplatePropertyType, LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,15 +86,15 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     /**
      * Setter for <code>databasir.document_template_property.type</code>.
      */
-    public void setType(String value) {
+    public void setType(DocumentTemplatePropertyType value) {
         set(4, value);
     }
 
     /**
      * Getter for <code>databasir.document_template_property.type</code>.
      */
-    public String getType() {
-        return (String) get(4);
+    public DocumentTemplatePropertyType getType() {
+        return (DocumentTemplatePropertyType) get(4);
     }
 
     /**
@@ -124,12 +125,12 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, LocalDateTime> fieldsRow() {
+    public Row6<Integer, String, String, String, DocumentTemplatePropertyType, LocalDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 
     @Override
-    public Row6<Integer, String, String, String, String, LocalDateTime> valuesRow() {
+    public Row6<Integer, String, String, String, DocumentTemplatePropertyType, LocalDateTime> valuesRow() {
         return (Row6) super.valuesRow();
     }
 
@@ -154,7 +155,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     }
 
     @Override
-    public Field<String> field5() {
+    public Field<DocumentTemplatePropertyType> field5() {
         return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.TYPE;
     }
 
@@ -184,7 +185,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     }
 
     @Override
-    public String component5() {
+    public DocumentTemplatePropertyType component5() {
         return getType();
     }
 
@@ -214,7 +215,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     }
 
     @Override
-    public String value5() {
+    public DocumentTemplatePropertyType value5() {
         return getType();
     }
 
@@ -248,7 +249,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     }
 
     @Override
-    public DocumentTemplatePropertyRecord value5(String value) {
+    public DocumentTemplatePropertyRecord value5(DocumentTemplatePropertyType value) {
         setType(value);
         return this;
     }
@@ -260,7 +261,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     }
 
     @Override
-    public DocumentTemplatePropertyRecord values(Integer value1, String value2, String value3, String value4, String value5, LocalDateTime value6) {
+    public DocumentTemplatePropertyRecord values(Integer value1, String value2, String value3, String value4, DocumentTemplatePropertyType value5, LocalDateTime value6) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -284,7 +285,7 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     /**
      * Create a detached, initialised DocumentTemplatePropertyRecord
      */
-    public DocumentTemplatePropertyRecord(Integer id, String key, String value, String defaultValue, String type, LocalDateTime createAt) {
+    public DocumentTemplatePropertyRecord(Integer id, String key, String value, String defaultValue, DocumentTemplatePropertyType type, LocalDateTime createAt) {
         super(DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY);
 
         setId(id);

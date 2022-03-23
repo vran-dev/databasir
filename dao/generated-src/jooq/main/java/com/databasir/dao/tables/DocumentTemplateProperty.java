@@ -6,15 +6,28 @@ package com.databasir.dao.tables;
 
 import com.databasir.dao.Databasir;
 import com.databasir.dao.Keys;
+import com.databasir.dao.converter.DocumentTemplatePropertyTypeConverter;
+import com.databasir.dao.enums.DocumentTemplatePropertyType;
 import com.databasir.dao.tables.records.DocumentTemplatePropertyRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row6;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -63,7 +76,7 @@ public class DocumentTemplateProperty extends TableImpl<DocumentTemplateProperty
     /**
      * The column <code>databasir.document_template_property.type</code>.
      */
-    public final TableField<DocumentTemplatePropertyRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<DocumentTemplatePropertyRecord, DocumentTemplatePropertyType> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(64).nullable(false), this, "", new DocumentTemplatePropertyTypeConverter());
 
     /**
      * The column <code>databasir.document_template_property.create_at</code>.
@@ -157,7 +170,7 @@ public class DocumentTemplateProperty extends TableImpl<DocumentTemplateProperty
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, LocalDateTime> fieldsRow() {
+    public Row6<Integer, String, String, String, DocumentTemplatePropertyType, LocalDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

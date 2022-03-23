@@ -4,6 +4,8 @@
 package com.databasir.dao.tables.pojos;
 
 
+import com.databasir.dao.enums.DocumentTemplatePropertyType;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -16,12 +18,12 @@ public class DocumentTemplatePropertyPojo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer       id;
-    private String        key;
-    private String        value;
-    private String        defaultValue;
-    private String        type;
-    private LocalDateTime createAt;
+    private Integer                      id;
+    private String                       key;
+    private String                       value;
+    private String                       defaultValue;
+    private DocumentTemplatePropertyType type;
+    private LocalDateTime                createAt;
 
     public DocumentTemplatePropertyPojo() {}
 
@@ -35,12 +37,12 @@ public class DocumentTemplatePropertyPojo implements Serializable {
     }
 
     public DocumentTemplatePropertyPojo(
-        Integer       id,
-        String        key,
-        String        value,
-        String        defaultValue,
-        String        type,
-        LocalDateTime createAt
+        Integer                      id,
+        String                       key,
+        String                       value,
+        String                       defaultValue,
+        DocumentTemplatePropertyType type,
+        LocalDateTime                createAt
     ) {
         this.id = id;
         this.key = key;
@@ -111,14 +113,14 @@ public class DocumentTemplatePropertyPojo implements Serializable {
     /**
      * Getter for <code>databasir.document_template_property.type</code>.
      */
-    public String getType() {
+    public DocumentTemplatePropertyType getType() {
         return this.type;
     }
 
     /**
      * Setter for <code>databasir.document_template_property.type</code>.
      */
-    public void setType(String type) {
+    public void setType(DocumentTemplatePropertyType type) {
         this.type = type;
     }
 
