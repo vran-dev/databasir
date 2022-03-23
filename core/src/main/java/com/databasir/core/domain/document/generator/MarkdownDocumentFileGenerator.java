@@ -2,8 +2,11 @@ package com.databasir.core.domain.document.generator;
 
 import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
+import com.databasir.core.domain.document.data.DocumentTemplatePropertiesResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.service.DocumentTemplateService;
 import com.databasir.core.render.markdown.MarkdownBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,15 +15,16 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
+
+    private final DocumentTemplateService documentTemplateService;
 
     @Override
     public boolean support(DocumentFileType type) {
@@ -29,8 +33,9 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
 
     @Override
     public void generate(DocumentFileGenerateContext context, OutputStream outputStream) {
+        DocumentTemplatePropertiesResponse templateProperties = documentTemplateService.getAllProperties();
         String fileName = context.getDatabaseDocument().getDatabaseName() + "-" + UUID.randomUUID().toString();
-        String data = markdownData(context);
+        String data = markdownData(context, templateProperties);
         Path tempFile = null;
         try {
             tempFile = Files.createTempFile(fileName, ".md");
@@ -49,14 +54,37 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         }
     }
 
-    private String markdownData(DocumentFileGenerateContext context) {
+    private String markdownData(DocumentFileGenerateContext context,
+                                DocumentTemplatePropertiesResponse properties) {
         DatabaseDocumentResponse doc = context.getDatabaseDocument();
         MarkdownBuilder builder = MarkdownBuilder.builder();
         builder.primaryTitle(doc.getDatabaseName());
         // overview
         overviewBuild(builder, doc);
         // tables
-        doc.getTables().forEach(table -> tableBuild(builder, table));
+        Map<String, String> columnTitleMap = properties.getColumnFieldNameProperties()
+                .stream()
+                .collect(Collectors.toMap(d -> d.getKey(),
+                        d -> Objects.requireNonNullElse(d.getValue(), d.getDefaultValue())));
+        Map<String, String> indexTitleMap = properties.getIndexFieldNameProperties()
+                .stream()
+                .collect(Collectors.toMap(d -> d.getKey(),
+                        d -> Objects.requireNonNullElse(d.getValue(), d.getDefaultValue())));
+        Map<String, String> triggerTitleMap = properties.getTriggerFieldNameProperties()
+                .stream()
+                .collect(Collectors.toMap(d -> d.getKey(),
+                        d -> Objects.requireNonNullElse(d.getValue(), d.getDefaultValue())));
+        Map<String, String> foreignKeyTitleMap = properties.getForeignKeyFieldNameProperties()
+                .stream()
+                .collect(Collectors.toMap(d -> d.getKey(),
+                        d -> Objects.requireNonNullElse(d.getValue(), d.getDefaultValue())));
+        doc.getTables().forEach(table -> {
+            builder.secondTitle(table.getName());
+            columnBuild(builder, table, columnTitleMap);
+            indexBuild(builder, table, indexTitleMap);
+            foreignKeyBuild(builder, table, foreignKeyTitleMap);
+            triggerBuild(builder, table, triggerTitleMap);
+        });
         return builder.build();
     }
 
@@ -71,15 +99,9 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
     }
 
-    private void tableBuild(MarkdownBuilder builder, TableDocumentResponse table) {
-        builder.secondTitle(table.getName());
-        columnBuild(builder, table);
-        indexBuild(builder, table);
-        foreignKeyBuild(builder, table);
-        triggerBuild(builder, table);
-    }
-
-    private void columnBuild(MarkdownBuilder builder, TableDocumentResponse table) {
+    private void columnBuild(MarkdownBuilder builder,
+                             TableDocumentResponse table,
+                             Map<String, String> titleMap) {
         Function<TableDocumentResponse.ColumnDocumentResponse, String>
                 columnDefaultValueMapping = column -> {
             if (Objects.equals(column.getNullable(), "YES")) {
@@ -107,11 +129,24 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                     columnDefaultValueMapping.apply(column),
                     column.getComment()));
         }
-        builder.table(List.of("", "名称", "类型", "是否为主键", "可为空", "自增", "默认值", "备注"),
-                columnContent);
+        builder.table(
+                List.of(
+                        "",
+                        titleMap.getOrDefault("name", "name"),
+                        titleMap.getOrDefault("type", "type"),
+                        titleMap.getOrDefault("isPrimaryKey", "isPrimaryKey"),
+                        titleMap.getOrDefault("nullable", "nullable"),
+                        titleMap.getOrDefault("autoIncrement", "autoIncrement"),
+                        titleMap.getOrDefault("defaultValue", "defaultValue"),
+                        titleMap.getOrDefault("comment", "comment")
+                ),
+                columnContent
+        );
     }
 
-    private void indexBuild(MarkdownBuilder builder, TableDocumentResponse table) {
+    private void indexBuild(MarkdownBuilder builder,
+                            TableDocumentResponse table,
+                            Map<String, String> titleMap) {
         builder.thirdTitle("Indexes");
         List<List<String>> indexContent = new ArrayList<>();
         for (int i = 0; i < table.getIndexes().size(); i++) {
@@ -120,11 +155,20 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
             String isUnique = index.getIsUnique() ? "YES" : "NO";
             indexContent.add(List.of((i + 1) + "", index.getName(), isUnique, columnNames));
         }
-        builder.table(List.of("", "名称", "是否唯一", "关联列"), indexContent);
-
+        builder.table(
+                List.of(
+                        "",
+                        titleMap.getOrDefault("name", "name"),
+                        titleMap.getOrDefault("isUnique", "isUnique"),
+                        titleMap.getOrDefault("columnNames", "columnNames")
+                ),
+                indexContent
+        );
     }
 
-    private void foreignKeyBuild(MarkdownBuilder builder, TableDocumentResponse table) {
+    private void foreignKeyBuild(MarkdownBuilder builder,
+                                 TableDocumentResponse table,
+                                 Map<String, String> titleMap) {
         if (!table.getForeignKeys().isEmpty()) {
             List<List<String>> foreignKeys = new ArrayList<>();
             builder.thirdTitle("Foreign Keys");
@@ -139,14 +183,24 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                 foreignKeys.add(item);
             }
             builder.table(
-                    List.of("", "FK Name", "FK Column", "PK Name", "PK Table", "PK Column",
-                            "Update Rule", "Delete Rule"),
+                    List.of(
+                            "",
+                            titleMap.getOrDefault("fkName", "fkName"),
+                            titleMap.getOrDefault("fkColumnName", "fkColumnName"),
+                            titleMap.getOrDefault("pkName", "pkName"),
+                            titleMap.getOrDefault("pkTableName", "pkTableName"),
+                            titleMap.getOrDefault("pkColumnName", "pkColumnName"),
+                            titleMap.getOrDefault("updateRule", "updateRule"),
+                            titleMap.getOrDefault("deleteRule", "deleteRule")
+                    ),
                     foreignKeys
             );
         }
     }
 
-    private void triggerBuild(MarkdownBuilder builder, TableDocumentResponse table) {
+    private void triggerBuild(MarkdownBuilder builder,
+                              TableDocumentResponse table,
+                              Map<String, String> titleMap) {
         if (!table.getTriggers().isEmpty()) {
             List<List<String>> triggerContent = new ArrayList<>();
             for (int i = 0; i < table.getTriggers().size(); i++) {
@@ -158,7 +212,16 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                         trigger.getStatement()));
             }
             builder.thirdTitle("Triggers");
-            builder.table(List.of("", "名称", "timing", "manipulation", "statement"), triggerContent);
+            builder.table(
+                    List.of(
+                            "",
+                            titleMap.getOrDefault("name", "name"),
+                            titleMap.getOrDefault("timing", "timing"),
+                            titleMap.getOrDefault("manipulation", "manipulation"),
+                            titleMap.getOrDefault("statement", "statement")
+                    ),
+                    triggerContent
+            );
         }
     }
 }
