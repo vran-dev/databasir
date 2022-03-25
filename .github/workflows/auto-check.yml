@@ -25,10 +25,8 @@ jobs:
         ports:
           - 3306:3306
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: "123456"
-          - name: MYSQL_DATABASE
-            value: databasir
+          MYSQL_ROOT_PASSWORD: "123456"
+          MYSQL_DATABASE: databasir
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
