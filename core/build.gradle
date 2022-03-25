@@ -38,5 +38,6 @@ dependencies {
     // test
     testImplementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.flywaydb:flyway-core'
 }
 
