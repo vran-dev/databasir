@@ -29,7 +29,10 @@ class UserEventSubscriberTest extends BaseTest {
     }
 
     @Test
-    @Sql("classpath:sql/event/subscriber/UserEventSubscriberTest.sql")
+    @Sql({
+            "classpath:sql/event/subscriber/UserEventSubscriberTest.sql",
+            "classpath:sql/init.sql"
+    })
     void onPasswordRenewed() {
         var event = UserPasswordRenewed.builder()
                 .email("ut@databasir.com")
@@ -43,7 +46,10 @@ class UserEventSubscriberTest extends BaseTest {
     }
 
     @Test
-    @Sql("classpath:sql/event/subscriber/UserEventSubscriberTest.sql")
+    @Sql({
+            "classpath:sql/event/subscriber/UserEventSubscriberTest.sql",
+            "classpath:sql/init.sql"
+    })
     void onUserCreated() {
         var event = UserCreated.builder()
                 .username("ut")

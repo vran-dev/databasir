@@ -31,7 +31,10 @@ class DocumentEventSubscriberTest extends BaseTest {
     }
 
     @Test
-    @Sql("classpath:/sql/event/subscriber/DocumentEventSubscriberTest.sql")
+    @Sql(scripts = {
+            "classpath:sql/event/subscriber/DocumentEventSubscriberTest.sql",
+            "classpath:sql/init.sql"
+    })
     void onDocumentUpdated() {
         var event = new DocumentUpdated();
         RootDiff diff = new RootDiff();
