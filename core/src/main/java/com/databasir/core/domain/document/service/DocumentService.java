@@ -112,7 +112,8 @@ public class DocumentService {
             eventPublisher.publish(new DocumentUpdated(diff, version + 1, version, projectId));
         } else {
             saveNewDocument(current, 1L, projectId);
-            eventPublisher.publish(new DocumentUpdated(null, 1L, null, projectId));
+            RootDiff diff = Diffs.diff(null, current);
+            eventPublisher.publish(new DocumentUpdated(diff, 1L, null, projectId));
         }
     }
 

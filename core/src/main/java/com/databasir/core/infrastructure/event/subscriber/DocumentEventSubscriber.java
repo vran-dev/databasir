@@ -4,6 +4,7 @@ import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.infrastructure.mail.MailSender;
+import com.databasir.core.infrastructure.mail.MailTemplateProcessor;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.SysMailDao;
 import com.databasir.dao.impl.UserDao;
@@ -14,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,26 +34,33 @@ public class DocumentEventSubscriber {
 
     private final SysMailDao sysMailDao;
 
+    private final MailTemplateProcessor mailTemplateProcessor;
+
     @EventListener(classes = DocumentUpdated.class)
     public void onDocumentUpdated(DocumentUpdated created) {
-        ProjectPojo project = projectDao.selectById(created.getProjectId());
-        List<String> to = userDao.selectEnabledGroupMembers(project.getGroupId())
-                .stream()
-                .map(UserPojo::getEmail)
-                .filter(mail -> mail.contains("@"))
-                .collect(Collectors.toList());
         sysMailDao.selectOptionTopOne().ifPresent(mail -> {
-            String subject = project.getName() + " 文档有新的版本";
-            String message = created.getDiff()
-                    .map(diff -> build(diff))
-                    .orElseGet(() -> "首次文档同步常规");
-            mailSender.batchSend(mail, to, subject, message);
+            ProjectPojo project = projectDao.selectById(created.getProjectId());
+            List<String> to = userDao.selectEnabledGroupMembers(project.getGroupId())
+                    .stream()
+                    .filter(UserPojo::getEnabled)
+                    .map(UserPojo::getEmail)
+                    .filter(userEmail -> userEmail.contains("@"))
+                    .collect(Collectors.toList());
+            String subject = project.getName() + " 文档有新的内容变更";
+            List<Map<String, String>> diffs = created.getDiff()
+                    .map(this::diffs)
+                    .orElseGet(Collections::emptyList);
+            Map<String, Object> context = new HashMap<>();
+            context.put("diffs", diffs);
+            context.put("projectName", project.getName());
+            String message = mailTemplateProcessor.process("ftl/mail/DocumentUpdated.ftl", context);
+            mailSender.batchSendHtml(mail, to, subject, message);
         });
     }
 
-    private String build(RootDiff diff) {
+    private List<Map<String, String>> diffs(RootDiff diff) {
         if (diff.getDiffType() == DiffType.NONE) {
-            return "";
+            return Collections.emptyList();
         } else {
             return diff.getFields()
                     .stream()
@@ -57,25 +68,14 @@ public class DocumentEventSubscriber {
                     .flatMap(f -> f.getFields().stream())
                     .map(table -> {
                         String tableName = table.getFieldName();
-                        String change = toDescription(table.getDiffType());
-                        return tableName + " " + change;
+                        Map<String, String> map = Map.of(
+                                "tableName", tableName,
+                                "diffType", table.getDiffType().name()
+                        );
+                        return map;
                     })
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.toList());
         }
     }
 
-    private String toDescription(DiffType diffType) {
-        switch (diffType) {
-            case NONE:
-                return "无变化";
-            case ADDED:
-                return "新增";
-            case REMOVED:
-                return "删除";
-            case MODIFIED:
-                return "修改";
-            default:
-                return diffType.name();
-        }
-    }
 }

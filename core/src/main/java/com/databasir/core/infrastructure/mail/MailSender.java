@@ -1,11 +1,14 @@
 package com.databasir.core.infrastructure.mail;
 
+import com.databasir.common.SystemException;
 import com.databasir.dao.tables.pojos.SysMailPojo;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,18 +16,29 @@ import java.util.Collections;
 @Component
 public class MailSender {
 
-    public void batchSend(SysMailPojo mail, Collection<String> to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mail.getUsername());
-        message.setTo(to.toArray(new String[0]));
-        message.setSubject(subject);
-        message.setText(content);
-        JavaMailSender sender = initJavaMailSender(mail);
-        sender.send(message);
+    public void sendHtml(SysMailPojo mail,
+                         String to,
+                         String subject,
+                         String content) {
+        this.batchSendHtml(mail, Collections.singleton(to), subject, content);
     }
 
-    public void send(SysMailPojo mail, String to, String subject, String content) {
-        this.batchSend(mail, Collections.singleton(to), subject, content);
+    public void batchSendHtml(SysMailPojo mail,
+                              Collection<String> to,
+                              String subject,
+                              String content) {
+        JavaMailSender sender = initJavaMailSender(mail);
+        MimeMessage mimeMessage = sender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom(mail.getUsername());
+            helper.setTo(to.toArray(new String[0]));
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            sender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new SystemException("send mail error", e);
+        }
     }
 
     private JavaMailSender initJavaMailSender(SysMailPojo properties) {
