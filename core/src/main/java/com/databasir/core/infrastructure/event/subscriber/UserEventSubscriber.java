@@ -11,17 +11,16 @@ import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * TODO use html template instead of simple message
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Async("mailThreadPoolTaskExecutor")
 public class UserEventSubscriber {
 
     private final MailSender mailSender;

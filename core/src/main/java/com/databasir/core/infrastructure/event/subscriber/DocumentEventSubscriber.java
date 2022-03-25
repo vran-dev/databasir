@@ -13,6 +13,7 @@ import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Async("mailThreadPoolTaskExecutor")
 public class DocumentEventSubscriber {
 
     private final ProjectDao projectDao;
@@ -42,19 +44,20 @@ public class DocumentEventSubscriber {
             ProjectPojo project = projectDao.selectById(created.getProjectId());
             List<String> to = userDao.selectEnabledGroupMembers(project.getGroupId())
                     .stream()
-                    .filter(UserPojo::getEnabled)
                     .map(UserPojo::getEmail)
                     .filter(userEmail -> userEmail.contains("@"))
                     .collect(Collectors.toList());
-            String subject = project.getName() + " 文档有新的内容变更";
-            List<Map<String, String>> diffs = created.getDiff()
-                    .map(this::diffs)
-                    .orElseGet(Collections::emptyList);
-            Map<String, Object> context = new HashMap<>();
-            context.put("diffs", diffs);
-            context.put("projectName", project.getName());
-            String message = mailTemplateProcessor.process("ftl/mail/DocumentUpdated.ftl", context);
-            mailSender.batchSendHtml(mail, to, subject, message);
+            if (!to.isEmpty()) {
+                String subject = project.getName() + " 文档有新的内容变更";
+                List<Map<String, String>> diffs = created.getDiff()
+                        .map(this::diffs)
+                        .orElseGet(Collections::emptyList);
+                Map<String, Object> context = new HashMap<>();
+                context.put("diffs", diffs);
+                context.put("projectName", project.getName());
+                String message = mailTemplateProcessor.process("ftl/mail/DocumentUpdated.ftl", context);
+                mailSender.batchSendHtml(mail, to, subject, message);
+            }
         });
     }
 
