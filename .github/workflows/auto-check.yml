@@ -40,4 +40,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Gradle Test
-        run: ./gradlew api:check
+        run: ./gradlew api:check core:check
