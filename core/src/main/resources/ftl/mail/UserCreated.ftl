@@ -25,13 +25,15 @@
                             尊敬的 ${nickname}:</p>
                         <p style="color: rgb(32, 45, 64);font-size: 14px;font-family: PingFangSC-Regular;font-weight: normal;letter-spacing: 0px;margin: 0;margin-top: 20px;text-indent:2em;">
                             您已成功注册 Databasir，用户名为 ${username}。
+                        </p>
+                        <p style="color: rgb(32, 45, 64);font-size: 14px;font-family: PingFangSC-Regular;font-weight: normal;letter-spacing: 0px;margin: 0;margin-top: 20px;text-indent:2em;">
                             为了您的账号安全，请尽快通过以下密码登录系统并及时修改新密码
                         </p>
                         <div style="margin-left: 20px; margin-top: 10px;background-size: 3px;background-repeat: no-repeat;">
                             <span style="padding:5px 8px 5px 8px; border:none ;background-color: #F56C6C;">
                                 <span target="_blank"
                                       style="text-decoration:none; font-family:'Oracle Sans', Arial, sans-serif; color:#FFF;">
-                                    ${newPassword}
+                                    ${password}
                                 </span>
                             </span>
                         </div>
