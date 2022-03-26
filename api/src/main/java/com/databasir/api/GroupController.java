@@ -17,6 +17,8 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.databasir.core.infrastructure.constant.RoleConstants.GROUP_MEMBER;
+import static com.databasir.core.infrastructure.constant.RoleConstants.GROUP_OWNER;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
@@ -86,7 +88,7 @@ public class GroupController {
     public JsonData<Void> addGroupMember(@PathVariable Integer groupId,
                                          @RequestBody @Valid GroupMemberCreateRequest request) {
         userOperationValidator.forbiddenIfUpdateSelfRole(request.getUserId());
-        List<String> groupRoles = Arrays.asList("GROUP_OWNER", "GROUP_MEMBER");
+        List<String> groupRoles = Arrays.asList(GROUP_OWNER, GROUP_MEMBER);
         if (!groupRoles.contains(request.getRole())) {
             throw new IllegalArgumentException("role should be GROUP_OWNER or GROUP_MEMBER");
         }
@@ -117,7 +119,7 @@ public class GroupController {
                                                 @PathVariable Integer userId,
                                                 @RequestBody GroupMemberRoleUpdateRequest request) {
         userOperationValidator.forbiddenIfUpdateSelfRole(userId);
-        List<String> groupRoles = Arrays.asList("GROUP_OWNER", "GROUP_MEMBER");
+        List<String> groupRoles = Arrays.asList(GROUP_OWNER, GROUP_MEMBER);
         if (!groupRoles.contains(request.getRole())) {
             throw new IllegalArgumentException("role should be GROUP_OWNER or GROUP_MEMBER");
         }

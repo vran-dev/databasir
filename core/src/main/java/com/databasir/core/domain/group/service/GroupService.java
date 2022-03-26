@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.databasir.core.infrastructure.constant.RoleConstants.GROUP_OWNER;
+
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -39,7 +41,7 @@ public class GroupService {
     private final GroupResponseConverter groupResponseConverter;
 
     @Transactional
-    public void create(GroupCreateRequest request) {
+    public Integer create(GroupCreateRequest request) {
         GroupPojo groupPojo = groupPojoConverter.of(request);
         Integer groupId = groupDao.insertAndReturnId(groupPojo);
         List<UserRolePojo> roles = request.getGroupOwnerUserIds()
@@ -47,25 +49,26 @@ public class GroupService {
                 .map(userId -> {
                     UserRolePojo role = new UserRolePojo();
                     role.setUserId(userId);
-                    role.setRole("GROUP_OWNER");
+                    role.setRole(GROUP_OWNER);
                     role.setGroupId(groupId);
                     return role;
                 })
                 .collect(Collectors.toList());
         userRoleDao.batchInsert(roles);
+        return groupId;
     }
 
     @Transactional
     public void update(GroupUpdateRequest request) {
         GroupPojo groupPojo = groupPojoConverter.of(request);
         groupDao.updateById(groupPojo);
-        userRoleDao.deleteByRoleAndGroupId("GROUP_OWNER", groupPojo.getId());
+        userRoleDao.deleteByRoleAndGroupId(GROUP_OWNER, groupPojo.getId());
         List<UserRolePojo> roles = request.getGroupOwnerUserIds()
                 .stream()
                 .map(userId -> {
                     UserRolePojo role = new UserRolePojo();
                     role.setUserId(userId);
-                    role.setRole("GROUP_OWNER");
+                    role.setRole(GROUP_OWNER);
                     role.setGroupId(groupPojo.getId());
                     return role;
                 })
@@ -114,7 +117,7 @@ public class GroupService {
 
     public GroupResponse get(Integer groupId) {
         GroupPojo groupPojo = groupDao.selectById(groupId);
-        List<UserPojo> users = userDao.selectLimitUsersByRoleAndGroup(groupId, "GROUP_OWNER", 50);
+        List<UserPojo> users = userDao.selectLimitUsersByRoleAndGroup(groupId, GROUP_OWNER, 50);
         return groupResponseConverter.toResponse(groupPojo, users);
     }
 

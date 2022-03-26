@@ -59,7 +59,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void create(ProjectCreateRequest request) {
+    public Integer create(ProjectCreateRequest request) {
         ProjectPojo project = projectPojoConverter.of(request);
         Integer projectId = null;
         try {
@@ -78,6 +78,7 @@ public class ProjectService {
 
         ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
         projectSyncRuleDao.insertAndReturnId(syncRule);
+        return projectId;
     }
 
     @Transactional
