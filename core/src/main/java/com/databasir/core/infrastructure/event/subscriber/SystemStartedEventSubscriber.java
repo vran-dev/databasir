@@ -27,6 +27,8 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import static com.databasir.core.infrastructure.constant.RoleConstants.SYS_OWNER;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -129,7 +131,7 @@ public class SystemStartedEventSubscriber {
             Integer userId = userDao.insertAndReturnId(admin);
             UserRolePojo role = new UserRolePojo();
             role.setUserId(userId);
-            role.setRole("SYS_OWNER");
+            role.setRole(SYS_OWNER);
             userRoleDao.insertAndReturnId(role);
         }
     }

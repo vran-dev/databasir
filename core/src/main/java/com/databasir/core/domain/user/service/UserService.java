@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.databasir.core.infrastructure.constant.RoleConstants.SYS_OWNER;
 import static java.util.stream.Collectors.*;
 
 @Service
@@ -63,7 +64,7 @@ public class UserService {
                 .filter(ur -> ur.getGroupId() != null)
                 .collect(groupingBy(UserRolePojo::getUserId, mapping(UserRolePojo::getGroupId, toList())));
         Map<Integer, List<UserRolePojo>> sysOwnerGroupByUserId = userRoles.stream()
-                .filter(ur -> ur.getRole().equals("SYS_OWNER"))
+                .filter(ur -> ur.getRole().equals(SYS_OWNER))
                 .collect(groupingBy(UserRolePojo::getUserId));
         return users.map(user ->
                 userResponseConverter.pageResponse(user, sysOwnerGroupByUserId.containsKey(user.getId()),
@@ -143,16 +144,16 @@ public class UserService {
     }
 
     public void removeSysOwnerFrom(Integer userId) {
-        if (userRoleDao.hasRole(userId, "SYS_OWNER")) {
-            userRoleDao.deleteRole(userId, "SYS_OWNER");
+        if (userRoleDao.hasRole(userId, SYS_OWNER)) {
+            userRoleDao.deleteRole(userId, SYS_OWNER);
         }
     }
 
     public void addSysOwnerTo(Integer userId) {
-        if (!userRoleDao.hasRole(userId, "SYS_OWNER")) {
+        if (!userRoleDao.hasRole(userId, SYS_OWNER)) {
             UserRolePojo role = new UserRolePojo();
             role.setUserId(userId);
-            role.setRole("SYS_OWNER");
+            role.setRole(SYS_OWNER);
             userRoleDao.insertAndReturnId(role);
         }
     }
@@ -167,6 +168,7 @@ public class UserService {
         }
         String newHashedPassword = bCryptPasswordEncoder.encode(request.getNewPassword());
         userDao.updatePassword(userId, newHashedPassword);
+        loginDao.deleteByUserId(userId);
     }
 
     public void updateNickname(Integer userId, UserNicknameUpdateRequest request) {

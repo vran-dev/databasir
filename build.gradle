@@ -20,6 +20,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'nu.studer.jooq'
     apply plugin: 'checkstyle'
+    apply plugin: 'jacoco'
 
     group 'com.databasir'
     version '1.0.0'
@@ -66,6 +67,15 @@ subprojects {
         toolVersion = '8.42'
         ignoreFailures = false
         maxWarnings = 0
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.required = false
+            csv.required = false
+            html.outputLocation = layout.buildDirectory.dir('reports/jacoco/html')
+        }
     }
 }
 

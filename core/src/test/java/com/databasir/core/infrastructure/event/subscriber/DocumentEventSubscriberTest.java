@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Transactional
 class DocumentEventSubscriberTest extends BaseTest {
 
     @Autowired
@@ -52,7 +54,7 @@ class DocumentEventSubscriberTest extends BaseTest {
         event.setDiff(diff);
         event.setNewVersion(2L);
         event.setOldVersion(1L);
-        event.setProjectId(1);
+        event.setProjectId(-1);
         documentEventSubscriber.onDocumentUpdated(event);
         verify(mailSender, times(1)).batchSendHtml(any(), any(), any(), any());
     }

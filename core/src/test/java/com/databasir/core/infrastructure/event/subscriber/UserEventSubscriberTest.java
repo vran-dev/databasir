@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
 
+@Transactional
 class UserEventSubscriberTest extends BaseTest {
 
     @Autowired
@@ -39,7 +41,7 @@ class UserEventSubscriberTest extends BaseTest {
                 .newPassword("123456")
                 .nickname("demo")
                 .renewTime(LocalDateTime.now())
-                .renewByUserId(1)
+                .renewByUserId(-999)
                 .build();
         userEventSubscriber.onPasswordRenewed(event);
         verify(mailSender, times(1)).sendHtml(any(), any(), any(), any());

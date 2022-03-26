@@ -86,6 +86,12 @@ public abstract class BaseDao<R> {
                 .fetchOptionalInto(pojoType);
     }
 
+    public List<R> selectList(Condition condition) {
+        return getDslContext()
+                .select(table.fields()).from(table).where(condition)
+                .fetchInto(pojoType);
+    }
+
     public R selectOne(Condition condition) {
         return selectOptionalOne(condition)
                 .orElseThrow(() -> new DataNotExistsException("data not exists in "
