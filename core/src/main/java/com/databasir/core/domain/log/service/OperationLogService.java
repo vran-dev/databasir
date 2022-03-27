@@ -39,9 +39,9 @@ public class OperationLogService {
 
     private final OperationLogPojoConverter operationLogPojoConverter;
 
-    public void save(OperationLogRequest request) {
+    public Long save(OperationLogRequest request) {
         OperationLogPojo pojo = operationLogRequestConverter.toPojo(request);
-        operationLogDao.insertAndReturnId(pojo);
+        return operationLogDao.insertAndReturnId(pojo);
     }
 
     public Page<OperationLogPageResponse> list(Pageable page,
