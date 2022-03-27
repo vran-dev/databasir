@@ -56,11 +56,11 @@ public class LoginService {
         UserPojo user = userDao.selectOptionalById(login.getUserId())
                 .orElseThrow(() -> {
                     log.warn("user not exists but refresh token exists for " + login.getRefreshToken());
-                    return DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
+                    return DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception("invalid user");
                 });
         if (!user.getEnabled()) {
             log.warn("user disabled but refresh token exists for " + login.getRefreshToken());
-            throw DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception();
+            throw DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception("invalid user status");
         }
         String accessToken = jwtTokens.accessToken(user.getEmail());
         LocalDateTime accessTokenExpireAt = jwtTokens.expireAt(accessToken);
