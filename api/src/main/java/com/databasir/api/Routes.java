@@ -85,6 +85,8 @@ public interface Routes {
         String DIFF = BASE + "/projects/{projectId}/diff_documents";
 
         String EXPORT = BASE + "/projects/{projectId}/document_files";
+
+        String LIST_TABLES = BASE + "/projects/{projectId}/tables";
     }
 
     interface DocumentDiscussion {
@@ -159,5 +161,15 @@ public interface Routes {
         String UPDATE = BASE + "/database_types";
 
         String CREATE = BASE + "/database_types";
+    }
+
+    interface MockData {
+
+        String SAVE_MOCK_RULE = BASE + "/groups/{groupId}/projects/{projectId}/tables/{tableId}/mock_rules";
+
+        String GET_MOCK_RULE = BASE + "/groups/{groupId}/projects/{projectId}/mock_rules";
+
+        String GET_SQL_MOCK_DATA = BASE + "/groups/{groupId}/projects/{projectId}/mock_data/sql";
+
     }
 }

@@ -72,6 +72,12 @@ jooq {
                                 includeExpression = 'document_template_property.type'
                                 includeTypes = '.*'
                             }
+                            forcedType {
+                                userType = 'com.databasir.dao.enums.MockDataType'
+                                converter = 'com.databasir.dao.converter.MockDataTypeConverter'
+                                includeExpression = 'mock_data_rule.mock_data_type'
+                                includeTypes = '.*'
+                            }
                         }
                     }
                     generate {

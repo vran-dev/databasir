@@ -17,6 +17,8 @@ public class ColumnMeta {
 
     private String type;
 
+    private Integer dataType;
+
     /**
      * if default value is empty string, will be converted to ''.
      */
