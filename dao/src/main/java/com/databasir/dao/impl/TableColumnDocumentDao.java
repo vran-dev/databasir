@@ -40,4 +40,17 @@ public class TableColumnDocumentDao extends BaseDao<TableColumnDocumentPojo> {
                         .and(TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID.in(tableIdIn)))
                 .fetchInto(TableColumnDocumentPojo.class);
     }
+
+    public List<TableColumnDocumentPojo> selectByTableDocumentId(Integer tableDocumentId) {
+        return getDslContext()
+                .selectFrom(TABLE_COLUMN_DOCUMENT)
+                .where(TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID.eq(tableDocumentId))
+                .fetchInto(TableColumnDocumentPojo.class);
+    }
+
+    public boolean exists(Integer tableDocumentId, String columnName) {
+        return getDslContext()
+                .fetchExists(TABLE_COLUMN_DOCUMENT, TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID.eq(tableDocumentId)
+                        .and(TABLE_COLUMN_DOCUMENT.NAME.eq(columnName)));
+    }
 }

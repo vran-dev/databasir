@@ -2,10 +2,7 @@ package com.databasir.api;
 
 import com.databasir.common.JsonData;
 import com.databasir.core.diff.data.RootDiff;
-import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
-import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
-import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
-import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.core.domain.log.annotation.Operation;
@@ -94,4 +91,9 @@ public class DocumentController {
         return JsonData.ok(documentService.getTableDetails(projectId, documentId, tableIds));
     }
 
+    @GetMapping(Routes.Document.LIST_TABLES)
+    public JsonData<List<TableResponse>> listTables(@PathVariable Integer projectId,
+                                                    @RequestParam(required = false) Long version) {
+        return JsonData.ok(documentService.getTableAndColumns(projectId, version));
+    }
 }

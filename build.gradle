@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.springframework.boot' version '2.5.8' apply false
+    id 'org.springframework.boot' version '2.5.11' apply false
     id 'nu.studer.jooq' version '6.0.1' apply false
 }
 

@@ -67,8 +67,10 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                 Integer columnSize = columnsResult.getInt("COLUMN_SIZE");
                 String columnType = columnsResult.getString("TYPE_NAME");
                 String columnComment = columnsResult.getString("REMARKS");
+                int dataType = columnsResult.getInt("DATA_TYPE");
                 ColumnMeta columnMeta = ColumnMeta.builder()
                         .name(columnName)
+                        .dataType(dataType)
                         .type(columnType)
                         .size(columnSize)
                         .decimalDigits(decimalDigits)
@@ -80,7 +82,6 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                         .build();
                 columnDocs.add(columnMeta);
             }
-
         }
         return columnDocs;
     }

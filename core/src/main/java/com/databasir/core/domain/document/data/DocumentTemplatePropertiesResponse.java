@@ -16,12 +16,16 @@ import java.util.List;
 @AllArgsConstructor
 public class DocumentTemplatePropertiesResponse {
 
+    @Builder.Default
     private List<DocumentTemplatePropertyResponse> columnFieldNameProperties = Collections.emptyList();
 
+    @Builder.Default
     private List<DocumentTemplatePropertyResponse> indexFieldNameProperties = Collections.emptyList();
 
+    @Builder.Default
     private List<DocumentTemplatePropertyResponse> triggerFieldNameProperties = Collections.emptyList();
 
+    @Builder.Default
     private List<DocumentTemplatePropertyResponse> foreignKeyFieldNameProperties = Collections.emptyList();
 
     @Data

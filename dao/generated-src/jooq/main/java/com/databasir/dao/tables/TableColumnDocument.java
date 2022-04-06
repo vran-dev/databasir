@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -77,6 +77,11 @@ public class TableColumnDocument extends TableImpl<TableColumnDocumentRecord> {
      * The column <code>databasir.table_column_document.type</code>.
      */
     public final TableField<TableColumnDocumentRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.table_column_document.data_type</code>.
+     */
+    public final TableField<TableColumnDocumentRecord, Integer> DATA_TYPE = createField(DSL.name("data_type"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("99999", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>databasir.table_column_document.comment</code>.
@@ -202,11 +207,11 @@ public class TableColumnDocument extends TableImpl<TableColumnDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, Integer, Integer, String, String, String, String, Integer, Integer, Boolean, String, String, LocalDateTime> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row14<Integer, Integer, Integer, String, String, Integer, String, String, Integer, Integer, Boolean, String, String, LocalDateTime> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

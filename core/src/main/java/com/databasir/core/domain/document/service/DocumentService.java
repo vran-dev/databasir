@@ -6,14 +6,8 @@ import com.databasir.core.diff.Diffs;
 import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.document.converter.DatabaseMetaConverter;
-import com.databasir.core.domain.document.converter.DocumentPojoConverter;
-import com.databasir.core.domain.document.converter.DocumentResponseConverter;
-import com.databasir.core.domain.document.converter.DocumentSimpleResponseConverter;
-import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
-import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
-import com.databasir.core.domain.document.data.DatabaseDocumentVersionResponse;
-import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.converter.*;
+import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
 import com.databasir.core.domain.document.generator.DocumentFileType;
@@ -81,6 +75,8 @@ public class DocumentService {
     private final DocumentSimpleResponseConverter documentSimpleResponseConverter;
 
     private final DatabaseMetaConverter databaseMetaConverter;
+
+    private final TableResponseConverter tableResponseConverter;
 
     private final JsonConverter jsonConverter;
 
@@ -372,5 +368,24 @@ public class DocumentService {
         DatabaseMeta currMeta = retrieveOriginalDatabaseMeta(current);
         DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
         return Diffs.diff(originalMeta, currMeta);
+    }
+
+    public List<TableResponse> getTableAndColumns(Integer projectId, Long version) {
+        Optional<DatabaseDocumentPojo> documentOption;
+        if (version == null) {
+            documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
+        } else {
+            documentOption = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version);
+        }
+        if (documentOption.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            DatabaseDocumentPojo databaseDoc = documentOption.get();
+            var tables = tableDocumentDao.selectByDatabaseDocumentId(databaseDoc.getId());
+            var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(databaseDoc.getId());
+            var columnMapByTableId = columns.stream()
+                    .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+            return tableResponseConverter.from(tables, columnMapByTableId);
+        }
     }
 }

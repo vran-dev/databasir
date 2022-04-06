@@ -34,6 +34,14 @@ public enum DomainErrors implements DatabasirErrors {
     INVALID_DATABASE_TYPE_URL_PATTERN("A_10019", "不合法的 url pattern"),
     DOCUMENT_VERSION_IS_INVALID("A_10020", "文档版本不合法"),
     CANNOT_UPDATE_SELF_ENABLED_STATUS("A_10021", "无法对自己执行启用禁用操作"),
+    MOCK_DATA_SCRIPT_MUST_NOT_BE_BLANK("A_10022", "脚本内容不能为空"),
+    TABLE_META_NOT_FOUND("A_10023", "不存在的数据库表"),
+    DEPENDENT_COLUMN_NAME_MUST_NOT_BE_BLANK("A_10024", "必须指定依赖的字段"),
+    DEPENDENT_REF_MUST_NOT_BE_BLANK("A_10025", "请选择关联表和字段"),
+    MUST_NOT_REF_SELF("A_10026", "不能引用自身"),
+    CIRCLE_REFERENCE("A_10027", "检查到循环引用"),
+    DUPLICATE_COLUMN("A_10028", "重复的列"),
+    INVALID_MOCK_DATA_SCRIPT("A_10029", "不合法的表达式"),
     ;
 
     private final String errCode;

@@ -13,6 +13,7 @@ import com.databasir.dao.tables.DocumentDiscussion;
 import com.databasir.dao.tables.DocumentTemplateProperty;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
+import com.databasir.dao.tables.MockDataRule;
 import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
@@ -93,6 +94,11 @@ public class Databasir extends SchemaImpl {
      * The table <code>databasir.login</code>.
      */
     public final Login LOGIN = Login.LOGIN;
+
+    /**
+     * The table <code>databasir.mock_data_rule</code>.
+     */
+    public final MockDataRule MOCK_DATA_RULE = MockDataRule.MOCK_DATA_RULE;
 
     /**
      * oauth app info
@@ -189,6 +195,7 @@ public class Databasir extends SchemaImpl {
             DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY,
             Group.GROUP,
             Login.LOGIN,
+            MockDataRule.MOCK_DATA_RULE,
             OauthApp.OAUTH_APP,
             OperationLog.OPERATION_LOG,
             Project.PROJECT,

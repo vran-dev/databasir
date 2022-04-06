@@ -21,6 +21,7 @@ public class TableColumnDocumentPojo implements Serializable {
     private Integer       databaseDocumentId;
     private String        name;
     private String        type;
+    private Integer       dataType;
     private String        comment;
     private String        defaultValue;
     private Integer       size;
@@ -38,6 +39,7 @@ public class TableColumnDocumentPojo implements Serializable {
         this.databaseDocumentId = value.databaseDocumentId;
         this.name = value.name;
         this.type = value.type;
+        this.dataType = value.dataType;
         this.comment = value.comment;
         this.defaultValue = value.defaultValue;
         this.size = value.size;
@@ -54,6 +56,7 @@ public class TableColumnDocumentPojo implements Serializable {
         Integer       databaseDocumentId,
         String        name,
         String        type,
+        Integer       dataType,
         String        comment,
         String        defaultValue,
         Integer       size,
@@ -68,6 +71,7 @@ public class TableColumnDocumentPojo implements Serializable {
         this.databaseDocumentId = databaseDocumentId;
         this.name = name;
         this.type = type;
+        this.dataType = dataType;
         this.comment = comment;
         this.defaultValue = defaultValue;
         this.size = size;
@@ -150,6 +154,20 @@ public class TableColumnDocumentPojo implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Getter for <code>databasir.table_column_document.data_type</code>.
+     */
+    public Integer getDataType() {
+        return this.dataType;
+    }
+
+    /**
+     * Setter for <code>databasir.table_column_document.data_type</code>.
+     */
+    public void setDataType(Integer dataType) {
+        this.dataType = dataType;
     }
 
     /**
@@ -277,6 +295,7 @@ public class TableColumnDocumentPojo implements Serializable {
         sb.append(", ").append(databaseDocumentId);
         sb.append(", ").append(name);
         sb.append(", ").append(type);
+        sb.append(", ").append(dataType);
         sb.append(", ").append(comment);
         sb.append(", ").append(defaultValue);
         sb.append(", ").append(size);
