@@ -45,6 +45,7 @@ public class SystemService {
         sysMailPojo.setSmtpHost(request.getSmtpHost());
         sysMailPojo.setSmtpPort(request.getSmtpPort());
         sysMailPojo.setUsername(request.getUsername());
+        sysMailPojo.setUseSsl(request.getUseSSL());
 
         Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMailPojo::getId);
         idOpt.ifPresent(sysMailPojo::setId);
