@@ -17,7 +17,8 @@
     * [启用 Github 第三方认证登录](README/github-oauth2/github-oauth2.md)
     * [启用 Gitlab 第三方认证登录](README/gitlab-oauth2/gitlab-oauth2.md)
     * [零代码扩展受支持的数据库类型](README/database-extension/database-extension.md)
-
+    * [Mock Insert SQL 生成](README/mock-sql/index.md)
+    
 * 参与开发
     * [构建指南](README/build.md)
 
