@@ -20,7 +20,8 @@
     * [Mock Insert SQL 生成](README/mock-sql/index.md)
     
 * 参与开发
-    * [构建指南](README/build.md)
-
+    * [构建指南](README/develop/build/index.md)
+    * [模块和包](README/develop/module-and-package/index.md)
+    
 * 捐赠
 
