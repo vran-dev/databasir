@@ -22,6 +22,8 @@
 * 参与开发
     * [构建指南](README/develop/build/index.md)
     * [模块和包](README/develop/module-and-package/index.md)
+    * 登录授权流程
+      * [用户名密码登录流程](README/develop/login-and-auth/username-and-password/index.md)
     
 * 捐赠
 
