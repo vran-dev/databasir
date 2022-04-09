@@ -8,7 +8,6 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.domain.user.service.UserService;
-import com.databasir.core.infrastructure.event.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +27,6 @@ public class UserController {
     private final UserService userService;
 
     private final UserOperationValidator userOperationValidator;
-
-    private final EventPublisher eventPublisher;
 
     @GetMapping(Routes.User.LIST)
     public JsonData<Page<UserPageResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
@@ -71,6 +68,16 @@ public class UserController {
     @GetMapping(Routes.User.GET_ONE)
     public JsonData<UserDetailResponse> getOne(@PathVariable Integer userId) {
         return JsonData.ok(userService.get(userId));
+    }
+
+    @DeleteMapping(Routes.User.DELETE_ONE)
+    @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
+    public JsonData<Void> deleteOne(@PathVariable Integer userId) {
+        if (userOperationValidator.isMyself(userId)) {
+            throw DomainErrors.CANNOT_DELETE_SELF.exception();
+        }
+        userService.deleteOne(userId);
+        return JsonData.ok();
     }
 
     @PostMapping(Routes.User.RENEW_PASSWORD)

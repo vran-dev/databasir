@@ -23,6 +23,8 @@ public class UserPojo implements Serializable {
     private String        nickname;
     private String        avatar;
     private Boolean       enabled;
+    private Boolean       deleted;
+    private Integer       deletedToken;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -36,6 +38,8 @@ public class UserPojo implements Serializable {
         this.nickname = value.nickname;
         this.avatar = value.avatar;
         this.enabled = value.enabled;
+        this.deleted = value.deleted;
+        this.deletedToken = value.deletedToken;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -48,6 +52,8 @@ public class UserPojo implements Serializable {
         String        nickname,
         String        avatar,
         Boolean       enabled,
+        Boolean       deleted,
+        Integer       deletedToken,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -58,6 +64,8 @@ public class UserPojo implements Serializable {
         this.nickname = nickname;
         this.avatar = avatar;
         this.enabled = enabled;
+        this.deleted = deleted;
+        this.deletedToken = deletedToken;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -161,6 +169,34 @@ public class UserPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.user.deleted</code>.
+     */
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    /**
+     * Setter for <code>databasir.user.deleted</code>.
+     */
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    /**
+     * Getter for <code>databasir.user.deleted_token</code>.
+     */
+    public Integer getDeletedToken() {
+        return this.deletedToken;
+    }
+
+    /**
+     * Setter for <code>databasir.user.deleted_token</code>.
+     */
+    public void setDeletedToken(Integer deletedToken) {
+        this.deletedToken = deletedToken;
+    }
+
+    /**
      * Getter for <code>databasir.user.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
@@ -199,6 +235,8 @@ public class UserPojo implements Serializable {
         sb.append(", ").append(nickname);
         sb.append(", ").append(avatar);
         sb.append(", ").append(enabled);
+        sb.append(", ").append(deleted);
+        sb.append(", ").append(deletedToken);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 

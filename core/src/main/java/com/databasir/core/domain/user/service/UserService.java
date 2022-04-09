@@ -176,4 +176,12 @@ public class UserService {
         userPojo.setNickname(request.getNickname());
         userDao.updateById(userPojo);
     }
+
+    @Transactional
+    public void deleteOne(Integer userId) {
+        if (userDao.existsById(userId)) {
+            userDao.deleteById(userId);
+            loginDao.deleteByUserId(userId);
+        }
+    }
 }

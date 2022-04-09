@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.io.Serializable;
 import java.util.*;
 
 import static com.databasir.dao.Tables.USER;
@@ -31,15 +32,44 @@ public class UserDao extends BaseDao<UserPojo> {
         super(USER, UserPojo.class);
     }
 
+    @Override
+    public <T extends Serializable> int deleteById(T id) {
+        return getDslContext()
+                .deleteFrom(USER).where(identity().eq(id).and(USER.DELETED.eq(false)))
+                .execute();
+    }
+
+    @Override
+    public int delete(Condition condition) {
+        return getDslContext()
+                .update(USER)
+                .set(USER.DELETED, true)
+                .set(USER.DELETED_TOKEN, USER.ID)
+                .where(USER.DELETED.eq(false))
+                .execute();
+    }
+
+    @Override
+    public boolean exists(Condition condition) {
+        return super.exists(condition.and(USER.DELETED.eq(false)));
+    }
+
+    @Override
+    public <T extends Serializable> boolean existsById(T id) {
+        return getDslContext().fetchExists(USER, identity().eq(id).and(USER.DELETED.eq(false)));
+    }
+
     public void updateEnabledByUserId(Integer userId, Boolean enabled) {
         dslContext
-                .update(USER).set(USER.ENABLED, enabled).where(USER.ID.eq(userId))
+                .update(USER).set(USER.ENABLED, enabled)
+                .where(USER.ID.eq(userId).and(USER.DELETED.eq(false)))
                 .execute();
     }
 
     public void updatePassword(Integer userId, String password) {
         dslContext
-                .update(USER).set(USER.PASSWORD, password).where(USER.ID.eq(userId))
+                .update(USER).set(USER.PASSWORD, password)
+                .where(USER.ID.eq(userId).and(USER.DELETED.eq(false)))
                 .execute();
     }
 
@@ -49,7 +79,7 @@ public class UserDao extends BaseDao<UserPojo> {
         }
         return dslContext
                 .select(USER.fields()).from(USER)
-                .where(USER.ID.in(userIds))
+                .where(USER.ID.in(userIds).and(USER.DELETED.eq(false)))
                 .fetchInto(UserPojo.class);
     }
 
@@ -59,7 +89,8 @@ public class UserDao extends BaseDao<UserPojo> {
         return dslContext
                 .select(USER.fields()).from(USER)
                 .innerJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(USER.ID))
-                .where(USER_ROLE.GROUP_ID.eq(groupId).and(USER_ROLE.ROLE.eq(role)))
+                .where(USER.DELETED.eq(false)
+                        .and(USER_ROLE.GROUP_ID.eq(groupId).and(USER_ROLE.ROLE.eq(role))))
                 .orderBy(USER_ROLE.ID.desc())
                 .limit(size)
                 .fetchInto(UserPojo.class);
@@ -67,21 +98,24 @@ public class UserDao extends BaseDao<UserPojo> {
 
     public Optional<UserPojo> selectByEmail(String email) {
         return dslContext
-                .select(USER.fields()).from(USER).where(USER.EMAIL.eq(email))
+                .select(USER.fields()).from(USER)
+                .where(USER.EMAIL.eq(email).and(USER.DELETED.eq(false)))
                 .fetchOptionalInto(UserPojo.class);
     }
 
     public Optional<UserPojo> selectByEmailOrUsername(String emailOrUsername) {
         return dslContext
                 .select(USER.fields()).from(USER)
-                .where(USER.EMAIL.eq(emailOrUsername).or(USER.USERNAME.eq(emailOrUsername)))
+                .where(USER.DELETED.eq(false)
+                        .and(USER.EMAIL.eq(emailOrUsername).or(USER.USERNAME.eq(emailOrUsername))))
                 .fetchOptionalInto(UserPojo.class);
     }
 
     public List<UserPojo> selectEnabledGroupMembers(Integer groupId) {
         return dslContext.select(USER.fields()).from(USER)
                 .innerJoin(USER_ROLE).on(USER.ID.eq(USER_ROLE.USER_ID))
-                .where(USER_ROLE.GROUP_ID.eq(groupId).and(USER.ENABLED.eq(true)))
+                .where(USER.DELETED.eq(false)
+                        .and(USER_ROLE.GROUP_ID.eq(groupId).and(USER.ENABLED.eq(true))))
                 .fetchInto(UserPojo.class);
     }
 
@@ -91,7 +125,8 @@ public class UserDao extends BaseDao<UserPojo> {
                 .selectCount()
                 .from(USER)
                 .innerJoin(USER_ROLE).on(USER.ID.eq(USER_ROLE.USER_ID))
-                .where(USER_ROLE.GROUP_ID.eq(groupId).and(condition))
+                .where(USER.DELETED.eq(false)
+                        .and(USER_ROLE.GROUP_ID.eq(groupId).and(condition)))
                 .fetchOne(0, int.class);
 
         // data
@@ -100,7 +135,8 @@ public class UserDao extends BaseDao<UserPojo> {
                         USER_ROLE.USER_ID, USER_ROLE.ROLE, USER_ROLE.GROUP_ID, USER_ROLE.CREATE_AT)
                 .from(USER)
                 .innerJoin(USER_ROLE).on(USER.ID.eq(USER_ROLE.USER_ID))
-                .where(USER_ROLE.GROUP_ID.eq(groupId).and(condition))
+                .where(USER.DELETED.eq(false)
+                        .and(USER_ROLE.GROUP_ID.eq(groupId).and(condition)))
                 .orderBy(getSortFields(request.getSort()))
                 .offset(request.getOffset()).limit(request.getPageSize())
                 .fetchInto(GroupMemberDetailPojo.class);
