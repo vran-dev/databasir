@@ -27,17 +27,19 @@ CREATE TABLE IF NOT EXISTS sys_mail
 
 CREATE TABLE IF NOT EXISTS user
 (
-    id        INT PRIMARY KEY AUTO_INCREMENT,
-    email     VARCHAR(512) NOT NULL,
-    username  VARCHAR(128) NOT NULL,
-    password  TEXT         NOT NULL,
-    nickname  VARCHAR(255) NOT NULL,
-    avatar    VARCHAR(512)          DEFAULT NULL,
-    enabled   BOOLEAN      NOT NULL DEFAULT FALSE,
-    update_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    create_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT UNIQUE uk_email (email),
-    CONSTRAINT UNIQUE uk_username (username)
+    id            INT PRIMARY KEY AUTO_INCREMENT,
+    email         VARCHAR(512) NOT NULL,
+    username      VARCHAR(128) NOT NULL,
+    password      TEXT         NOT NULL,
+    nickname      VARCHAR(255) NOT NULL,
+    avatar        VARCHAR(512)          DEFAULT NULL,
+    enabled       BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted       BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted_token INT          NOT NULL DEFAULT 0,
+    update_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT UNIQUE uk_email (email, deleted_token),
+    CONSTRAINT UNIQUE uk_username (username, deleted_token)
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 

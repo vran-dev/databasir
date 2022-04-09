@@ -10,6 +10,8 @@ public interface Routes {
 
         String GET_ONE = BASE + "/users/{userId}";
 
+        String DELETE_ONE = BASE + "/users/{userId}";
+
         String ENABLE = BASE + "/users/{userId}/enable";
 
         String DISABLE = BASE + "/users/{userId}/disable";

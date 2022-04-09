@@ -42,6 +42,7 @@ public enum DomainErrors implements DatabasirErrors {
     CIRCLE_REFERENCE("A_10027", "检查到循环引用"),
     DUPLICATE_COLUMN("A_10028", "重复的列"),
     INVALID_MOCK_DATA_SCRIPT("A_10029", "不合法的表达式"),
+    CANNOT_DELETE_SELF("A_10030", "无法对自己执行删除账号操作"),
     ;
 
     private final String errCode;
