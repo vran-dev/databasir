@@ -37,8 +37,13 @@
     - [x] 版本变更
 
 ## 联系作者
+公众号
 
 ![](docs/qrcode.jpg)
+
+- 微信群
+
+<img src="docs/qrcode-group.jpg" width="300">
 
 ## License
 
