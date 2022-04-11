@@ -43,3 +43,7 @@
 公众号
 
 ![](qrcode.jpg)
+
+讨论群
+
+![](qrcode-group.jpg)
