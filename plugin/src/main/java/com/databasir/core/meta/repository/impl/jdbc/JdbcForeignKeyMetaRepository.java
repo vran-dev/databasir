@@ -24,14 +24,6 @@ public class JdbcForeignKeyMetaRepository implements ForeignKeyMetaRepository {
         ResultSet keyResult = null;
         try {
             keyResult = connection.getMetaData().getImportedKeys(databaseName, schemaName, tableName);
-        } catch (SQLException e) {
-            log.warn("warn: ignore foreign keys in " + databaseName + "." + tableName + ", " + e.getMessage());
-            return foreignKeys;
-        }
-
-        try {
-            keyResult = connection.getMetaData()
-                    .getImportedKeys(databaseName, schemaName, tableName);
             while (keyResult.next()) {
                 String fkTableName = keyResult.getString("FKTABLE_NAME");
                 String fkColumnName = keyResult.getString("FKCOLUMN_NAME");

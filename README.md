@@ -1,3 +1,5 @@
+![release-version](https://img.shields.io/github/v/release/vran-dev/databasir?include_prereleases&style=for-the-badge) ![downloads](https://img.shields.io/github/downloads/vran-dev/databasir/total?style=for-the-badge) ![language](https://img.shields.io/github/languages/top/vran-dev/databasir?style=for-the-badge) ![licence](https://img.shields.io/github/license/vran-dev/databasir?style=for-the-badge) ![stars](https://img.shields.io/github/stars/vran-dev/databasir?style=for-the-badge)
+
 ## 简介
 
 **Databasir** 是面向团队的**关系型数据库模型文档管理平台**，旨在通过自动化的方式解决模型文档管理过程中维护成本高、内容更新不及时以及团队协作复杂等问题。
