@@ -7,6 +7,13 @@
 1. Docker
 2. Mysql
 
+## 测活接口
+
+```shell
+GET /live
+```
+返回 200 即表示启动成功
+
 ## 部署流程
 
 1.  拉取最新版镜像，当然你也可以将 latest 替换成你想要得版本号，具体有哪些镜像版本可以拉取可以在[这里](https://registry.hub.docker.com/r/vrantt/databasir)查看

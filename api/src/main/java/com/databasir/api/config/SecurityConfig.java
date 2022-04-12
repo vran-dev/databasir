@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/oauth2/apps", "/oauth2/authorization/*", "/oauth2/login/*")
                 .permitAll()
                 // 静态资源无需鉴权
-                .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico")
+                .antMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**", "/*.ico", "/live")
                 .permitAll()
                 // api 请求需要授权
                 .antMatchers("/api/**").authenticated()
