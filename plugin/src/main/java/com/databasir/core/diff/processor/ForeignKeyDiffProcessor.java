@@ -13,12 +13,6 @@ public class ForeignKeyDiffProcessor implements DiffProcessor<ForeignKeyMeta> {
                 original,
                 current,
                 "foreignKeys",
-                fk -> {
-                    if (fk.getFkName() == null) {
-                        return fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySeq();
-                    } else {
-                        return fk.getFkName();
-                    }
-                });
+                fk -> fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySeq());
     }
 }
