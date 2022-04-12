@@ -108,7 +108,12 @@ public class DocumentService {
             eventPublisher.publish(new DocumentUpdated(diff, version + 1, version, projectId));
         } else {
             saveNewDocument(current, 1L, projectId);
-            RootDiff diff = Diffs.diff(null, current);
+            RootDiff diff = null;
+            try {
+                diff = Diffs.diff(null, current);
+            } catch (Exception e) {
+                log.error("diff project " + projectId + " error, fallback diff type to NONE", e);
+            }
             eventPublisher.publish(new DocumentUpdated(diff, 1L, null, projectId));
         }
     }

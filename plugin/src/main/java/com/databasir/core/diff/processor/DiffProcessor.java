@@ -2,6 +2,8 @@ package com.databasir.core.diff.processor;
 
 import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.diff.data.FieldDiff;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public interface DiffProcessor<T> {
+
+    Logger log = LoggerFactory.getLogger(DiffProcessor.class);
 
     FieldDiff process(String fieldName, List<T> original, List<T> current);
 
@@ -41,7 +45,10 @@ public interface DiffProcessor<T> {
     default Map<String, T> toMap(List<T> content, Function<T, String> idMapping) {
         return content
                 .stream()
-                .collect(Collectors.toMap(idMapping, Function.identity()));
+                .collect(Collectors.toMap(idMapping, Function.identity(), (a, b) -> {
+                    log.warn("Duplicate key, origin = {}, current = {}", a, b);
+                    return a;
+                }));
     }
 
     default List<FieldDiff> originalRemovedField(Map<String, T> originalMapById,
