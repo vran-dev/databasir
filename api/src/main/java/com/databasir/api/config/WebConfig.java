@@ -1,5 +1,6 @@
 package com.databasir.api.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -41,6 +42,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         return builder -> {
+            builder.serializationInclusion(JsonInclude.Include.NON_NULL);
             builder.simpleDateFormat(dateTimeFormat);
             builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
             builder.deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
