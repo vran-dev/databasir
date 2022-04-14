@@ -39,7 +39,7 @@ public class DriverResources {
     public String resolveSqlDriverNameFromJar(String driverFileUrl) {
         String tempFilePath = "temp/" + UUID.randomUUID() + ".jar";
         File driverFile = doDownload(driverFileUrl, tempFilePath);
-        String className = resolveSqlDriverNameFromJar(driverFile);
+        String className = doResolveSqlDriverNameFromJar(driverFile);
         try {
             Files.deleteIfExists(driverFile.toPath());
         } catch (IOException e) {
@@ -97,7 +97,7 @@ public class DriverResources {
         }
     }
 
-    private String resolveSqlDriverNameFromJar(File driverFile) {
+    private String doResolveSqlDriverNameFromJar(File driverFile) {
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(driverFile);
