@@ -107,4 +107,9 @@ public class DatabaseTypeService {
         return databaseTypeDao.selectOptionalById(id)
                 .map(databaseTypePojoConverter::toDetailResponse);
     }
+
+    public String resolveDriverClassName(DriverClassNameResolveRequest request) {
+        return driverResources.resolveSqlDriverNameFromJar(request.getJdbcDriverFileUrl());
+    }
+
 }
