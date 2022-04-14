@@ -163,6 +163,8 @@ public interface Routes {
         String UPDATE = BASE + "/database_types";
 
         String CREATE = BASE + "/database_types";
+
+        String RESOLVE_DRIVER_CLASS_NAME = BASE + "/database_types/driver_class_name";
     }
 
     interface MockData {

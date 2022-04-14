@@ -72,4 +72,12 @@ public class DatabaseTypeController {
         Optional<DatabaseTypeDetailResponse> data = databaseTypeService.selectOne(id);
         return JsonData.ok(data);
     }
+
+    @PostMapping(Routes.DatabaseType.RESOLVE_DRIVER_CLASS_NAME)
+    @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
+    public JsonData<String> resolveDriverClassName(@RequestBody @Valid DriverClassNameResolveRequest request) {
+        String driverClassName = databaseTypeService.resolveDriverClassName(request);
+        return JsonData.ok(driverClassName);
+    }
+
 }

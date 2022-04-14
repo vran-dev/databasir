@@ -10,7 +10,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,14 +37,7 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
     @Override
     public Connection getConnection(Context context) throws SQLException {
         DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(context.getDatabaseType());
-        File driverFile;
-        try {
-            driverFile = driverResources.download(context.getDatabaseType(), type.getJdbcDriverFileUrl());
-        } catch (IOException e) {
-            log.error("download driver error " + context, e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
-        }
-
+        File driverFile = driverResources.loadOrDownload(context.getDatabaseType(), type.getJdbcDriverFileUrl());
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
@@ -58,6 +50,7 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             log.error("load driver error " + context, e);
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage());
         }
+        // retrieve the driver class
 
         Class<?> clazz = null;
         Driver driver = null;
@@ -68,9 +61,9 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             log.error("init driver error", e);
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常, 请检查 Driver name：" + e.getMessage());
         } catch (InvocationTargetException
-                | InstantiationException
-                | IllegalAccessException
-                | NoSuchMethodException e) {
+                 | InstantiationException
+                 | IllegalAccessException
+                 | NoSuchMethodException e) {
             log.error("init driver error", e);
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常：" + e.getMessage());
         }

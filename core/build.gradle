@@ -30,11 +30,12 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.18.3'
     implementation 'org.commonmark:commonmark:0.18.1'
     implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'commons-io:commons-io'
     implementation 'com.alibaba:easyexcel'
     implementation "org.freemarker:freemarker"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
 
     // test
     testImplementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
