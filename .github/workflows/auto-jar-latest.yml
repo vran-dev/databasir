@@ -1,7 +1,7 @@
 # This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java#publishing-using-gradle
 
-name: docker latest
+name: jar latest
 
 on:
   push:
@@ -25,9 +25,11 @@ jobs:
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+      - name: Gradle Permission Grant
+        run: chmod +x ./gradlew
       - name: Publish package
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: publish
+          arguments: api:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
