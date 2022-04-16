@@ -16,10 +16,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 用于启用 / 停用项目同步任务的调度器
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ProjectDocumentAutoSyncTriggerJob {
+public class ProjectSyncJobScheduler {
 
     private static final String JOB_IDENTITY_PATTERN = "JOB_PROJECT[%s]";
 
@@ -141,7 +144,7 @@ public class ProjectDocumentAutoSyncTriggerJob {
         dataMap.put("cron", rule.getAutoSyncCron());
         dataMap.put("documentService", documentService);
         JobDetail job = JobBuilder.newJob()
-                .ofType(ProjectDocumentAutoSyncJob.class)
+                .ofType(ProjectSyncJob.class)
                 .withIdentity(jobKey(projectId))
                 .withDescription("auto sync project document")
                 .usingJobData(dataMap)

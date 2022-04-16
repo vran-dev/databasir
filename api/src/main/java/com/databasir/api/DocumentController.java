@@ -1,11 +1,13 @@
 package com.databasir.api;
 
+import com.databasir.api.common.LoginUserContext;
 import com.databasir.common.JsonData;
 import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -30,11 +33,14 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
+    private final ProjectService projectService;
+
     @PostMapping(Routes.Document.SYNC_ONE)
     @Operation(module = Operation.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
-    public JsonData<Void> sync(@PathVariable Integer projectId) {
-        documentService.syncByProjectId(projectId);
-        return JsonData.ok();
+    public JsonData<Integer> sync(@PathVariable Integer projectId) {
+        Integer userId = LoginUserContext.getLoginUserId();
+        Optional<Integer> taskIdOpt = projectService.createSyncTask(projectId, userId, false);
+        return JsonData.ok(taskIdOpt);
     }
 
     @GetMapping(Routes.Document.DIFF)
@@ -56,14 +62,14 @@ public class DocumentController {
     public JsonData<Page<DatabaseDocumentVersionResponse>> getVersionsByProjectId(@PathVariable Integer projectId,
                                                                                   @PageableDefault(sort = "id",
                                                                                           direction = DESC)
-                                                                                          Pageable page) {
+                                                                                  Pageable page) {
         return JsonData.ok(documentService.getVersionsByProjectId(projectId, page));
     }
 
     @GetMapping(Routes.Document.EXPORT)
     public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
                                                                   @RequestParam(required = false)
-                                                                          Long version,
+                                                                  Long version,
                                                                   @RequestParam DocumentFileType fileType) {
         HttpHeaders headers = new HttpHeaders();
         String fileName = "project[" + projectId + "]." + fileType.getFileExtension();
@@ -79,7 +85,7 @@ public class DocumentController {
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)
     public JsonData<DatabaseDocumentSimpleResponse> getSimpleByProjectId(@PathVariable Integer projectId,
                                                                          @RequestParam(required = false)
-                                                                                 Long version) {
+                                                                         Long version) {
         return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version));
     }
 

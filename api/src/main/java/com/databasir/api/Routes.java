@@ -70,6 +70,8 @@ public interface Routes {
         String DELETE = BASE + "/groups/{groupId}/projects/{projectId}";
 
         String TEST_CONNECTION = BASE + "/projects/test_connection";
+
+        String LIST_MANUAL_TASKS = BASE + "/projects/{projectId}/list_manual_tasks";
     }
 
     interface Document {
