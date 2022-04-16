@@ -1,7 +1,11 @@
 plugins {
     id 'io.spring.dependency-management'
     id 'org.springframework.boot' apply false
+    id "maven-publish"
 }
+
+group 'com.databasir'
+version 'latest-SNAPSHOT'
 
 bootJar {
     archiveBaseName = 'databasir'
@@ -32,3 +36,22 @@ dependencies {
 
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vran-dev/databasir")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            artifact tasks.named("bootJar")
+            setArtifactId "databasir"
+            from(components.java)
+        }
+    }
+}
