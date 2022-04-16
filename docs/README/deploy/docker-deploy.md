@@ -31,7 +31,7 @@ create database databasir;
 3. 启动镜像，需要指定可用的 Mysql 的连接信息
 
 ```shell
-docker run --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -e DATABASIR_DB_USERNAME=root -e DATABASIR_DB_PASSWORD=123456 vrantt/databasir:latest -p 8888:8080
+docker run -p 8888:8080 --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -e DATABASIR_DB_USERNAME=root -e DATABASIR_DB_PASSWORD=123456 vrantt/databasir:latest
 ```
 
 
