@@ -78,6 +78,12 @@ jooq {
                                 includeExpression = 'mock_data_rule.mock_data_type'
                                 includeTypes = '.*'
                             }
+                            forcedType {
+                                userType = 'com.databasir.dao.enums.ProjectSyncTaskStatus'
+                                converter = 'com.databasir.dao.converter.ProjectSyncTaskStatusConverter'
+                                includeExpression = 'project_sync_task.status'
+                                includeTypes = '.*'
+                            }
                         }
                     }
                     generate {
