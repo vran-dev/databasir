@@ -18,6 +18,7 @@ import com.databasir.dao.tables.OauthApp;
 import com.databasir.dao.tables.OperationLog;
 import com.databasir.dao.tables.Project;
 import com.databasir.dao.tables.ProjectSyncRule;
+import com.databasir.dao.tables.ProjectSyncTask;
 import com.databasir.dao.tables.SysKey;
 import com.databasir.dao.tables.SysMail;
 import com.databasir.dao.tables.TableColumnDocument;
@@ -105,6 +106,11 @@ public class Tables {
      * The table <code>databasir.project_sync_rule</code>.
      */
     public static final ProjectSyncRule PROJECT_SYNC_RULE = ProjectSyncRule.PROJECT_SYNC_RULE;
+
+    /**
+     * The table <code>databasir.project_sync_task</code>.
+     */
+    public static final ProjectSyncTask PROJECT_SYNC_TASK = ProjectSyncTask.PROJECT_SYNC_TASK;
 
     /**
      * The table <code>databasir.sys_key</code>.

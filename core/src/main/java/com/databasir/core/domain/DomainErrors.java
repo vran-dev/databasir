@@ -11,6 +11,7 @@ public enum DomainErrors implements DatabasirErrors {
     REFRESH_TOKEN_EXPIRED("X_0001", "refresh token expired"),
     INVALID_REFRESH_TOKEN_OPERATION("X_0002", "invalid refresh token operation"),
     NETWORK_ERROR("X_0003", "网络似乎不稳定，请稍后再试"),
+    INVALID_ACCESS_TOKEN("X_0004", "无效的 access token"),
 
     NOT_SUPPORT_DATABASE_TYPE("A_10000", "不支持的数据库类型, 请检查项目配置"),
     PROJECT_NOT_FOUND("A_10001", "项目不存在"),

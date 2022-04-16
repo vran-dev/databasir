@@ -5,6 +5,8 @@ import com.databasir.api.validator.CronExpressionValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.project.data.*;
+import com.databasir.core.domain.project.data.task.ProjectSimpleTaskResponse;
+import com.databasir.core.domain.project.data.task.ProjectTaskListCondition;
 import com.databasir.core.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,7 +74,7 @@ public class ProjectController {
 
     @GetMapping(Routes.GroupProject.LIST)
     public JsonData<Page<ProjectSimpleResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
-                                                              Pageable page,
+                                                      Pageable page,
                                                       ProjectListCondition condition) {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -84,5 +87,11 @@ public class ProjectController {
     public JsonData<Void> testConnection(@RequestBody @Valid ProjectTestConnectionRequest request) {
         projectService.testConnection(request);
         return JsonData.ok();
+    }
+
+    @PostMapping(Routes.GroupProject.LIST_MANUAL_TASKS)
+    public JsonData<List<ProjectSimpleTaskResponse>> listManualTasks(@PathVariable Integer projectId,
+                                                               @RequestBody ProjectTaskListCondition condition) {
+        return JsonData.ok(projectService.listManualTasks(projectId, condition));
     }
 }

@@ -43,6 +43,7 @@ public class LoginService {
                 .orElseThrow(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION::exception);
         // refresh-token 已过期
         if (login.getRefreshTokenExpireAt().isBefore(LocalDateTime.now())) {
+            log.warn("refresh token expired, {} ", request);
             throw DomainErrors.REFRESH_TOKEN_EXPIRED.exception();
         }
         // access-token 未过期（允许一分钟的误差）就开始刷新有可能是 refresh-token  泄露了，删除 refresh-token

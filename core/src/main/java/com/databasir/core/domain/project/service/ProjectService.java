@@ -5,11 +5,16 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.project.converter.DataSourcePojoConverter;
 import com.databasir.core.domain.project.converter.ProjectPojoConverter;
 import com.databasir.core.domain.project.converter.ProjectResponseConverter;
+import com.databasir.core.domain.project.converter.ProjectSimpleTaskResponseConverter;
 import com.databasir.core.domain.project.data.*;
+import com.databasir.core.domain.project.data.task.ProjectSimpleTaskResponse;
+import com.databasir.core.domain.project.data.task.ProjectTaskListCondition;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
+import com.databasir.dao.enums.ProjectSyncTaskStatus;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +28,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectService {
+
+    private final DatabaseConnectionService databaseConnectionService;
 
     private final ProjectDao projectDao;
 
@@ -37,13 +45,15 @@ public class ProjectService {
 
     private final UserFavoriteProjectDao userFavoriteProjectDao;
 
+    private final ProjectSyncTaskDao projectSyncTaskDao;
+
     private final DataSourcePojoConverter dataSourcePojoConverter;
 
     private final ProjectPojoConverter projectPojoConverter;
 
     private final ProjectResponseConverter projectResponseConverter;
 
-    private final DatabaseConnectionService databaseConnectionService;
+    private final ProjectSimpleTaskResponseConverter projectSimpleTaskResponseConverter;
 
     public ProjectDetailResponse getOne(Integer id) {
         return projectDao.selectOptionalById(id)
@@ -175,4 +185,26 @@ public class ProjectService {
                 properties);
     }
 
+    @Transactional
+    public Optional<Integer> createSyncTask(Integer projectId, Integer userId, boolean ignoreIfExists) {
+        if (!projectDao.existsById(projectId)) {
+            log.info("create sync task failed, because project not exists, projectId={}", projectId);
+            return Optional.empty();
+        }
+        var validTaskStatus = List.of(ProjectSyncTaskStatus.NEW, ProjectSyncTaskStatus.RUNNING);
+        if (ignoreIfExists && projectSyncTaskDao.existsByProjectId(projectId, validTaskStatus)) {
+            log.info("create sync task failed, it's already exists, projectId={}", projectId);
+            return Optional.empty();
+        }
+        ProjectSyncTaskPojo projectSyncTask = new ProjectSyncTaskPojo();
+        projectSyncTask.setProjectId(projectId);
+        projectSyncTask.setStatus(ProjectSyncTaskStatus.NEW);
+        projectSyncTask.setUserId(userId);
+        return Optional.of(projectSyncTaskDao.insertAndReturnId(projectSyncTask));
+    }
+
+    public List<ProjectSimpleTaskResponse> listManualTasks(Integer projectId, ProjectTaskListCondition condition) {
+        var tasks = projectSyncTaskDao.selectList(condition.toCondition(projectId));
+        return projectSimpleTaskResponseConverter.of(tasks);
+    }
 }

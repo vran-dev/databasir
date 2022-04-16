@@ -25,11 +25,11 @@ public class DatabasirAuthenticationEntryPoint implements AuthenticationEntryPoi
     public void commence(javax.servlet.http.HttpServletRequest request,
                          javax.servlet.http.HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        log.warn("验证未通过. 提示信息 - {} - {} {}", request.getRequestURI(),
+        log.warn("验证未通过. 提示信息 - {} - {} - {}", request.getRequestURI(),
                 authException.getClass().getName(),
                 authException.getMessage());
 
-        DomainErrors err = DomainErrors.INVALID_REFRESH_TOKEN_OPERATION;
+        DomainErrors err = DomainErrors.INVALID_ACCESS_TOKEN;
         JsonData<Void> data = JsonData.error(err.getErrCode(), err.getErrMessage());
         String jsonString = objectMapper.writeValueAsString(data);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
