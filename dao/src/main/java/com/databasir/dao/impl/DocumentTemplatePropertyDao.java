@@ -25,22 +25,21 @@ public class DocumentTemplatePropertyDao extends BaseDao<DocumentTemplatePropert
         super(DOCUMENT_TEMPLATE_PROPERTY, DocumentTemplatePropertyPojo.class);
     }
 
-    public void batchInsertOnDuplicateIgnore(Collection<DocumentTemplatePropertyPojo> data) {
+    public void batchInsertOnDuplicateUpdateDefaultValue(Collection<DocumentTemplatePropertyPojo> data) {
         if (data == null || data.isEmpty()) {
             return;
         }
         List<InsertReturningStep<DocumentTemplatePropertyRecord>> query = data.stream()
-                .map(pojo ->
-
-                        getDslContext()
-                                .insertInto(DOCUMENT_TEMPLATE_PROPERTY)
-                                .set(getDslContext().newRecord(DOCUMENT_TEMPLATE_PROPERTY, pojo))
-                                .onDuplicateKeyIgnore())
+                .map(pojo -> getDslContext()
+                        .insertInto(DOCUMENT_TEMPLATE_PROPERTY)
+                        .set(getDslContext().newRecord(DOCUMENT_TEMPLATE_PROPERTY, pojo))
+                        .onDuplicateKeyUpdate()
+                        .set(DOCUMENT_TEMPLATE_PROPERTY.DEFAULT_VALUE, pojo.getDefaultValue()))
                 .collect(Collectors.toList());
         getDslContext().batch(query).execute();
     }
 
-    public void batchInsertOnDuplicateKeyUpdate(Collection<DocumentTemplatePropertyPojo> data) {
+    public void batchInsertOnDuplicateKeyUpdateValue(Collection<DocumentTemplatePropertyPojo> data) {
         if (data == null || data.isEmpty()) {
             return;
         }

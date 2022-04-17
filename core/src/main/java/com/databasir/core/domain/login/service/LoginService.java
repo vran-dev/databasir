@@ -71,16 +71,6 @@ public class LoginService {
         return new AccessTokenRefreshResponse(accessToken, accessTokenExpireAtMilli);
     }
 
-    public Optional<LoginKeyResponse> getLoginKey(Integer userId) {
-        return loginDao.selectByUserId(userId)
-                .map(loginPojo -> LoginKeyResponse.builder()
-                        .accessToken(loginPojo.getAccessToken())
-                        .accessTokenExpireAt(loginPojo.getAccessTokenExpireAt())
-                        .refreshToken(loginPojo.getRefreshToken())
-                        .refreshTokenExpireAt(loginPojo.getRefreshTokenExpireAt())
-                        .build());
-    }
-
     public LoginKeyResponse generate(Integer userId) {
         UserPojo user = userDao.selectById(userId);
         String accessToken = jwtTokens.accessToken(user.getEmail());
