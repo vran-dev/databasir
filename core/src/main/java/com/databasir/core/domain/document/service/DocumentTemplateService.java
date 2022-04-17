@@ -32,6 +32,7 @@ public class DocumentTemplateService {
                 .stream()
                 .collect(Collectors.groupingBy(d -> d.getType()));
         return DocumentTemplatePropertiesResponse.builder()
+                .tableFieldNameProperties(propertiesGroupByType.get(TABLE_FIELD_NAME))
                 .columnFieldNameProperties(propertiesGroupByType.get(COLUMN_FIELD_NAME))
                 .foreignKeyFieldNameProperties(propertiesGroupByType.get(FOREIGN_KEY_FIELD_NAME))
                 .indexFieldNameProperties(propertiesGroupByType.get(INDEX_FIELD_NAME))
@@ -41,6 +42,6 @@ public class DocumentTemplateService {
 
     public void updateByType(DocumentTemplatePropertiesUpdateRequest request) {
         List<DocumentTemplatePropertyPojo> pojoList = documentTemplatePropertiesUpdateRequestConverter.toPojo(request);
-        documentTemplatePropertyDao.batchInsertOnDuplicateKeyUpdate(pojoList);
+        documentTemplatePropertyDao.batchInsertOnDuplicateKeyUpdateValue(pojoList);
     }
 }

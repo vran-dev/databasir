@@ -20,10 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -55,16 +52,25 @@ public class SystemStartedEventSubscriber {
     }
 
     private void initTemplatePropertiesIfNecessary() {
-        List<String> ignoreFields = List.of("createAt", "discussionCount", "id");
+        List<String> ignoreFields = List.of("createAt", "discussionCount", "id",
+                "columns", "indexes", "triggers", "foreignKeys");
+        Map<String, String> fieldChineseMap = fieldChineseMap();
         BiFunction<Field, DocumentTemplatePropertyType, DocumentTemplatePropertyPojo> mapping = (field, type) -> {
             String key = field.getName();
             String def = field.getName();
             DocumentTemplatePropertyPojo pojo = new DocumentTemplatePropertyPojo();
             pojo.setType(type);
             pojo.setKey(key);
-            pojo.setDefaultValue(def);
+            pojo.setDefaultValue(fieldChineseMap.get(key));
             return pojo;
         };
+        // table field name;
+        Field[] fields = TableDocumentResponse.class.getDeclaredFields();
+        List<DocumentTemplatePropertyPojo> tableProperties = Arrays.stream(fields)
+                .filter(field -> !ignoreFields.contains(field.getName()))
+                .map(field -> mapping.apply(field, DocumentTemplatePropertyType.TABLE_FIELD_NAME))
+                .collect(Collectors.toList());
+
         // column field name;
         Field[] columnFields = TableDocumentResponse.ColumnDocumentResponse.class.getDeclaredFields();
         List<DocumentTemplatePropertyPojo> columnProperties = Arrays.stream(columnFields)
@@ -94,12 +100,42 @@ public class SystemStartedEventSubscriber {
                 .collect(Collectors.toList());
 
         List<DocumentTemplatePropertyPojo> properties = new ArrayList<>();
+        properties.addAll(tableProperties);
         properties.addAll(columnProperties);
         properties.addAll(indexProperties);
         properties.addAll(fkProperties);
         properties.addAll(triggerProperties);
-        documentTemplatePropertyDao.batchInsertOnDuplicateIgnore(properties);
+        documentTemplatePropertyDao.batchInsertOnDuplicateUpdateDefaultValue(properties);
 
+    }
+
+    private Map<String, String> fieldChineseMap() {
+        Map<String, String> map = new HashMap<>(32);
+        map.put("name", "名称");
+        map.put("type", "类型");
+        map.put("comment", "注释");
+        map.put("description", "描述");
+        map.put("size", "长度");
+        map.put("decimalDigits", "浮点精度");
+        map.put("isPrimaryKey", "主键");
+        map.put("nullable", "可空");
+        map.put("autoIncrement", "自增");
+        map.put("defaultValue", "默认值");
+        map.put("isUnique", "唯一");
+        map.put("columnNames", "列名");
+        map.put("fkName", "外键名");
+        map.put("fkTableName", "外键表名");
+        map.put("fkColumnName", "外键列名");
+        map.put("pkName", "主键名");
+        map.put("pkTableName", "主键表名");
+        map.put("pkColumnName", "主键列名");
+        map.put("updateRule", "更新规则");
+        map.put("deleteRule", "删除规则");
+        map.put("timing", "触发时机");
+        map.put("manipulation", "触发器");
+        map.put("statement", "表达式");
+        map.put("triggerCreateAt", "创建时间");
+        return map;
     }
 
     private void initDatabaseTypesIfNecessary() {

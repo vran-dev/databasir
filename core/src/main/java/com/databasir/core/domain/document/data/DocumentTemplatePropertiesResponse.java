@@ -17,6 +17,9 @@ import java.util.List;
 public class DocumentTemplatePropertiesResponse {
 
     @Builder.Default
+    private List<DocumentTemplatePropertyResponse> tableFieldNameProperties = Collections.emptyList();
+
+    @Builder.Default
     private List<DocumentTemplatePropertyResponse> columnFieldNameProperties = Collections.emptyList();
 
     @Builder.Default
