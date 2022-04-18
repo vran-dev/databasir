@@ -36,6 +36,7 @@ public class DatabaseTypeService {
     private final DatabaseTypePojoConverter databaseTypePojoConverter;
 
     public Integer create(DatabaseTypeCreateRequest request) {
+        driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
         DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
         try {
             return databaseTypeDao.insertAndReturnId(pojo);
@@ -50,7 +51,7 @@ public class DatabaseTypeService {
             if (DatabaseTypes.has(data.getDatabaseType())) {
                 throw DomainErrors.MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE.exception();
             }
-
+            driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
             DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
             try {
                 databaseTypeDao.updateById(pojo);
