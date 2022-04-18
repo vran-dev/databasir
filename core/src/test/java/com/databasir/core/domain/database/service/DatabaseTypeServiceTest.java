@@ -5,13 +5,19 @@ import com.databasir.core.BaseTest;
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.database.data.DatabaseTypeCreateRequest;
 import com.databasir.core.domain.database.data.DatabaseTypeUpdateRequest;
+import com.databasir.core.infrastructure.driver.DriverResources;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.mockito.ArgumentMatchers.anyString;
 
 @Transactional
 class DatabaseTypeServiceTest extends BaseTest {
@@ -21,6 +27,14 @@ class DatabaseTypeServiceTest extends BaseTest {
 
     @Autowired
     private DatabaseTypeDao databaseTypeDao;
+
+    @MockBean
+    private DriverResources driverResources;
+
+    @BeforeEach
+    public void setUp() {
+        Mockito.doNothing().when(driverResources).validateJar(anyString(), anyString());
+    }
 
     @Test
     void create() {

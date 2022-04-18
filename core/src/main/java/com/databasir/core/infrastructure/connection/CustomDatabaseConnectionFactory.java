@@ -36,8 +36,10 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
 
     @Override
     public Connection getConnection(Context context) throws SQLException {
-        DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(context.getDatabaseType());
-        File driverFile = driverResources.loadOrDownload(context.getDatabaseType(), type.getJdbcDriverFileUrl());
+        String databaseType = context.getDatabaseType();
+        DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(databaseType);
+        File driverFile = driverResources.loadOrDownloadByDatabaseType(databaseType, type.getJdbcDriverFileUrl());
+
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
@@ -55,11 +57,11 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         Class<?> clazz = null;
         Driver driver = null;
         try {
-            clazz = Class.forName(type.getJdbcDriverClassName(), true, loader);
+            clazz = Class.forName(type.getJdbcDriverClassName(), false, loader);
             driver = (Driver) clazz.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             log.error("init driver error", e);
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常, 请检查 Driver name：" + e.getMessage());
+            throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常, 请检查驱动类名：" + e.getMessage());
         } catch (InvocationTargetException
                  | InstantiationException
                  | IllegalAccessException

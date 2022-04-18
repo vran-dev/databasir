@@ -36,6 +36,7 @@ public class DatabaseTypeService {
     private final DatabaseTypePojoConverter databaseTypePojoConverter;
 
     public Integer create(DatabaseTypeCreateRequest request) {
+        driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
         DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
         try {
             return databaseTypeDao.insertAndReturnId(pojo);
@@ -50,7 +51,7 @@ public class DatabaseTypeService {
             if (DatabaseTypes.has(data.getDatabaseType())) {
                 throw DomainErrors.MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE.exception();
             }
-
+            driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
             DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
             try {
                 databaseTypeDao.updateById(pojo);
@@ -61,7 +62,7 @@ public class DatabaseTypeService {
             // 名称修改，下载地址修改需要删除原有的 driver
             if (!Objects.equals(request.getDatabaseType(), data.getDatabaseType())
                     || !Objects.equals(request.getJdbcDriverFileUrl(), data.getJdbcDriverFileUrl())) {
-                driverResources.delete(data.getDatabaseType());
+                driverResources.deleteByDatabaseType(data.getDatabaseType());
             }
         });
 
@@ -73,7 +74,7 @@ public class DatabaseTypeService {
                 throw DomainErrors.MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE.exception();
             }
             databaseTypeDao.deleteById(id);
-            driverResources.delete(data.getDatabaseType());
+            driverResources.deleteByDatabaseType(data.getDatabaseType());
         });
     }
 
@@ -109,7 +110,7 @@ public class DatabaseTypeService {
     }
 
     public String resolveDriverClassName(DriverClassNameResolveRequest request) {
-        return driverResources.resolveSqlDriverNameFromJar(request.getJdbcDriverFileUrl());
+        return driverResources.resolveDriverClassName(request.getJdbcDriverFileUrl());
     }
 
 }
