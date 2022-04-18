@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -23,10 +24,11 @@ public class JwtTokens {
 
     private static final String ISSUER = "Databasir";
 
-    private static final String SECRET = "Databasir2022";
+    @Value("${databasir.jwt.secret}")
+    private String tokenSecret;
 
     public String accessToken(String username) {
-        Algorithm algorithm = Algorithm.HMAC256(SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
 
         return JWT.create()
                 .withExpiresAt(new Date(new Date().getTime() + ACCESS_EXPIRE_TIME))
@@ -36,7 +38,7 @@ public class JwtTokens {
     }
 
     public boolean verify(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET))
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecret))
                 .withIssuer(ISSUER)
                 .build();
         try {
