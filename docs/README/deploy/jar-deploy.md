@@ -20,9 +20,13 @@ databasir.db.username=root
 databasir.db.password=123456
 # 数据库地址
 databasir.db.url=127.0.0.1:3306
+# 登录 token 生成秘钥，可选
+databasir.jwt.secret=${random.uuid}
 ```
 
 4. 通过 `java -jar Databasir.jar` 启动应用即可
+
+**注意：**如果部署了多个 databasir 实例，一定要定义 `databasir.jwt.secret` 的值，从而使得多个实例之间的 `databasir.jwt.secret` 保持一致
 
 ## 登录验证
 

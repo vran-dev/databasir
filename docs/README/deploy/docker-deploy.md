@@ -5,7 +5,7 @@
 ## 环境要求
 
 1. Docker
-2. Mysql
+2. Mysql 5.7+
 
 ## 测活接口
 
@@ -38,13 +38,14 @@ docker run -p 8888:8080 --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -
 
 **docker 启动命令参数说明**
 
-| 参数                               | 说明                                              |
-| ---------------------------------- | ------------------------------------------------- |
-| --name my-databasir                | 启动的镜像名称                                    |
-| -e DATABASIR_DB_URL=127.0.0.1:3306 | 数据库连接地址                                    |
-| -e DATABASIR_DB_USERNAME=root      | 数据库连接用户名                                  |
-| -e DATABASIR_DB_PASSWORD=123456    | 数据库连接密码                                    |
-| -p 8888:8080                       | 将 databasir 的 8080 端口映射到宿主机的 8888 端口 |
+| 参数                               | 说明                                                         | 必填 |
+| ---------------------------------- | ------------------------------------------------------------ | ---- |
+| --name my-databasir                | 启动的镜像名称                                               |      |
+| -e DATABASIR_DB_URL=127.0.0.1:3306 | 数据库连接地址                                               | 是   |
+| -e DATABASIR_DB_USERNAME=root      | 数据库连接用户名                                             | 是   |
+| -e DATABASIR_DB_PASSWORD=123456    | 数据库连接密码                                               | 是   |
+| -e DATABASIR_JWT_SECRET=databasir  | 生成用户登录 Token 的秘钥，如果部署了多个实例，那多个实例之间的秘钥要保持一致。默认为 UUID | 否   |
+| -p 8888:8080                       | 将 databasir 的 8080 端口映射到宿主机的 8888 端口            |      |
 
 ## 登录验证
 
@@ -54,4 +55,3 @@ docker run -p 8888:8080 --name my-databasir -e DATABASIR_DB_URL=127.0.0.1:3306 -
 - 密码：`databasir`
 
 这时候访问 http://localhost:8888 进入登录页，输入上面的账号和密码即可成功登入，到此就算部署完成
-
