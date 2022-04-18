@@ -36,8 +36,10 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
 
     @Override
     public Connection getConnection(Context context) throws SQLException {
-        DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(context.getDatabaseType());
-        File driverFile = driverResources.loadOrDownload(context.getDatabaseType(), type.getJdbcDriverFileUrl());
+        String databaseType = context.getDatabaseType();
+        DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(databaseType);
+        File driverFile = driverResources.loadOrDownloadByDatabaseType(databaseType, type.getJdbcDriverFileUrl());
+
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
