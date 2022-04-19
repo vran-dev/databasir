@@ -1,5 +1,6 @@
 package com.databasir.job;
 
+import com.databasir.common.DatabasirException;
 import com.databasir.core.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,11 @@ public class ProjectSyncJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap dataMap = context.getMergedJobDataMap();
         Integer projectId = dataMap.getInt("projectId");
-        projectService.createSyncTask(projectId, -1, true);
+        try {
+            projectService.createSyncTask(projectId, -1, true);
+        } catch (DatabasirException e) {
+            log.warn("Failed to create sync task for project {}, {}", projectId, e.getMessage());
+        }
     }
 
 }

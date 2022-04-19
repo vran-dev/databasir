@@ -5,7 +5,6 @@ package com.databasir.dao.tables;
 
 
 import com.databasir.dao.Databasir;
-import com.databasir.dao.Indexes;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.DatabaseDocumentRecord;
 
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row10;
@@ -142,11 +140,6 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.DATABASE_DOCUMENT_IDX_PROJECT_ID);
-    }
-
-    @Override
     public Identity<DatabaseDocumentRecord, Integer> getIdentity() {
         return (Identity<DatabaseDocumentRecord, Integer>) super.getIdentity();
     }
@@ -154,6 +147,11 @@ public class DatabaseDocument extends TableImpl<DatabaseDocumentRecord> {
     @Override
     public UniqueKey<DatabaseDocumentRecord> getPrimaryKey() {
         return Keys.KEY_DATABASE_DOCUMENT_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<DatabaseDocumentRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_DATABASE_DOCUMENT_UK_PROJECT_ID_VERSION_IS_ARCHIVE);
     }
 
     @Override

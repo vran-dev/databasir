@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.service;
 
+import com.databasir.common.DatabasirException;
 import com.databasir.core.Databasir;
 import com.databasir.core.DatabasirConfig;
 import com.databasir.core.diff.Diffs;
@@ -21,6 +22,7 @@ import com.databasir.dao.value.DocumentDiscussionCountPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.tools.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -146,7 +148,13 @@ public class DocumentService {
                                  Integer projectId) {
 
         var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, version);
-        final Integer docId = databaseDocumentDao.insertAndReturnId(pojo);
+        final Integer docId;
+        try {
+            docId = databaseDocumentDao.insertAndReturnId(pojo);
+        } catch (DuplicateKeyException e) {
+            log.warn("ignore insert database document projectId={} version={}", projectId, version);
+            throw new DatabasirException(DomainErrors.DATABASE_DOCUMENT_DUPLICATE_KEY);
+        }
         meta.getTables().forEach(table -> {
             TableDocumentPojo tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
