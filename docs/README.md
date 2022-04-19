@@ -13,37 +13,47 @@
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
+如果您有任何的问题、建议，欢迎进群讨论
+
+<img src="img/qrcode-group.jpg" width="250px"/>
+
+当然您也可以通过公众号给我留言
+
+![](img/qrcode.jpg)
+
+实在不行，给我发邮件也行：vran_dev@foxmail.com
+
+
+
 ## 特性
 
 1. 兼容市面多数数据库：支持所有拥有 JDBC 驱动的数据库，mysql、postgresql 开箱即用
 2. 丰富的文档管理功能：支持文档自动同步，版本历史回溯，版本差异对比，文档讨论，UML 生成， 文档导出，数据 SQL 生成等，应有尽有
-3. 面向团队的专业能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
+3. 面向团队的协作能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
 
-- 图片展示
 
-<img src="README/document-diff.gif" height="500px" width="800px">
 
-## 规划
+## 多图展示
 
-1. 文档导出格式
-    - [x] UML 图片
-    - [x] Markdown
-    - [ ] Excel
-    - [ ] Word
-2. 邮件通知
-    - [ ] 文档新增讨论
-    - [x] 文档版本变更
+- 文档同步
 
-## 更多
+![](README/index/sync.gif)
 
-交流群：暂无
+- 文档模板定义
 
-邮箱：vran_dev@foxmail.com
+![](README/index/template.gif)
 
-公众号
+- 版本差异对比
 
-![](qrcode.jpg)
+![](README/index/diff.gif)
 
-讨论群
+- UML 图片导出
 
-![](qrcode-group.jpg)
+![](README/index/uml-export.gif)
+
+- 导出 Markdown 格式展示
+
+![](README/index/markdown-exported.gif)
+
+
+
