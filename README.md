@@ -2,7 +2,7 @@
 
 ## 简介
 
-**Databasir** 是面向团队的**关系型数据库模型文档管理平台**，旨在通过自动化的方式解决模型文档管理过程中维护成本高、内容更新不及时以及团队协作复杂等问题。
+![](databasir.png) 是面向团队的**关系型数据库模型文档管理平台**，旨在通过自动化的方式解决模型文档管理过程中维护成本高、内容更新不及时以及团队协作复杂等问题。
 
 平台文档：https://doc.databasir.com
 
@@ -15,37 +15,43 @@
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
+如果您有任何的问题、建议，欢迎进群讨论
+
+<img src="img/qrcode-group.jpg" width="250px"/>
+
+当然您也可以通过公众号给我留言
+
+![](img/qrcode.jpg)
+
+实在不行，给我发邮件也行：vran_dev@foxmail.com
+
 ## 特性
 
 1. 兼容市面多数数据库：支持所有拥有 JDBC 驱动的数据库，mysql、postgresql 开箱即用
 2. 丰富的文档管理功能：支持文档自动同步，版本历史回溯，版本差异对比，文档讨论，UML 生成， 文档导出，数据 SQL 生成等，应有尽有
-3. 面向团队的专业能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
+3. 面向团队的协作能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
 
-更多内容请到 https://doc.databasir.com 查看
+## 多图展示
 
-- 文档页面展示
+- 文档同步
 
-![](docs/README/document-diff.gif)
+![](docs/README/index/sync.gif)
 
-更多规划功能，敬请期待
+- 文档模板定义
 
-1. 文档导出格式
-    - [x] UML 图片
-    - [x] Markdown
-    - [ ] Excel
-    - [ ] Word
-2. 邮件通知
-    - [ ] 新增讨论
-    - [x] 版本变更
+![](docs/README/index/template.gif)
 
-## 联系作者
-公众号
+- 版本差异对比
 
-![](docs/qrcode.jpg)
+![](docs/README/index/diff.gif)
 
-- 微信群
+- UML 图片导出
 
-<img src="docs/qrcode-group.jpg" width="300">
+![](docs/README/index/uml-export.gif)
+
+- 导出 Markdown 格式展示
+
+![](docs/README/index/markdown-exported.gif)
 
 ## License
 
