@@ -188,12 +188,12 @@ public class ProjectService {
     @Transactional
     public Optional<Integer> createSyncTask(Integer projectId, Integer userId, boolean ignoreIfExists) {
         if (!projectDao.existsById(projectId)) {
-            log.info("create sync task failed, because project not exists, projectId={}", projectId);
-            return Optional.empty();
+            log.warn("create sync task failed, because project not exists, projectId={}", projectId);
+            throw DomainErrors.PROJECT_NOT_FOUND.exception();
         }
         var validTaskStatus = List.of(ProjectSyncTaskStatus.NEW, ProjectSyncTaskStatus.RUNNING);
         if (ignoreIfExists && projectSyncTaskDao.existsByProjectId(projectId, validTaskStatus)) {
-            log.info("create sync task failed, it's already exists, projectId={}", projectId);
+            log.warn("create sync task failed, it's already exists, projectId={}", projectId);
             return Optional.empty();
         }
         ProjectSyncTaskPojo projectSyncTask = new ProjectSyncTaskPojo();

@@ -45,7 +45,7 @@ public enum DomainErrors implements DatabasirErrors {
     INVALID_MOCK_DATA_SCRIPT("A_10029", "不合法的表达式"),
     CANNOT_DELETE_SELF("A_10030", "无法对自己执行删除账号操作"),
     DRIVER_CLASS_NOT_FOUND("A_10031", "获取驱动类名失败"),
-    ;
+    DATABASE_DOCUMENT_DUPLICATE_KEY("A_10032", "文档版本重复");
 
     private final String errCode;
 

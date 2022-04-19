@@ -5,7 +5,6 @@ package com.databasir.dao;
 
 
 import com.databasir.dao.tables.DataSourceProperty;
-import com.databasir.dao.tables.DatabaseDocument;
 import com.databasir.dao.tables.DocumentDiscussion;
 import com.databasir.dao.tables.ProjectSyncTask;
 import com.databasir.dao.tables.TableColumnDocument;
@@ -36,7 +35,6 @@ public class Indexes {
     public static final Index TABLE_FOREIGN_KEY_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT, new OrderField[] { TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index TABLE_INDEX_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableIndexDocument.TABLE_INDEX_DOCUMENT, new OrderField[] { TableIndexDocument.TABLE_INDEX_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index TABLE_TRIGGER_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableTriggerDocument.TABLE_TRIGGER_DOCUMENT, new OrderField[] { TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
-    public static final Index DATABASE_DOCUMENT_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), DatabaseDocument.DATABASE_DOCUMENT, new OrderField[] { DatabaseDocument.DATABASE_DOCUMENT.PROJECT_ID }, false);
     public static final Index DOCUMENT_DISCUSSION_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), DocumentDiscussion.DOCUMENT_DISCUSSION, new OrderField[] { DocumentDiscussion.DOCUMENT_DISCUSSION.PROJECT_ID }, false);
     public static final Index PROJECT_SYNC_TASK_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), ProjectSyncTask.PROJECT_SYNC_TASK, new OrderField[] { ProjectSyncTask.PROJECT_SYNC_TASK.PROJECT_ID }, false);
     public static final Index TABLE_COLUMN_DOCUMENT_IDX_TABLE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_table_document_id"), TableColumnDocument.TABLE_COLUMN_DOCUMENT, new OrderField[] { TableColumnDocument.TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID }, false);
