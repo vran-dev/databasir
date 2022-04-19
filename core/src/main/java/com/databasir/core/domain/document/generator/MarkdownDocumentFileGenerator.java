@@ -93,8 +93,11 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         List<List<String>> overviewContent = new ArrayList<>();
         for (int i = 0; i < doc.getTables().size(); i++) {
             TableDocumentResponse table = doc.getTables().get(i);
-            overviewContent.add(List.of((i + 1) + "", table.getName(), table.getType(),
-                    table.getComment()));
+            List<String> row = List.of((i + 1) + "",
+                    Objects.requireNonNullElse(table.getName(), ""),
+                    Objects.requireNonNullElse(table.getType(), ""),
+                    Objects.requireNonNullElse(table.getComment(), ""));
+            overviewContent.add(row);
         }
         builder.table(List.of("", "表名", "类型", "备注"), overviewContent);
     }
@@ -115,7 +118,8 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         for (int i = 0; i < table.getColumns().size(); i++) {
             var column = table.getColumns().get(i);
             String type;
-            if (column.getDecimalDigits() == null || column.getDecimalDigits() == 0) {
+            if (column.getDecimalDigits() == null
+                    || Objects.requireNonNullElse(column.getDecimalDigits(), 0) == 0) {
                 type = column.getType() + "(" + column.getSize() + ")";
             } else {
                 type = column.getType() + "(" + column.getSize() + "," + column.getDecimalDigits() + ")";
@@ -127,7 +131,7 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                     column.getNullable(),
                     column.getAutoIncrement(),
                     columnDefaultValueMapping.apply(column),
-                    column.getComment()));
+                    Objects.requireNonNullElse(column.getComment(), "")));
         }
         builder.table(
                 List.of(
@@ -176,8 +180,9 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                 TableDocumentResponse.ForeignKeyDocumentResponse fk = table.getForeignKeys().get(i);
                 List<String> item = List.of(
                         (i + 1) + "",
-                        fk.getFkName(), fk.getFkColumnName(),
-                        fk.getPkName(), fk.getPkTableName(), fk.getPkColumnName(),
+                        Objects.requireNonNullElse(fk.getFkName(), ""), fk.getFkColumnName(),
+                        Objects.requireNonNullElse(fk.getPkName(), ""), fk.getPkTableName(),
+                        fk.getPkColumnName(),
                         fk.getUpdateRule(), fk.getDeleteRule()
                 );
                 foreignKeys.add(item);
