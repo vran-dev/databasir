@@ -17,11 +17,11 @@
 
 如果您有任何的问题、建议，欢迎进群讨论
 
-<img src="img/qrcode-group.jpg" width="250px"/>
+<img src="docs/img/qrcode-group.jpg" width="250px"/>
 
 当然您也可以通过公众号给我留言
 
-![](img/qrcode.jpg)
+![](docs/img/qrcode.jpg)
 
 实在不行，给我发邮件也行：vran_dev@foxmail.com
 
