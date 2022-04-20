@@ -19,4 +19,8 @@ public interface GroupPojoConverter {
     @Mapping(target = "createAt", ignore = true)
     @Mapping(target = "updateAt", ignore = true)
     GroupPojo of(GroupUpdateRequest groupUpdateRequest);
+
+    default String nullToEmpty(String description) {
+        return description == null ? "" : description;
+    }
 }
