@@ -207,4 +207,15 @@ public class ProjectService {
         var tasks = projectSyncTaskDao.selectList(condition.toCondition(projectId));
         return projectSimpleTaskResponseConverter.of(tasks);
     }
+
+    public void cancelTask(Integer projectId, Integer taskId) {
+        if (!projectDao.existsById(projectId)) {
+            throw DomainErrors.PROJECT_NOT_FOUND.exception();
+        }
+        projectSyncTaskDao.selectOptionalById(taskId).ifPresent(task -> {
+            if (task.getStatus() == ProjectSyncTaskStatus.NEW || task.getStatus() == ProjectSyncTaskStatus.RUNNING) {
+                projectSyncTaskDao.updateStatusAndResultById(taskId, ProjectSyncTaskStatus.CANCELED, "主动取消");
+            }
+        });
+    }
 }

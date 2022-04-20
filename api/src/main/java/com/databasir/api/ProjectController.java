@@ -91,7 +91,14 @@ public class ProjectController {
 
     @PostMapping(Routes.GroupProject.LIST_MANUAL_TASKS)
     public JsonData<List<ProjectSimpleTaskResponse>> listManualTasks(@PathVariable Integer projectId,
-                                                               @RequestBody ProjectTaskListCondition condition) {
+                                                                     @RequestBody ProjectTaskListCondition condition) {
         return JsonData.ok(projectService.listManualTasks(projectId, condition));
+    }
+
+    @PatchMapping(Routes.GroupProject.CANCEL_MANUAL_TASK)
+    public JsonData<Void> cancelTask(@PathVariable Integer projectId,
+                                     @PathVariable Integer taskId) {
+        projectService.cancelTask(projectId, taskId);
+        return JsonData.ok();
     }
 }

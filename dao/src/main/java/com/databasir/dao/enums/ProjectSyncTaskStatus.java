@@ -5,5 +5,5 @@ public enum ProjectSyncTaskStatus {
     RUNNING,
     FINISHED,
     FAILED,
-    CANCELLED
+    CANCELED
 }

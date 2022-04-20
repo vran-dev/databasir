@@ -72,6 +72,8 @@ public interface Routes {
         String TEST_CONNECTION = BASE + "/projects/test_connection";
 
         String LIST_MANUAL_TASKS = BASE + "/projects/{projectId}/list_manual_tasks";
+
+        String CANCEL_MANUAL_TASK = BASE + "/projects/{projectId}/tasks/{taskId}/cancel";
     }
 
     interface Document {
