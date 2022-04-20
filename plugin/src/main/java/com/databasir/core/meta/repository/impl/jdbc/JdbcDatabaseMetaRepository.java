@@ -39,6 +39,22 @@ public class JdbcDatabaseMetaRepository implements DatabaseMetaRepository {
                     return Optional.of(meta);
                 }
             }
+
+            ResultSet schemas = metaData.getSchemas();
+            while (schemas.next()) {
+                String schemaName = schemas.getString("TABLE_SCHEM");
+                if (Objects.equals(condition.getSchemaName(), schemaName)) {
+                    List<TableMeta> tableDocs = tableMetaRepository.selectTables(connection, condition);
+                    DatabaseMeta meta = DatabaseMeta.builder()
+                            .productName(metaData.getDatabaseProductName())
+                            .productVersion(metaData.getDatabaseProductVersion())
+                            .databaseName(condition.getDatabaseName())
+                            .schemaName(condition.getSchemaName())
+                            .tables(tableDocs)
+                            .build();
+                    return Optional.of(meta);
+                }
+            }
             return Optional.empty();
         } catch (SQLException e) {
             throw new IllegalStateException(e);
