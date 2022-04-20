@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = JsonConverter.class)
 public interface ProjectPojoConverter {
 
@@ -25,4 +27,8 @@ public interface ProjectPojoConverter {
     @Mapping(target = "ignoreColumnNameRegexArray", source = "request.ignoreColumnNameRegexes")
     ProjectSyncRulePojo of(ProjectUpdateRequest.ProjectSyncRuleUpdateRequest request,
                            Integer projectId);
+
+    default String optionToEmpty(Optional<String> optional) {
+        return optional.orElse("");
+    }
 }

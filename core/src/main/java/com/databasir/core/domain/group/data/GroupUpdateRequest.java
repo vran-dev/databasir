@@ -17,7 +17,6 @@ public class GroupUpdateRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String description;
 
     @NotEmpty

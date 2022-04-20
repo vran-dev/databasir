@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 class ProjectServiceTest extends BaseTest {
@@ -46,7 +47,7 @@ class ProjectServiceTest extends BaseTest {
     void create() {
         ProjectCreateRequest request = new ProjectCreateRequest();
         request.setName("ut");
-        request.setDescription("integration test");
+        request.setDescription(Optional.of("integration test"));
         request.setGroupId(-1000);
 
         DataSourceCreateRequest dataSource = new DataSourceCreateRequest();
@@ -76,7 +77,7 @@ class ProjectServiceTest extends BaseTest {
         ProjectUpdateRequest request = new ProjectUpdateRequest();
         request.setId(-1000);
         request.setName("ut");
-        request.setDescription("integration test");
+        request.setDescription(Optional.of("integration test"));
 
         var dataSource = new ProjectUpdateRequest.DataSourceUpdateRequest();
         dataSource.setUsername("root");

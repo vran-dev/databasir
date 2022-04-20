@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 public class ProjectUpdateRequest {
@@ -16,8 +17,7 @@ public class ProjectUpdateRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String description;
+    private Optional<String> description = Optional.empty();
 
     @NotNull
     private ProjectUpdateRequest.DataSourceUpdateRequest dataSource;
