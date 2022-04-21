@@ -31,27 +31,31 @@ public class JdbcIndexMetaRepository implements IndexMetaRepository {
             indexResults = connection.getMetaData()
                     .getIndexInfo(databaseName, condition.getSchemaName(), tableName, false, false);
         } catch (SQLException e) {
-            log.warn("warn: ignore " + databaseName + "." + tableName);
+            log.warn("warn: ignore " + databaseName + "." + tableName + ", error=" + e.getMessage());
             return indexMetas;
         }
 
         Map<String, IndexMeta> pojoGroupByName = new HashMap<>();
-        while (indexResults.next()) {
-            Boolean nonUnique = indexResults.getBoolean("NON_UNIQUE");
-            String indexName = indexResults.getString("INDEX_NAME");
-            String columnName = indexResults.getString("COLUMN_NAME");
-            if (pojoGroupByName.containsKey(indexName)) {
-                pojoGroupByName.get(indexName).getColumnNames().add(columnName);
-            } else {
-                List<String> columns = new ArrayList<>();
-                columns.add(columnName);
-                IndexMeta indexMeta = IndexMeta.builder()
-                        .name(indexName)
-                        .columnNames(columns)
-                        .isUniqueKey(Objects.equals(nonUnique, false))
-                        .build();
-                pojoGroupByName.put(indexName, indexMeta);
+        try {
+            while (indexResults.next()) {
+                Boolean nonUnique = indexResults.getBoolean("NON_UNIQUE");
+                String indexName = indexResults.getString("INDEX_NAME");
+                String columnName = indexResults.getString("COLUMN_NAME");
+                if (pojoGroupByName.containsKey(indexName)) {
+                    pojoGroupByName.get(indexName).getColumnNames().add(columnName);
+                } else {
+                    List<String> columns = new ArrayList<>();
+                    columns.add(columnName);
+                    IndexMeta indexMeta = IndexMeta.builder()
+                            .name(indexName)
+                            .columnNames(columns)
+                            .isUniqueKey(Objects.equals(nonUnique, false))
+                            .build();
+                    pojoGroupByName.put(indexName, indexMeta);
+                }
             }
+        } finally {
+            indexResults.close();
         }
         return new ArrayList<>(pojoGroupByName.values());
     }

@@ -36,52 +36,56 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
             columnsResult = connection.getMetaData()
                     .getColumns(databaseName, tableCondition.getSchemaName(), tableName, null);
         } catch (SQLException e) {
-            log.warn("warn: ignore columns in " + databaseName + "." + tableName);
+            log.warn("warn: ignore columns in " + databaseName + "." + tableName + ", error: " + e.getMessage());
             return columnDocs;
         }
-        while (columnsResult.next()) {
-            String columnName = columnsResult.getString("COLUMN_NAME");
-            if (tableCondition.columnIsIgnored(columnName)) {
-                if (log.isWarnEnabled()) {
-                    log.warn("ignore column: " + columnName);
-                }
-            } else {
-                String defaultValue = columnsResult.getString("COLUMN_DEF");
-                String isNullable = columnsResult.getString("IS_NULLABLE");
-                if (isNullable.trim().equals("")) {
-                    isNullable = "UNKNOWN";
-                }
-                String isAutoIncrement = columnsResult.getString("IS_AUTOINCREMENT");
-                if (isAutoIncrement.trim().equals("")) {
-                    isAutoIncrement = "UNKNOWN";
-                }
-                if (defaultValue != null && defaultValue.trim().equals("")) {
-                    defaultValue = "'" + defaultValue + "'";
-                }
-                Integer decimalDigits;
-                if (columnsResult.getObject("DECIMAL_DIGITS") == null) {
-                    decimalDigits = null;
+        try {
+            while (columnsResult.next()) {
+                String columnName = columnsResult.getString("COLUMN_NAME");
+                if (tableCondition.columnIsIgnored(columnName)) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("ignore column: " + columnName);
+                    }
                 } else {
-                    decimalDigits = columnsResult.getInt("DECIMAL_DIGITS");
+                    String defaultValue = columnsResult.getString("COLUMN_DEF");
+                    String isNullable = columnsResult.getString("IS_NULLABLE");
+                    if (isNullable.trim().equals("")) {
+                        isNullable = "UNKNOWN";
+                    }
+                    String isAutoIncrement = columnsResult.getString("IS_AUTOINCREMENT");
+                    if (isAutoIncrement.trim().equals("")) {
+                        isAutoIncrement = "UNKNOWN";
+                    }
+                    if (defaultValue != null && defaultValue.trim().equals("")) {
+                        defaultValue = "'" + defaultValue + "'";
+                    }
+                    Integer decimalDigits;
+                    if (columnsResult.getObject("DECIMAL_DIGITS") == null) {
+                        decimalDigits = null;
+                    } else {
+                        decimalDigits = columnsResult.getInt("DECIMAL_DIGITS");
+                    }
+                    Integer columnSize = columnsResult.getInt("COLUMN_SIZE");
+                    String columnType = columnsResult.getString("TYPE_NAME");
+                    String columnComment = columnsResult.getString("REMARKS");
+                    int dataType = columnsResult.getInt("DATA_TYPE");
+                    ColumnMeta columnMeta = ColumnMeta.builder()
+                            .name(columnName)
+                            .dataType(dataType)
+                            .type(columnType)
+                            .size(columnSize)
+                            .decimalDigits(decimalDigits)
+                            .nullable(isNullable)
+                            .autoIncrement(isAutoIncrement)
+                            .comment(columnComment)
+                            .defaultValue(defaultValue)
+                            .isPrimaryKey(primaryKeyColumns.contains(columnName))
+                            .build();
+                    columnDocs.add(columnMeta);
                 }
-                Integer columnSize = columnsResult.getInt("COLUMN_SIZE");
-                String columnType = columnsResult.getString("TYPE_NAME");
-                String columnComment = columnsResult.getString("REMARKS");
-                int dataType = columnsResult.getInt("DATA_TYPE");
-                ColumnMeta columnMeta = ColumnMeta.builder()
-                        .name(columnName)
-                        .dataType(dataType)
-                        .type(columnType)
-                        .size(columnSize)
-                        .decimalDigits(decimalDigits)
-                        .nullable(isNullable)
-                        .autoIncrement(isAutoIncrement)
-                        .comment(columnComment)
-                        .defaultValue(defaultValue)
-                        .isPrimaryKey(primaryKeyColumns.contains(columnName))
-                        .build();
-                columnDocs.add(columnMeta);
             }
+        } finally {
+            columnsResult.close();
         }
         return columnDocs;
     }
