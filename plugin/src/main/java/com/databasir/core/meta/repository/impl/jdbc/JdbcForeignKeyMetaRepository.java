@@ -52,7 +52,9 @@ public class JdbcForeignKeyMetaRepository implements ForeignKeyMetaRepository {
             log.warn("warn: ignore foreign keys in " + databaseName + "." + tableName + ", " + e.getMessage());
         } finally {
             try {
-                keyResult.close();
+                if (keyResult != null) {
+                    keyResult.close();
+                }
             } catch (SQLException e) {
                 log.warn("warn: close key result error " + databaseName + "." + tableName + ", " + e.getMessage());
             }
