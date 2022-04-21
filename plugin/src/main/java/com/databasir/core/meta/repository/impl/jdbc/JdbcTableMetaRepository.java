@@ -54,7 +54,8 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
                     List<ColumnMeta> columns = columnMetaRepository.selectColumns(connection, tableCondition);
                     if (columns.isEmpty()) {
                         if (log.isWarnEnabled()) {
-                            log.warn("ignored table: " + databaseName + "." + tableName + ", caused by get empty columns");
+                            log.warn("ignored table: " + databaseName + "." + tableName
+                                    + ", caused by get empty columns");
                         }
                         continue;
                     }
