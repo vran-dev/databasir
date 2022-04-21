@@ -94,11 +94,15 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                                                  TableCondition tableCondition) throws SQLException {
         ResultSet result = meta.getPrimaryKeys(tableCondition.getDatabaseName(),
                 tableCondition.getSchemaName(), tableCondition.getTableName());
-        List<String> columns = new ArrayList<>();
-        while (result.next()) {
-            String columnName = result.getString("COLUMN_NAME");
-            columns.add(columnName);
+        try {
+            List<String> columns = new ArrayList<>();
+            while (result.next()) {
+                String columnName = result.getString("COLUMN_NAME");
+                columns.add(columnName);
+            }
+            return columns;
+        } finally {
+            result.close();
         }
-        return columns;
     }
 }
