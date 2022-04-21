@@ -40,34 +40,39 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
         String databaseName = condition.getDatabaseName();
         ResultSet tablesResult = connection.getMetaData()
                 .getTables(databaseName, condition.getSchemaName(), null, new String[]{"TABLE"});
-        while (tablesResult.next()) {
-            String tableName = tablesResult.getString("TABLE_NAME");
-            if (condition.tableIsIgnored(tableName)) {
-                if (log.isWarnEnabled()) {
-                    log.warn("ignored table: " + databaseName + "." + tableName);
-                }
-            } else {
-                String tableType = tablesResult.getString("TABLE_TYPE");
-                String tableComment = tablesResult.getString("REMARKS");
-                TableCondition tableCondition = TableCondition.of(condition, tableName);
-                List<ColumnMeta> columns = columnMetaRepository.selectColumns(connection, tableCondition);
-                if (columns.isEmpty()) {
+        try {
+            while (tablesResult.next()) {
+                String tableName = tablesResult.getString("TABLE_NAME");
+                if (condition.tableIsIgnored(tableName)) {
                     if (log.isWarnEnabled()) {
-                        log.warn("ignored table: " + databaseName + "." + tableName + ", caused by get empty columns");
+                        log.warn("ignored table: " + databaseName + "." + tableName);
                     }
-                    continue;
+                } else {
+                    String tableType = tablesResult.getString("TABLE_TYPE");
+                    String tableComment = tablesResult.getString("REMARKS");
+                    TableCondition tableCondition = TableCondition.of(condition, tableName);
+                    List<ColumnMeta> columns = columnMetaRepository.selectColumns(connection, tableCondition);
+                    if (columns.isEmpty()) {
+                        if (log.isWarnEnabled()) {
+                            log.warn("ignored table: " + databaseName + "." + tableName
+                                    + ", caused by get empty columns");
+                        }
+                        continue;
+                    }
+                    TableMeta tableMeta = TableMeta.builder()
+                            .name(tableName)
+                            .type(tableType)
+                            .comment(tableComment)
+                            .columns(columns)
+                            .foreignKeys(foreignKeyMetaRepository.selectForeignKeys(connection, tableCondition))
+                            .indexes(indexMetaRepository.selectIndexes(connection, tableCondition))
+                            .triggers(triggerMetaRepository.selectTriggers(connection, tableCondition))
+                            .build();
+                    tableMetas.add(tableMeta);
                 }
-                TableMeta tableMeta = TableMeta.builder()
-                        .name(tableName)
-                        .type(tableType)
-                        .comment(tableComment)
-                        .columns(columns)
-                        .foreignKeys(foreignKeyMetaRepository.selectForeignKeys(connection, tableCondition))
-                        .indexes(indexMetaRepository.selectIndexes(connection, tableCondition))
-                        .triggers(triggerMetaRepository.selectTriggers(connection, tableCondition))
-                        .build();
-                tableMetas.add(tableMeta);
             }
+        } finally {
+            tablesResult.close();
         }
         return tableMetas;
     }

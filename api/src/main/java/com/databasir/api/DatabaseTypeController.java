@@ -35,7 +35,7 @@ public class DatabaseTypeController {
 
     @GetMapping(Routes.DatabaseType.LIST_PAGE)
     public JsonData<Page<DatabaseTypePageResponse>> listPage(@PageableDefault(sort = "id", direction = DESC)
-                                                                     Pageable page,
+                                                             Pageable page,
                                                              DatabaseTypePageCondition condition) {
         Page<DatabaseTypePageResponse> data = databaseTypeService.findByPage(page, condition);
         return JsonData.ok(data);
