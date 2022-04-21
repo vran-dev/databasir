@@ -1,0 +1,3 @@
+[submodule "databasir-frontend"]
+	path = databasir-frontend
+	url = https://github.com/vran-dev/databasir-frontend
