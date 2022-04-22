@@ -28,6 +28,11 @@
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md'//防止意外回退
       },
+      copyCode: {
+        buttonText : '复制代码',
+        errorText  : '复制失败！请手动复制。',
+        successText: '复制成功！'
+      }
     }
   </script>
   <!-- Docsify v4 -->
@@ -35,8 +40,10 @@
   <script src="//unpkg.com/docsify/lib/plugins/zoom-image.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-properties.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
 </body>
 </html>
