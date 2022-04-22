@@ -13,17 +13,23 @@
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
-如果您有任何的问题、建议，欢迎进群讨论
+## 联系
 
-<img src="img/qrcode-group.jpg" width="250px"/>
+<!-- tabs:start -->
 
-当然您也可以通过公众号给我留言
+#### **微信群**
 
-![](img/qrcode.jpg)
+<img src="https://s2.loli.net/2022/04/22/25vXDZdEBClpis9.jpg" width="250px" />
 
-实在不行，给我发邮件也行：vran_dev@foxmail.com
+#### **公众号**
 
+![qrcode.jpg](https://s2.loli.net/2022/04/22/mZjlG5u4vrXW1SL.jpg)
 
+#### **邮箱**
+
+vran_dev@foxmail.com
+
+<!-- tabs:end -->
 
 ## 特性
 
@@ -35,17 +41,21 @@
 
 ## 多图展示
 
-- 文档同步
+<!-- tabs:start -->
 
-![](README/index/sync.gif)
+#### **文档同步**
 
-- 文档模板定义
+![sync.gif](https://s2.loli.net/2022/04/22/aoiSR1V3MuN67m8.gif)
+
+#### **自定义模板**
 
 ![](README/index/template.gif)
 
-- 版本差异对比
+#### **版本对比**
 
 ![](README/index/diff.gif)
+
+#### **文档导出**
 
 - UML 图片导出
 
@@ -55,5 +65,4 @@
 
 ![](README/index/markdown-exported.gif)
 
-
-
+<!-- tabs:end -->

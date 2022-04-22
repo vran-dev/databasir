@@ -15,15 +15,8 @@
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
-如果您有任何的问题、建议，欢迎进群讨论
 
-<img src="docs/img/qrcode-group.jpg" width="250px"/>
-
-当然您也可以通过公众号给我留言
-
-![](docs/img/qrcode.jpg)
-
-实在不行，给我发邮件也行：vran_dev@foxmail.com
+[点击联系](https://doc.databasir.com/#/?id=联系)
 
 ## 特性
 
@@ -35,7 +28,7 @@
 
 - 文档同步
 
-![](docs/README/index/sync.gif)
+![sync.gif](https://s2.loli.net/2022/04/22/aoiSR1V3MuN67m8.gif)
 
 - 文档模板定义
 
