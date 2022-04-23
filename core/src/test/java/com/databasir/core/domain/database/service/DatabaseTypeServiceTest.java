@@ -6,6 +6,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.database.data.DatabaseTypeCreateRequest;
 import com.databasir.core.domain.database.data.DatabaseTypeUpdateRequest;
 import com.databasir.core.infrastructure.driver.DriverResources;
+import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @Transactional
@@ -33,7 +35,9 @@ class DatabaseTypeServiceTest extends BaseTest {
 
     @BeforeEach
     public void setUp() {
-        Mockito.doNothing().when(driverResources).validateJar(anyString(), anyString());
+        Mockito.doNothing().when(driverResources).validateDriverJar(any(), anyString());
+        Mockito.when(driverResources.load(any(), anyString(), anyString()))
+                .thenReturn(new DriverResult("", null));
     }
 
     @Test

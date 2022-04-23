@@ -5,6 +5,7 @@ import com.databasir.core.domain.database.converter.DatabaseTypePojoConverter;
 import com.databasir.core.domain.database.data.*;
 import com.databasir.core.infrastructure.connection.DatabaseTypes;
 import com.databasir.core.infrastructure.driver.DriverResources;
+import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
@@ -36,8 +37,13 @@ public class DatabaseTypeService {
     private final DatabaseTypePojoConverter databaseTypePojoConverter;
 
     public Integer create(DatabaseTypeCreateRequest request) {
-        driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
-        DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
+        if (databaseTypeDao.existsByDatabaseType(request.getDatabaseType())) {
+            throw DomainErrors.DATABASE_TYPE_NAME_DUPLICATE.exception();
+        }
+        DriverResult result =
+                driverResources.load(null, request.getJdbcDriverFileUrl(), request.getDatabaseType());
+        driverResources.validateDriverJar(result.getDriverFile(), request.getJdbcDriverClassName());
+        DatabaseTypePojo pojo = databaseTypePojoConverter.of(request, result.getDriverFilePath());
         try {
             return databaseTypeDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
@@ -48,24 +54,27 @@ public class DatabaseTypeService {
     @Transactional
     public void update(DatabaseTypeUpdateRequest request) {
         databaseTypeDao.selectOptionalById(request.getId()).ifPresent(data -> {
-            if (DatabaseTypes.has(data.getDatabaseType())) {
-                throw DomainErrors.MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE.exception();
+            DatabaseTypePojo pojo;
+            if (!Objects.equals(request.getDatabaseType(), data.getDatabaseType())
+                    || !Objects.equals(request.getJdbcDriverFileUrl(), data.getJdbcDriverFileUrl())) {
+                // 名称修改，下载地址修改需要删除原有的 driver 并重新下载验证
+                driverResources.deleteByDatabaseType(data.getDatabaseType());
+                // download
+                DriverResult result =
+                        driverResources.load(null, request.getJdbcDriverFileUrl(), request.getDatabaseType());
+                driverResources.validateDriverJar(result.getDriverFile(), request.getJdbcDriverClassName());
+                // validate
+                pojo = databaseTypePojoConverter.of(request, result.getDriverFilePath());
+            } else {
+                pojo = databaseTypePojoConverter.of(request, data.getJdbcDriverFilePath());
             }
-            driverResources.validateJar(request.getJdbcDriverFileUrl(), request.getJdbcDriverClassName());
-            DatabaseTypePojo pojo = databaseTypePojoConverter.of(request);
+
             try {
                 databaseTypeDao.updateById(pojo);
             } catch (DuplicateKeyException e) {
                 throw DomainErrors.DATABASE_TYPE_NAME_DUPLICATE.exception();
             }
-
-            // 名称修改，下载地址修改需要删除原有的 driver
-            if (!Objects.equals(request.getDatabaseType(), data.getDatabaseType())
-                    || !Objects.equals(request.getJdbcDriverFileUrl(), data.getJdbcDriverFileUrl())) {
-                driverResources.deleteByDatabaseType(data.getDatabaseType());
-            }
         });
-
     }
 
     public void deleteById(Integer id) {
@@ -99,6 +108,7 @@ public class DatabaseTypeService {
                     response.setUrlPattern(type.getUrlPattern());
                     response.setDescription(type.getDescription());
                     response.setJdbcProtocol(type.getJdbcProtocol());
+                    response.setIcon(type.getIcon());
                     return response;
                 })
                 .collect(Collectors.toList());

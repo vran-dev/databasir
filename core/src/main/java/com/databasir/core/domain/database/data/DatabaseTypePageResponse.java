@@ -17,6 +17,8 @@ public class DatabaseTypePageResponse {
 
     private String jdbcDriverFileUrl;
 
+    private String jdbcDriverFilePath;
+
     private String jdbcDriverClassName;
 
     private String jdbcProtocol;

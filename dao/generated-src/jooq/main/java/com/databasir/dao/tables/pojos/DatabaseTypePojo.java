@@ -21,6 +21,7 @@ public class DatabaseTypePojo implements Serializable {
     private String        icon;
     private String        description;
     private String        jdbcDriverFileUrl;
+    private String        jdbcDriverFilePath;
     private String        jdbcDriverClassName;
     private String        jdbcProtocol;
     private String        urlPattern;
@@ -37,6 +38,7 @@ public class DatabaseTypePojo implements Serializable {
         this.icon = value.icon;
         this.description = value.description;
         this.jdbcDriverFileUrl = value.jdbcDriverFileUrl;
+        this.jdbcDriverFilePath = value.jdbcDriverFilePath;
         this.jdbcDriverClassName = value.jdbcDriverClassName;
         this.jdbcProtocol = value.jdbcProtocol;
         this.urlPattern = value.urlPattern;
@@ -52,6 +54,7 @@ public class DatabaseTypePojo implements Serializable {
         String        icon,
         String        description,
         String        jdbcDriverFileUrl,
+        String        jdbcDriverFilePath,
         String        jdbcDriverClassName,
         String        jdbcProtocol,
         String        urlPattern,
@@ -65,6 +68,7 @@ public class DatabaseTypePojo implements Serializable {
         this.icon = icon;
         this.description = description;
         this.jdbcDriverFileUrl = jdbcDriverFileUrl;
+        this.jdbcDriverFilePath = jdbcDriverFilePath;
         this.jdbcDriverClassName = jdbcDriverClassName;
         this.jdbcProtocol = jdbcProtocol;
         this.urlPattern = urlPattern;
@@ -144,6 +148,20 @@ public class DatabaseTypePojo implements Serializable {
      */
     public void setJdbcDriverFileUrl(String jdbcDriverFileUrl) {
         this.jdbcDriverFileUrl = jdbcDriverFileUrl;
+    }
+
+    /**
+     * Getter for <code>databasir.database_type.jdbc_driver_file_path</code>.
+     */
+    public String getJdbcDriverFilePath() {
+        return this.jdbcDriverFilePath;
+    }
+
+    /**
+     * Setter for <code>databasir.database_type.jdbc_driver_file_path</code>.
+     */
+    public void setJdbcDriverFilePath(String jdbcDriverFilePath) {
+        this.jdbcDriverFilePath = jdbcDriverFilePath;
     }
 
     /**
@@ -253,6 +271,7 @@ public class DatabaseTypePojo implements Serializable {
         sb.append(", ").append(icon);
         sb.append(", ").append(description);
         sb.append(", ").append(jdbcDriverFileUrl);
+        sb.append(", ").append(jdbcDriverFilePath);
         sb.append(", ").append(jdbcDriverClassName);
         sb.append(", ").append(jdbcProtocol);
         sb.append(", ").append(urlPattern);

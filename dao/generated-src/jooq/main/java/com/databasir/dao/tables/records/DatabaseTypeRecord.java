@@ -6,21 +6,20 @@ package com.databasir.dao.tables.records;
 
 import com.databasir.dao.tables.DatabaseType;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record12;
-import org.jooq.Row12;
+import org.jooq.Record13;
+import org.jooq.Row13;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
  * customer database types
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> implements Record12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> {
+public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> implements Record13<Integer, String, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -97,101 +96,115 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     /**
+     * Setter for <code>databasir.database_type.jdbc_driver_file_path</code>.
+     */
+    public void setJdbcDriverFilePath(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>databasir.database_type.jdbc_driver_file_path</code>.
+     */
+    public String getJdbcDriverFilePath() {
+        return (String) get(5);
+    }
+
+    /**
      * Setter for <code>databasir.database_type.jdbc_driver_class_name</code>.
      */
     public void setJdbcDriverClassName(String value) {
-        set(5, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.jdbc_driver_class_name</code>.
      */
     public String getJdbcDriverClassName() {
-        return (String) get(5);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>databasir.database_type.jdbc_protocol</code>.
      */
     public void setJdbcProtocol(String value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.jdbc_protocol</code>.
      */
     public String getJdbcProtocol() {
-        return (String) get(6);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>databasir.database_type.url_pattern</code>.
      */
     public void setUrlPattern(String value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.url_pattern</code>.
      */
     public String getUrlPattern() {
-        return (String) get(7);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>databasir.database_type.deleted</code>.
      */
     public void setDeleted(Boolean value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.deleted</code>.
      */
     public Boolean getDeleted() {
-        return (Boolean) get(8);
+        return (Boolean) get(9);
     }
 
     /**
      * Setter for <code>databasir.database_type.deleted_token</code>.
      */
     public void setDeletedToken(Integer value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.deleted_token</code>.
      */
     public Integer getDeletedToken() {
-        return (Integer) get(9);
+        return (Integer) get(10);
     }
 
     /**
      * Setter for <code>databasir.database_type.update_at</code>.
      */
     public void setUpdateAt(LocalDateTime value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
-        return (LocalDateTime) get(10);
+        return (LocalDateTime) get(11);
     }
 
     /**
      * Setter for <code>databasir.database_type.create_at</code>.
      */
     public void setCreateAt(LocalDateTime value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>databasir.database_type.create_at</code>.
      */
     public LocalDateTime getCreateAt() {
-        return (LocalDateTime) get(11);
+        return (LocalDateTime) get(12);
     }
 
     // -------------------------------------------------------------------------
@@ -204,17 +217,17 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Record12 type implementation
+    // Record13 type implementation
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, String, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> valuesRow() {
-        return (Row12) super.valuesRow();
+    public Row13<Integer, String, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> valuesRow() {
+        return (Row13) super.valuesRow();
     }
 
     @Override
@@ -244,36 +257,41 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public Field<String> field6() {
-        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_CLASS_NAME;
+        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_FILE_PATH;
     }
 
     @Override
     public Field<String> field7() {
-        return DatabaseType.DATABASE_TYPE.JDBC_PROTOCOL;
+        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_CLASS_NAME;
     }
 
     @Override
     public Field<String> field8() {
+        return DatabaseType.DATABASE_TYPE.JDBC_PROTOCOL;
+    }
+
+    @Override
+    public Field<String> field9() {
         return DatabaseType.DATABASE_TYPE.URL_PATTERN;
     }
 
     @Override
-    public Field<Boolean> field9() {
+    public Field<Boolean> field10() {
         return DatabaseType.DATABASE_TYPE.DELETED;
     }
 
     @Override
-    public Field<Integer> field10() {
+    public Field<Integer> field11() {
         return DatabaseType.DATABASE_TYPE.DELETED_TOKEN;
     }
 
     @Override
-    public Field<LocalDateTime> field11() {
+    public Field<LocalDateTime> field12() {
         return DatabaseType.DATABASE_TYPE.UPDATE_AT;
     }
 
     @Override
-    public Field<LocalDateTime> field12() {
+    public Field<LocalDateTime> field13() {
         return DatabaseType.DATABASE_TYPE.CREATE_AT;
     }
 
@@ -304,36 +322,41 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public String component6() {
-        return getJdbcDriverClassName();
+        return getJdbcDriverFilePath();
     }
 
     @Override
     public String component7() {
-        return getJdbcProtocol();
+        return getJdbcDriverClassName();
     }
 
     @Override
     public String component8() {
+        return getJdbcProtocol();
+    }
+
+    @Override
+    public String component9() {
         return getUrlPattern();
     }
 
     @Override
-    public Boolean component9() {
+    public Boolean component10() {
         return getDeleted();
     }
 
     @Override
-    public Integer component10() {
+    public Integer component11() {
         return getDeletedToken();
     }
 
     @Override
-    public LocalDateTime component11() {
+    public LocalDateTime component12() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime component12() {
+    public LocalDateTime component13() {
         return getCreateAt();
     }
 
@@ -364,36 +387,41 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public String value6() {
-        return getJdbcDriverClassName();
+        return getJdbcDriverFilePath();
     }
 
     @Override
     public String value7() {
-        return getJdbcProtocol();
+        return getJdbcDriverClassName();
     }
 
     @Override
     public String value8() {
+        return getJdbcProtocol();
+    }
+
+    @Override
+    public String value9() {
         return getUrlPattern();
     }
 
     @Override
-    public Boolean value9() {
+    public Boolean value10() {
         return getDeleted();
     }
 
     @Override
-    public Integer value10() {
+    public Integer value11() {
         return getDeletedToken();
     }
 
     @Override
-    public LocalDateTime value11() {
+    public LocalDateTime value12() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime value12() {
+    public LocalDateTime value13() {
         return getCreateAt();
     }
 
@@ -429,48 +457,54 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public DatabaseTypeRecord value6(String value) {
-        setJdbcDriverClassName(value);
+        setJdbcDriverFilePath(value);
         return this;
     }
 
     @Override
     public DatabaseTypeRecord value7(String value) {
-        setJdbcProtocol(value);
+        setJdbcDriverClassName(value);
         return this;
     }
 
     @Override
     public DatabaseTypeRecord value8(String value) {
+        setJdbcProtocol(value);
+        return this;
+    }
+
+    @Override
+    public DatabaseTypeRecord value9(String value) {
         setUrlPattern(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value9(Boolean value) {
+    public DatabaseTypeRecord value10(Boolean value) {
         setDeleted(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value10(Integer value) {
+    public DatabaseTypeRecord value11(Integer value) {
         setDeletedToken(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value11(LocalDateTime value) {
+    public DatabaseTypeRecord value12(LocalDateTime value) {
         setUpdateAt(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord value12(LocalDateTime value) {
+    public DatabaseTypeRecord value13(LocalDateTime value) {
         setCreateAt(value);
         return this;
     }
 
     @Override
-    public DatabaseTypeRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, Boolean value9, Integer value10, LocalDateTime value11, LocalDateTime value12) {
+    public DatabaseTypeRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, Boolean value10, Integer value11, LocalDateTime value12, LocalDateTime value13) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -483,6 +517,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
         value10(value10);
         value11(value11);
         value12(value12);
+        value13(value13);
         return this;
     }
 
@@ -500,7 +535,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     /**
      * Create a detached, initialised DatabaseTypeRecord
      */
-    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverClassName, String jdbcProtocol, String urlPattern, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
+    public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverFilePath, String jdbcDriverClassName, String jdbcProtocol, String urlPattern, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
         super(DatabaseType.DATABASE_TYPE);
 
         setId(id);
@@ -508,6 +543,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
         setIcon(icon);
         setDescription(description);
         setJdbcDriverFileUrl(jdbcDriverFileUrl);
+        setJdbcDriverFilePath(jdbcDriverFilePath);
         setJdbcDriverClassName(jdbcDriverClassName);
         setJdbcProtocol(jdbcProtocol);
         setUrlPattern(urlPattern);
@@ -529,6 +565,7 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
             setIcon(value.getIcon());
             setDescription(value.getDescription());
             setJdbcDriverFileUrl(value.getJdbcDriverFileUrl());
+            setJdbcDriverFilePath(value.getJdbcDriverFilePath());
             setJdbcDriverClassName(value.getJdbcDriverClassName());
             setJdbcProtocol(value.getJdbcProtocol());
             setUrlPattern(value.getUrlPattern());

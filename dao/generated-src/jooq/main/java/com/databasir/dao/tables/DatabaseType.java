@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -74,6 +74,11 @@ public class DatabaseType extends TableImpl<DatabaseTypeRecord> {
      * The column <code>databasir.database_type.jdbc_driver_file_url</code>.
      */
     public final TableField<DatabaseTypeRecord, String> JDBC_DRIVER_FILE_URL = createField(DSL.name("jdbc_driver_file_url"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
+
+    /**
+     * The column <code>databasir.database_type.jdbc_driver_file_path</code>.
+     */
+    public final TableField<DatabaseTypeRecord, String> JDBC_DRIVER_FILE_PATH = createField(DSL.name("jdbc_driver_file_path"), SQLDataType.VARCHAR(512), this, "");
 
     /**
      * The column <code>databasir.database_type.jdbc_driver_class_name</code>.
@@ -190,11 +195,11 @@ public class DatabaseType extends TableImpl<DatabaseTypeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, String, String, String, String, String, String, String, String, Boolean, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }
