@@ -36,7 +36,7 @@ class DatabaseTypeServiceTest extends BaseTest {
     @BeforeEach
     public void setUp() {
         Mockito.doNothing().when(driverResources).validateDriverJar(any(), anyString());
-        Mockito.when(driverResources.load(anyString(), anyString(), anyString()))
+        Mockito.when(driverResources.load(any(), anyString(), anyString()))
                 .thenReturn(new DriverResult("", null));
     }
 
