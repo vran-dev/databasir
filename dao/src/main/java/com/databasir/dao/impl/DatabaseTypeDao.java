@@ -58,4 +58,12 @@ public class DatabaseTypeDao extends BaseDao<DatabaseTypePojo> {
     public Optional<DatabaseTypePojo> selectOptionalById(Integer id) {
         return super.selectOptionalOne(DATABASE_TYPE.DELETED.eq(false).and(DATABASE_TYPE.ID.eq(id)));
     }
+
+    public void updateDriverFile(Integer id, String driverFile) {
+        this.getDslContext()
+                .update(DATABASE_TYPE)
+                .set(DATABASE_TYPE.JDBC_DRIVER_FILE_PATH, driverFile)
+                .where(DATABASE_TYPE.ID.eq(id))
+                .execute();
+    }
 }

@@ -12,4 +12,6 @@ public class DatabaseTypeSimpleResponse {
     private String urlPattern;
 
     private String jdbcProtocol;
+
+    private String icon;
 }

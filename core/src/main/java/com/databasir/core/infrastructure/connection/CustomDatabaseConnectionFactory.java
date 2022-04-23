@@ -2,6 +2,7 @@ package com.databasir.core.infrastructure.connection;
 
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.infrastructure.driver.DriverResources;
+import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 @Component
@@ -38,8 +40,8 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
     public Connection getConnection(Context context) throws SQLException {
         String databaseType = context.getDatabaseType();
         DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(databaseType);
-        File driverFile = driverResources.loadOrDownloadByDatabaseType(databaseType, type.getJdbcDriverFileUrl());
 
+        File driverFile = loadDriver(type);
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
@@ -53,7 +55,6 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage());
         }
         // retrieve the driver class
-
         Class<?> clazz = null;
         Driver driver = null;
         try {
@@ -81,4 +82,15 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         return driver.connect(jdbcUrl, info);
     }
 
+    private File loadDriver(DatabaseTypePojo type) {
+        String databaseType = type.getDatabaseType();
+        String file = type.getJdbcDriverFilePath();
+        String url = type.getJdbcDriverFileUrl();
+        DriverResult result = driverResources.load(file, url, databaseType);
+        File driverFile = result.getDriverFile();
+        if (!Objects.equals(result.getDriverFilePath(), type.getJdbcDriverFilePath())) {
+            databaseTypeDao.updateDriverFile(type.getId(), result.getDriverFilePath());
+        }
+        return driverFile;
+    }
 }

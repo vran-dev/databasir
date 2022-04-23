@@ -14,9 +14,9 @@ public interface DatabaseTypePojoConverter {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "updateAt", ignore = true)
     @Mapping(target = "createAt", ignore = true)
-    DatabaseTypePojo of(DatabaseTypeCreateRequest request);
+    DatabaseTypePojo of(DatabaseTypeCreateRequest request, String jdbcDriverFilePath);
 
-    DatabaseTypePojo of(DatabaseTypeUpdateRequest request);
+    DatabaseTypePojo of(DatabaseTypeUpdateRequest request, String jdbcDriverFilePath);
 
     DatabaseTypeDetailResponse toDetailResponse(DatabaseTypePojo data);
 

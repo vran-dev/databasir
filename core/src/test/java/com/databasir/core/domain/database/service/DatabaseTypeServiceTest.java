@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @Transactional
@@ -33,7 +34,7 @@ class DatabaseTypeServiceTest extends BaseTest {
 
     @BeforeEach
     public void setUp() {
-        Mockito.doNothing().when(driverResources).validateJar(anyString(), anyString());
+        Mockito.doNothing().when(driverResources).validateDriverJar(any(), anyString());
     }
 
     @Test

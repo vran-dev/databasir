@@ -19,7 +19,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.jar.JarFile;
 
@@ -33,27 +32,77 @@ public class DriverResources {
 
     private final RestTemplate restTemplate;
 
-    public void deleteByDatabaseType(String databaseType) {
-        Path path = Paths.get(driverFilePath(driverBaseDirectory, databaseType));
+    public DriverResult load(String driverFilePath, String driverFileUrl, String databaseType) {
+        if (driverFilePath == null) {
+            String targetFile = targetDriverFile(databaseType);
+            File file = download(driverFileUrl, targetFile);
+            return new DriverResult(targetFile, file);
+        }
+        File driverFile = Paths.get(driverFilePath).toFile();
+        if (driverFile.exists()) {
+            return new DriverResult(driverFilePath, driverFile);
+        } else {
+            String targetFile = targetDriverFile(databaseType);
+            File file = download(driverFileUrl, targetFile);
+            return new DriverResult(targetFile, file);
+        }
+    }
+
+    private File download(String driverFileUrl, String targetFile) {
+        Path path = Path.of(targetFile);
+
+        // create parent directory
+        if (Files.notExists(path)) {
+            path.getParent().toFile().mkdirs();
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                log.error("create file error " + targetFile, e);
+                throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+            }
+        }
+
+        // download
         try {
+            return restTemplate.execute(driverFileUrl, HttpMethod.GET, null, response -> {
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    File file = path.toFile();
+                    FileOutputStream out = new FileOutputStream(file);
+                    StreamUtils.copy(response.getBody(), out);
+                    IOUtils.closeQuietly(out, ex -> log.error("close file error", ex));
+                    log.info("{} download success ", targetFile);
+                    return file;
+                } else {
+                    log.error("{} download error from {}: {} ", targetFile, driverFileUrl, response);
+                    throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动下载失败："
+                            + response.getStatusCode()
+                            + ", "
+                            + response.getStatusText());
+                }
+            });
+        } catch (RestClientException e) {
+            log.error(targetFile + " download driver error", e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+        }
+    }
+
+    public void deleteByDatabaseType(String databaseType) {
+        String baseDir = driverBaseDirectory + "/" + databaseType;
+        Path path = Paths.get(baseDir);
+        try {
+            if (Files.exists(path)) {
+                Files.list(path).forEach(file -> {
+                    try {
+                        Files.deleteIfExists(file);
+                    } catch (IOException e) {
+                        log.error("delete file error " + file, e);
+                    }
+                });
+            }
             Files.deleteIfExists(path);
         } catch (IOException e) {
             log.error("delete driver error " + databaseType, e);
         }
-    }
-
-    public Optional<File> loadByDatabaseType(String databaseType) {
-        Path path = Paths.get(driverFilePath(driverBaseDirectory, databaseType));
-        if (Files.exists(path)) {
-            return Optional.of(path.toFile());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public File loadOrDownloadByDatabaseType(String databaseType, String driverFileUrl) {
-        return loadByDatabaseType(databaseType)
-                .orElseGet(() -> download(driverFileUrl, driverFilePath(driverBaseDirectory, databaseType)));
     }
 
     public String resolveDriverClassName(String driverFileUrl) {
@@ -100,47 +149,7 @@ public class DriverResources {
         return driverClassName;
     }
 
-    private File download(String driverFileUrl, String targetFile) {
-        Path path = Path.of(targetFile);
-
-        // create parent directory
-        if (Files.notExists(path)) {
-            path.getParent().toFile().mkdirs();
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                log.error("create file error " + targetFile, e);
-                throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
-            }
-        }
-
-        // download
-        try {
-            return restTemplate.execute(driverFileUrl, HttpMethod.GET, null, response -> {
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    File file = path.toFile();
-                    FileOutputStream out = new FileOutputStream(file);
-                    StreamUtils.copy(response.getBody(), out);
-                    IOUtils.closeQuietly(out, ex -> log.error("close file error", ex));
-                    log.info("{} download success ", targetFile);
-                    return file;
-                } else {
-                    log.error("{} download error from {}: {} ", targetFile, driverFileUrl, response);
-                    throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动下载失败："
-                            + response.getStatusCode()
-                            + ", "
-                            + response.getStatusText());
-                }
-            });
-        } catch (RestClientException e) {
-            log.error(targetFile + " download driver error", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
-        }
-    }
-
-    public void validateJar(String driverFileUrl, String className) {
-        String tempFilePath = "temp/" + UUID.randomUUID() + ".jar";
-        File driverFile = download(driverFileUrl, tempFilePath);
+    public void validateDriverJar(File driverFile, String className) {
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
@@ -165,22 +174,12 @@ public class DriverResources {
             throw DomainErrors.DRIVER_CLASS_NOT_FOUND.exception("驱动初始化异常, 请检查驱动类名：" + e.getMessage());
         } finally {
             IOUtils.closeQuietly(loader);
-            try {
-                Files.deleteIfExists(driverFile.toPath());
-            } catch (IOException e) {
-                log.error("delete driver error " + tempFilePath, e);
-            }
         }
     }
 
-    private String driverFilePath(String baseDir, String databaseType) {
-        String fileName = databaseType + ".jar";
-        String filePath;
-        if (baseDir.endsWith(File.separator)) {
-            filePath = baseDir + fileName;
-        } else {
-            filePath = baseDir + File.separator + fileName;
-        }
-        return filePath;
+    private String targetDriverFile(String databaseType) {
+        return driverBaseDirectory
+                + "/" + databaseType
+                + "/" + System.currentTimeMillis() + ".jar";
     }
 }

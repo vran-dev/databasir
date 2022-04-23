@@ -31,6 +31,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -138,9 +139,20 @@ public class DocumentService {
         DatabasirConfig databasirConfig = new DatabasirConfig();
         databasirConfig.setIgnoreTableNameRegex(jsonConverter.fromJson(rule.getIgnoreTableNameRegexArray()));
         databasirConfig.setIgnoreTableColumnNameRegex(jsonConverter.fromJson(rule.getIgnoreColumnNameRegexArray()));
-        return Databasir.of(databasirConfig)
-                .get(jdbcConnection, dataSource.getDatabaseName(), dataSource.getSchemaName())
-                .orElseThrow(DomainErrors.DATABASE_META_NOT_FOUND::exception);
+        try {
+            DatabaseMeta databaseMeta = Databasir.of(databasirConfig)
+                    .get(jdbcConnection, dataSource.getDatabaseName(), dataSource.getSchemaName())
+                    .orElseThrow(DomainErrors.DATABASE_META_NOT_FOUND::exception);
+            return databaseMeta;
+        } finally {
+            try {
+                if (!jdbcConnection.isClosed()) {
+                    jdbcConnection.close();
+                }
+            } catch (SQLException e) {
+                log.error("close jdbc connection error", e);
+            }
+        }
     }
 
     private void saveNewDocument(DatabaseMeta meta,
