@@ -6,6 +6,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.database.data.DatabaseTypeCreateRequest;
 import com.databasir.core.domain.database.data.DatabaseTypeUpdateRequest;
 import com.databasir.core.infrastructure.driver.DriverResources;
+import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import org.junit.jupiter.api.Assertions;
@@ -35,6 +36,8 @@ class DatabaseTypeServiceTest extends BaseTest {
     @BeforeEach
     public void setUp() {
         Mockito.doNothing().when(driverResources).validateDriverJar(any(), anyString());
+        Mockito.when(driverResources.load(anyString(), anyString(), anyString()))
+                .thenReturn(new DriverResult("", null));
     }
 
     @Test
