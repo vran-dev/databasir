@@ -42,11 +42,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                     operationLogService.saveLoginLog(details.getUserPojo(), false, null);
                     return new CredentialsExpiredException("请重新登陆");
                 });
-        operationLogService.saveLoginLog(details.getUserPojo(), true, null);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
+        operationLogService.saveLoginLog(details.getUserPojo(), true, null);
     }
-
 
 }
