@@ -36,6 +36,7 @@ public @interface Operation {
         String LOGIN_APP = "login_app";
         String SETTING = "setting";
         String DATABASE_TYPE = "database_type";
+        String LOGIN = "login";
     }
 
     interface Types {

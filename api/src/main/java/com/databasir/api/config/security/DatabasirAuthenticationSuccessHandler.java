@@ -1,11 +1,12 @@
 package com.databasir.api.config.security;
 
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.login.data.LoginKeyResponse;
+import com.databasir.core.domain.log.service.OperationLogService;
 import com.databasir.core.domain.login.data.UserLoginResponse;
 import com.databasir.core.domain.login.service.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
@@ -20,11 +21,14 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DatabasirAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
 
     private final LoginService loginService;
+
+    private final OperationLogService operationLogService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -34,9 +38,13 @@ public class DatabasirAuthenticationSuccessHandler implements AuthenticationSucc
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        LoginKeyResponse loginKey = loginService.generate(user.getUserPojo().getId());
+        loginService.generate(user.getUserPojo().getId());
         UserLoginResponse data = loginService.getUserLoginData(user.getUserPojo().getId())
-                .orElseThrow(() -> new CredentialsExpiredException("请重新登陆"));
+                .orElseThrow(() -> {
+                    operationLogService.saveLoginLog(user.getUserPojo(), false, null);
+                    return new CredentialsExpiredException("请重新登陆");
+                });
+        operationLogService.saveLoginLog(user.getUserPojo(), true, null);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
     }
 }

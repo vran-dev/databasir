@@ -1,8 +1,9 @@
 package com.databasir.api.config.oauth2;
 
 import com.databasir.api.config.security.DatabasirUserDetailService;
-import com.databasir.core.domain.user.data.UserDetailResponse;
 import com.databasir.core.domain.app.OpenAuthAppService;
+import com.databasir.core.domain.log.service.OperationLogService;
+import com.databasir.core.domain.user.data.UserDetailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,9 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
     @Autowired
     private DatabasirUserDetailService databasirUserDetailService;
 
+    @Autowired
+    private OperationLogService operationLogService;
+
     public DatabasirOauth2LoginFilter(AuthenticationManager authenticationManager,
                                       OAuth2AuthenticationSuccessHandler auth2AuthenticationSuccessHandler,
                                       AuthenticationFailureHandler authenticationFailureHandler) {
@@ -50,6 +54,7 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
         UserDetails details = databasirUserDetailService.loadUserByUsername(userDetailResponse.getUsername());
         DatabasirOAuth2Authentication authentication = new DatabasirOAuth2Authentication(details);
         if (!userDetailResponse.getEnabled()) {
+            operationLogService.saveLoginFailedLog(userDetailResponse.getUsername(), "用户被禁用");
             throw new DisabledException("账号已禁用");
         }
         authentication.setAuthenticated(true);

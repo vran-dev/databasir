@@ -1,5 +1,7 @@
 package com.databasir.core.domain.log.service;
 
+import com.databasir.common.JsonData;
+import com.databasir.core.domain.log.annotation.Operation;
 import com.databasir.core.domain.log.converter.OperationLogPojoConverter;
 import com.databasir.core.domain.log.converter.OperationLogRequestConverter;
 import com.databasir.core.domain.log.data.OperationLogPageCondition;
@@ -14,17 +16,20 @@ import com.databasir.dao.tables.pojos.OperationLogPojo;
 import com.databasir.dao.tables.pojos.ProjectPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OperationLogService {
 
     private final OperationLogDao operationLogDao;
@@ -42,6 +47,52 @@ public class OperationLogService {
     public Long save(OperationLogRequest request) {
         OperationLogPojo pojo = operationLogRequestConverter.toPojo(request);
         return operationLogDao.insertAndReturnId(pojo);
+    }
+
+    public void saveLoginFailedLog(String username, String msg) {
+        try {
+            JsonData result = JsonData.error("-1", Objects.requireNonNullElse(msg, "登录失败"));
+            OperationLogRequest log = OperationLogRequest.builder()
+                    .isSuccess(false)
+                    .operationCode("login")
+                    .operationModule(Operation.Modules.LOGIN)
+                    .operationName("登录")
+                    .operatorNickname(username)
+                    .operatorUsername(username)
+                    .operatorUserId(-1)
+                    .operationResponse(result)
+                    .build();
+            OperationLogPojo pojo = operationLogRequestConverter.toPojo(log);
+            operationLogDao.insertAndReturnId(pojo);
+        } catch (Exception e) {
+            log.error("保存登录日志失败", e);
+        }
+    }
+
+    public void saveLoginLog(UserPojo user, Boolean success, String msg) {
+        try {
+            JsonData result;
+            if (success) {
+                result = JsonData.ok();
+            } else {
+                result = JsonData.error("-1", Objects.requireNonNullElse(msg, "登录失败"));
+            }
+            OperationLogRequest log = OperationLogRequest.builder()
+                    .isSuccess(success)
+                    .involvedUserId(user.getId())
+                    .operationCode("login")
+                    .operationModule(Operation.Modules.LOGIN)
+                    .operationName("登录")
+                    .operatorNickname(user.getNickname())
+                    .operatorUsername(user.getUsername())
+                    .operatorUserId(user.getId())
+                    .operationResponse(result)
+                    .build();
+            OperationLogPojo pojo = operationLogRequestConverter.toPojo(log);
+            operationLogDao.insertAndReturnId(pojo);
+        } catch (Exception e) {
+            log.error("保存登录日志失败", e);
+        }
     }
 
     public Page<OperationLogPageResponse> list(Pageable page,
