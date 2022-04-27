@@ -15,8 +15,9 @@
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
+## 社区
 
-[点击联系](https://doc.databasir.com/#/?id=联系)
+[点击加入 Databasir 交流群](https://doc.databasir.com/#/?id=联系)
 
 ## 特性
 

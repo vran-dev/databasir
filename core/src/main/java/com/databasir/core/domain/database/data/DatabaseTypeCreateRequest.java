@@ -15,8 +15,9 @@ public class DatabaseTypeCreateRequest {
     @NotBlank
     private String description;
 
-    @NotBlank
     private String jdbcDriverFileUrl;
+
+    private String jdbcDriverFilePath;
 
     @NotBlank
     private String jdbcDriverClassName;

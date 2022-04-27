@@ -3,6 +3,7 @@ package com.databasir.core.domain.database.service;
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.database.converter.DatabaseTypePojoConverter;
 import com.databasir.core.domain.database.data.*;
+import com.databasir.core.domain.database.validator.DatabaseTypeUpdateValidator;
 import com.databasir.core.infrastructure.connection.DatabaseTypes;
 import com.databasir.core.infrastructure.driver.DriverResources;
 import com.databasir.core.infrastructure.driver.DriverResult;
@@ -11,15 +12,20 @@ import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,14 +42,28 @@ public class DatabaseTypeService {
 
     private final DatabaseTypePojoConverter databaseTypePojoConverter;
 
+    private final DatabaseTypeUpdateValidator databaseTypeUpdateValidator;
+
+    /**
+     * 1. validate: filePath, fileUrl
+     * 2. validate: databaseType
+     * 3. load from remote or local
+     * 4. validate driver class name
+     * 5. copy to standard directory
+     * 6. save to database
+     */
     public Integer create(DatabaseTypeCreateRequest request) {
-        if (databaseTypeDao.existsByDatabaseType(request.getDatabaseType())) {
+        databaseTypeUpdateValidator.validRequestRequiredParams(request);
+        String databaseType = request.getDatabaseType();
+        if (databaseTypeDao.existsByDatabaseType(databaseType)) {
             throw DomainErrors.DATABASE_TYPE_NAME_DUPLICATE.exception();
         }
-        DriverResult result =
-                driverResources.load(null, request.getJdbcDriverFileUrl(), request.getDatabaseType());
-        driverResources.validateDriverJar(result.getDriverFile(), request.getJdbcDriverClassName());
-        DatabaseTypePojo pojo = databaseTypePojoConverter.of(request, result.getDriverFilePath());
+        DriverResult result = loadAndValidate(request.getJdbcDriverFileUrl(),
+                request.getJdbcDriverFilePath(), request.getJdbcDriverClassName());
+        String targetPath = driverResources.copyToStandardDirectory(result.getDriverFile(), databaseType);
+        DatabaseTypePojo pojo = databaseTypePojoConverter.of(request, targetPath);
+        // TODO workaround
+        pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
         try {
             return databaseTypeDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
@@ -53,20 +73,23 @@ public class DatabaseTypeService {
 
     @Transactional
     public void update(DatabaseTypeUpdateRequest request) {
+        databaseTypeUpdateValidator.validRequestRequiredParams(request);
         databaseTypeDao.selectOptionalById(request.getId()).ifPresent(data -> {
+            databaseTypeUpdateValidator.validDatabaseTypeIfNecessary(request, data);
+            String databaseType = request.getDatabaseType();
             DatabaseTypePojo pojo;
-            if (!Objects.equals(request.getDatabaseType(), data.getDatabaseType())
-                    || !Objects.equals(request.getJdbcDriverFileUrl(), data.getJdbcDriverFileUrl())) {
+            if (databaseTypeUpdateValidator.shouldReloadDriver(request, data)) {
                 // 名称修改，下载地址修改需要删除原有的 driver 并重新下载验证
                 driverResources.deleteByDatabaseType(data.getDatabaseType());
                 // download
-                DriverResult result =
-                        driverResources.load(null, request.getJdbcDriverFileUrl(), request.getDatabaseType());
-                driverResources.validateDriverJar(result.getDriverFile(), request.getJdbcDriverClassName());
-                // validate
-                pojo = databaseTypePojoConverter.of(request, result.getDriverFilePath());
+                DriverResult result = loadAndValidate(request.getJdbcDriverFileUrl(),
+                        request.getJdbcDriverFilePath(), request.getJdbcDriverClassName());
+                String targetPath = driverResources.copyToStandardDirectory(result.getDriverFile(), databaseType);
+                pojo = databaseTypePojoConverter.of(request, targetPath);
+                pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
             } else {
-                pojo = databaseTypePojoConverter.of(request, data.getJdbcDriverFilePath());
+                pojo = databaseTypePojoConverter.of(request);
+                pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
             }
 
             try {
@@ -75,6 +98,17 @@ public class DatabaseTypeService {
                 throw DomainErrors.DATABASE_TYPE_NAME_DUPLICATE.exception();
             }
         });
+    }
+
+    private DriverResult loadAndValidate(String remoteUrl, String localPath, String className) {
+        DriverResult result;
+        if (StringUtils.isNoneBlank(localPath)) {
+            result = driverResources.loadFromLocal(localPath);
+        } else {
+            result = driverResources.tempLoadFromRemote(remoteUrl);
+        }
+        driverResources.validateDriverJar(result.getDriverFile(), className);
+        return result;
     }
 
     public void deleteById(Integer id) {
@@ -120,7 +154,25 @@ public class DatabaseTypeService {
     }
 
     public String resolveDriverClassName(DriverClassNameResolveRequest request) {
-        return driverResources.resolveDriverClassName(request.getJdbcDriverFileUrl());
+        databaseTypeUpdateValidator.validRequestRequiredParams(request);
+        if (StringUtils.isNotBlank(request.getJdbcDriverFileUrl())) {
+            return driverResources.resolveDriverClassNameFromRemote(request.getJdbcDriverFileUrl());
+        } else {
+            return driverResources.resolveDriverClassNameFromLocal(request.getJdbcDriverFilePath());
+        }
     }
 
+    public String uploadDriver(MultipartFile file) {
+        String parent = "temp";
+        String path = parent + "/" + System.currentTimeMillis() + "-" + file.getOriginalFilename();
+        try {
+            Files.createDirectories(Paths.get(parent));
+            Path targetPath = Paths.get(path);
+            Files.copy(file.getInputStream(), targetPath);
+            return path;
+        } catch (IOException e) {
+            log.error("upload driver file error", e);
+            throw DomainErrors.UPLOAD_DRIVER_FILE_ERROR.exception();
+        }
+    }
 }

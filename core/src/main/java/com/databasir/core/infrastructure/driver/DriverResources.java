@@ -3,8 +3,10 @@ package com.databasir.core.infrastructure.driver;
 import com.databasir.core.domain.DomainErrors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
 @Component
@@ -32,48 +34,62 @@ public class DriverResources {
 
     private final RestTemplate restTemplate;
 
-    public DriverResult load(String driverFilePath, String driverFileUrl, String databaseType) {
-        if (driverFilePath == null) {
-            String targetFile = targetDriverFile(databaseType);
-            File file = download(driverFileUrl, targetFile);
-            return new DriverResult(targetFile, file);
-        }
-        File driverFile = Paths.get(driverFilePath).toFile();
+    public DriverResult loadFromLocal(String localPath) {
+        File driverFile = Paths.get(localPath).toFile();
         if (driverFile.exists()) {
-            return new DriverResult(driverFilePath, driverFile);
+            return new DriverResult(localPath, driverFile);
         } else {
-            String targetFile = targetDriverFile(databaseType);
-            File file = download(driverFileUrl, targetFile);
-            return new DriverResult(targetFile, file);
+            throw DomainErrors.UPLOAD_DRIVER_FILE_ERROR.exception();
         }
     }
 
-    private File download(String driverFileUrl, String targetFile) {
-        Path path = Path.of(targetFile);
+    public DriverResult tempLoadFromRemote(String remoteUrl) {
+        Path dirPath;
+        try {
+            dirPath = Files.createTempDirectory("databasir-drivers");
+        } catch (IOException e) {
+            log.error("load driver error cause create temp dir failed", e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception();
+        }
+        File file = download(remoteUrl, dirPath.toString());
+        return new DriverResult(file.getAbsolutePath(), file);
+    }
 
-        // create parent directory
-        if (Files.notExists(path)) {
-            path.getParent().toFile().mkdirs();
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                log.error("create file error " + targetFile, e);
-                throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
-            }
+    private File download(String driverFileUrl, String parentDir) {
+        Path parentDirPath = Paths.get(parentDir);
+        try {
+            Files.createDirectories(parentDirPath);
+        } catch (IOException e) {
+            log.error("下载驱动时创建目录失败", e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e);
         }
 
         // download
         try {
             return restTemplate.execute(driverFileUrl, HttpMethod.GET, null, response -> {
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    File file = path.toFile();
-                    FileOutputStream out = new FileOutputStream(file);
+                    String prefix = System.currentTimeMillis() + "";
+                    String originFileName = response.getHeaders().getContentDisposition().getFilename();
+                    String filename;
+                    if (originFileName == null) {
+                        URL url = new URL(driverFileUrl);
+                        String nameFromUrl = FilenameUtils.getName(url.getPath());
+                        if (StringUtils.endsWith(nameFromUrl, ".jar")) {
+                            filename = prefix + "-" + nameFromUrl;
+                        } else {
+                            filename = prefix + ".jar";
+                        }
+                    } else {
+                        filename = prefix + "-" + originFileName;
+                    }
+                    File targetFile = Paths.get(parentDir, filename).toFile();
+                    FileOutputStream out = new FileOutputStream(targetFile);
                     StreamUtils.copy(response.getBody(), out);
                     IOUtils.closeQuietly(out, ex -> log.error("close file error", ex));
                     log.info("{} download success ", targetFile);
-                    return file;
+                    return targetFile;
                 } else {
-                    log.error("{} download error from {}: {} ", targetFile, driverFileUrl, response);
+                    log.error("{} download error from {}: {} ", parentDir, driverFileUrl, response);
                     throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动下载失败："
                             + response.getStatusCode()
                             + ", "
@@ -81,7 +97,7 @@ public class DriverResources {
                 }
             });
         } catch (RestClientException e) {
-            log.error(targetFile + " download driver error", e);
+            log.error(parentDir + " download driver error", e);
             throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
         }
     }
@@ -105,16 +121,24 @@ public class DriverResources {
         }
     }
 
-    public String resolveDriverClassName(String driverFileUrl) {
-        String tempFilePath = "temp/" + UUID.randomUUID() + ".jar";
-        File driverFile = download(driverFileUrl, tempFilePath);
+    public String resolveDriverClassNameFromRemote(String driverFileUrl) {
+        DriverResult driverResult = tempLoadFromRemote(driverFileUrl);
+        File driverFile = driverResult.getDriverFile();
         String className = resolveDriverClassName(driverFile);
         try {
             Files.deleteIfExists(driverFile.toPath());
         } catch (IOException e) {
-            log.error("delete driver error " + tempFilePath, e);
+            log.error("delete driver error from " + driverResult.getDriverFilePath(), e);
         }
         return className;
+    }
+
+    public String resolveDriverClassNameFromLocal(String driverFilePath) {
+        File driverFile = Paths.get(driverFilePath).toFile();
+        if (!driverFile.exists()) {
+            throw DomainErrors.DRIVER_CLASS_NOT_FOUND.exception("驱动文件不存在，请重新上传");
+        }
+        return resolveDriverClassName(driverFile);
     }
 
     public String resolveDriverClassName(File driverFile) {
@@ -177,9 +201,22 @@ public class DriverResources {
         }
     }
 
-    private String targetDriverFile(String databaseType) {
+    public String copyToStandardDirectory(File sourceFile, String databaseType) {
+        String targetFile = targetDriverFile(databaseType, sourceFile.getName());
+        try {
+            Path target = Paths.get(targetFile);
+            Files.createDirectories(target.getParent());
+            Files.copy(sourceFile.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+            return targetFile;
+        } catch (IOException e) {
+            log.error("copy driver file error", e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+        }
+    }
+
+    private String targetDriverFile(String databaseType, String fileName) {
         return driverBaseDirectory
                 + "/" + databaseType
-                + "/" + System.currentTimeMillis() + ".jar";
+                + "/" + fileName;
     }
 }
