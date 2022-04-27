@@ -19,6 +19,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import java.util.jar.JarFile;
 
@@ -31,6 +32,21 @@ public class DriverResources {
     private String driverBaseDirectory;
 
     private final RestTemplate restTemplate;
+
+    public DriverResult loadFromLocal(String localPath) {
+        File driverFile = Paths.get(localPath).toFile();
+        if (driverFile.exists()) {
+            return new DriverResult(localPath, driverFile);
+        } else {
+            throw DomainErrors.UPLOAD_DRIVER_FILE_ERROR.exception();
+        }
+    }
+
+    public DriverResult loadFromRemote(String remoteUrl) {
+        String targetFile = "temp/" + System.currentTimeMillis() + ".jar";
+        File file = download(remoteUrl, targetFile);
+        return new DriverResult(targetFile, file);
+    }
 
     public DriverResult load(String driverFilePath, String driverFileUrl, String databaseType) {
         if (driverFilePath == null) {
@@ -105,7 +121,7 @@ public class DriverResources {
         }
     }
 
-    public String resolveDriverClassName(String driverFileUrl) {
+    public String resolveDriverClassNameFromRemote(String driverFileUrl) {
         String tempFilePath = "temp/" + UUID.randomUUID() + ".jar";
         File driverFile = download(driverFileUrl, tempFilePath);
         String className = resolveDriverClassName(driverFile);
@@ -115,6 +131,14 @@ public class DriverResources {
             log.error("delete driver error " + tempFilePath, e);
         }
         return className;
+    }
+
+    public String resolveDriverClassNameFromLocal(String driverFilePath) {
+        File driverFile = Paths.get(driverFilePath).toFile();
+        if (!driverFile.exists()) {
+            throw DomainErrors.DRIVER_CLASS_NOT_FOUND.exception("驱动文件不存在，请重新上传");
+        }
+        return resolveDriverClassName(driverFile);
     }
 
     public String resolveDriverClassName(File driverFile) {
@@ -174,6 +198,19 @@ public class DriverResources {
             throw DomainErrors.DRIVER_CLASS_NOT_FOUND.exception("驱动初始化异常, 请检查驱动类名：" + e.getMessage());
         } finally {
             IOUtils.closeQuietly(loader);
+        }
+    }
+
+    public String copyToStandardDirectory(File sourceFile, String databaseType) {
+        String targetFile = targetDriverFile(databaseType);
+        try {
+            Path target = Paths.get(targetFile);
+            Files.createDirectories(target.getParent());
+            Files.copy(sourceFile.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+            return targetFile;
+        } catch (IOException e) {
+            log.error("copy driver file error", e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
         }
     }
 

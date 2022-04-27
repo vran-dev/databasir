@@ -1,8 +1,8 @@
 package com.databasir.core.infrastructure.connection;
 
+import com.alibaba.excel.util.StringUtils;
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.infrastructure.driver.DriverResources;
-import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.tables.pojos.DatabaseTypePojo;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
 
 @Component
@@ -83,14 +83,16 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
     }
 
     private File loadDriver(DatabaseTypePojo type) {
-        String databaseType = type.getDatabaseType();
-        String file = type.getJdbcDriverFilePath();
-        String url = type.getJdbcDriverFileUrl();
-        DriverResult result = driverResources.load(file, url, databaseType);
-        File driverFile = result.getDriverFile();
-        if (!Objects.equals(result.getDriverFilePath(), type.getJdbcDriverFilePath())) {
-            databaseTypeDao.updateDriverFile(type.getId(), result.getDriverFilePath());
+        if (StringUtils.isNotBlank(type.getJdbcDriverFilePath())) {
+            return driverResources.loadFromLocal(type.getJdbcDriverFilePath()).getDriverFile();
         }
-        return driverFile;
+        if (StringUtils.isNotBlank(type.getJdbcDriverFileUrl())) {
+            File remoteFile = driverResources.loadFromRemote(type.getJdbcDriverFileUrl()).getDriverFile();
+            driverResources.validateDriverJar(remoteFile, type.getJdbcDriverClassName());
+            String targetFile = driverResources.copyToStandardDirectory(remoteFile, type.getDatabaseType());
+            return Paths.get(targetFile).toFile();
+        }
+        String databaseType = type.getDatabaseType();
+        throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动加载失败, database=" + databaseType);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -78,6 +79,13 @@ public class DatabaseTypeController {
     public JsonData<String> resolveDriverClassName(@RequestBody @Valid DriverClassNameResolveRequest request) {
         String driverClassName = databaseTypeService.resolveDriverClassName(request);
         return JsonData.ok(driverClassName);
+    }
+
+    @PostMapping(Routes.DatabaseType.UPLOAD_DRIVER)
+    @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
+    public JsonData<String> uploadDriver(@RequestPart MultipartFile file) {
+        String driverPath = databaseTypeService.uploadDriver(file);
+        return JsonData.ok(driverPath);
     }
 
 }
