@@ -44,7 +44,6 @@ public class DatabaseTypeService {
 
     private final DatabaseTypeUpdateValidator databaseTypeUpdateValidator;
 
-
     /**
      * 1. validate: filePath, fileUrl
      * 2. validate: databaseType
