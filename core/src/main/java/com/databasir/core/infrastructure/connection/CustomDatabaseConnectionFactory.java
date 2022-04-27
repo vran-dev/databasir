@@ -87,7 +87,7 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             return driverResources.loadFromLocal(type.getJdbcDriverFilePath()).getDriverFile();
         }
         if (StringUtils.isNotBlank(type.getJdbcDriverFileUrl())) {
-            File remoteFile = driverResources.loadFromRemote(type.getJdbcDriverFileUrl()).getDriverFile();
+            File remoteFile = driverResources.tempLoadFromRemote(type.getJdbcDriverFileUrl()).getDriverFile();
             driverResources.validateDriverJar(remoteFile, type.getJdbcDriverClassName());
             String targetFile = driverResources.copyToStandardDirectory(remoteFile, type.getDatabaseType());
             return Paths.get(targetFile).toFile();

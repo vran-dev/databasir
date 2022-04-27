@@ -106,7 +106,7 @@ public class DatabaseTypeService {
         if (StringUtils.isNoneBlank(localPath)) {
             result = driverResources.loadFromLocal(localPath);
         } else {
-            result = driverResources.loadFromRemote(remoteUrl);
+            result = driverResources.tempLoadFromRemote(remoteUrl);
         }
         driverResources.validateDriverJar(result.getDriverFile(), className);
         return result;
