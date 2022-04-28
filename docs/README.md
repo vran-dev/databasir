@@ -19,7 +19,7 @@
 
 #### **微信群**
 
-<img src="https://s2.loli.net/2022/04/22/25vXDZdEBClpis9.jpg" width="250px" />
+<img src="https://s2.loli.net/2022/04/28/xibsMtIw4GeCVuU.jpg" width="250px" />
 
 #### **公众号**
 
