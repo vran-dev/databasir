@@ -52,10 +52,7 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                     if (isNullable.trim().equals("")) {
                         isNullable = "UNKNOWN";
                     }
-                    String isAutoIncrement = columnsResult.getString("IS_AUTOINCREMENT");
-                    if (isAutoIncrement.trim().equals("")) {
-                        isAutoIncrement = "UNKNOWN";
-                    }
+
                     if (defaultValue != null && defaultValue.trim().equals("")) {
                         defaultValue = "'" + defaultValue + "'";
                     }
@@ -76,7 +73,7 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                             .size(columnSize)
                             .decimalDigits(decimalDigits)
                             .nullable(isNullable)
-                            .autoIncrement(isAutoIncrement)
+                            .autoIncrement(retrieveAutoIncrement(columnsResult))
                             .comment(columnComment)
                             .defaultValue(defaultValue)
                             .isPrimaryKey(primaryKeyColumns.contains(columnName))
@@ -88,6 +85,20 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
             columnsResult.close();
         }
         return columnDocs;
+    }
+
+    private String retrieveAutoIncrement(ResultSet columnsResult) {
+        String isAutoIncrement = null;
+        try {
+            isAutoIncrement = columnsResult.getString("IS_AUTOINCREMENT");
+            if (isAutoIncrement.trim().equals("")) {
+                isAutoIncrement = "UNKNOWN";
+            }
+            return isAutoIncrement;
+        } catch (SQLException e) {
+            log.warn("warn: ignore auto increment, error: " + e.getMessage());
+            return "UNKNOWN";
+        }
     }
 
     private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta,
