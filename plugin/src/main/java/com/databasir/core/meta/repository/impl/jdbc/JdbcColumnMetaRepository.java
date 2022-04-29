@@ -66,6 +66,7 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                     String columnType = columnsResult.getString("TYPE_NAME");
                     String columnComment = columnsResult.getString("REMARKS");
                     int dataType = columnsResult.getInt("DATA_TYPE");
+                    String autoIncrement = retrieveAutoIncrement(columnsResult);
                     ColumnMeta columnMeta = ColumnMeta.builder()
                             .name(columnName)
                             .dataType(dataType)
@@ -73,7 +74,7 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
                             .size(columnSize)
                             .decimalDigits(decimalDigits)
                             .nullable(isNullable)
-                            .autoIncrement(retrieveAutoIncrement(columnsResult))
+                            .autoIncrement(autoIncrement)
                             .comment(columnComment)
                             .defaultValue(defaultValue)
                             .isPrimaryKey(primaryKeyColumns.contains(columnName))
@@ -88,17 +89,26 @@ public class JdbcColumnMetaRepository implements ColumnMetaRepository {
     }
 
     private String retrieveAutoIncrement(ResultSet columnsResult) {
-        String isAutoIncrement = null;
         try {
-            isAutoIncrement = columnsResult.getString("IS_AUTOINCREMENT");
-            if (isAutoIncrement.trim().equals("")) {
-                isAutoIncrement = "UNKNOWN";
-            }
-            return isAutoIncrement;
+            return retrieveAutoIncrement(columnsResult, "IS_AUTOINCREMENT");
         } catch (SQLException e) {
-            log.warn("warn: ignore auto increment, error: " + e.getMessage());
+            log.warn("get is_autoincrement failed, fallback to is_auto_increment, error: " + e.getMessage());
+            try {
+                // hive jdbc driver doesn't support is_autoincrement, fallback to is_auto_increment
+                return retrieveAutoIncrement(columnsResult, "is_auto_increment");
+            } catch (SQLException ex) {
+                log.warn("get is_auto_increment failed, error: " + ex.getMessage());
+                return "UNKNOWN";
+            }
+        }
+    }
+
+    private String retrieveAutoIncrement(ResultSet columnsResult, String columnName) throws SQLException {
+        String isAutoIncrement = columnsResult.getString(columnName);
+        if (isAutoIncrement.trim().equals("")) {
             return "UNKNOWN";
         }
+        return isAutoIncrement;
     }
 
     private List<String> selectPrimaryKeyColumns(DatabaseMetaData meta,
