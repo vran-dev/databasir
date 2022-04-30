@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.data;
 
+import com.databasir.core.diff.data.DiffType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableDocumentResponse {
+public class TableDocumentResponse implements DiffAble<TableDocumentResponse> {
 
     private Integer id;
 
@@ -41,11 +42,15 @@ public class TableDocumentResponse {
 
     private LocalDateTime createAt;
 
+    private DiffType diffType;
+
+    private TableDocumentResponse original;
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ColumnDocumentResponse {
+    public static class ColumnDocumentResponse implements DiffAble<ColumnDocumentResponse> {
         private Integer id;
 
         private String name;
@@ -71,13 +76,17 @@ public class TableDocumentResponse {
         private Integer discussionCount;
 
         private LocalDateTime createAt;
+
+        private DiffType diffType;
+
+        private ColumnDocumentResponse original;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class IndexDocumentResponse {
+    public static class IndexDocumentResponse implements DiffAble<IndexDocumentResponse> {
 
         private Integer id;
 
@@ -89,13 +98,17 @@ public class TableDocumentResponse {
         private List<String> columnNames = new ArrayList<>();
 
         private LocalDateTime createAt;
+
+        private DiffType diffType;
+
+        private IndexDocumentResponse original;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ForeignKeyDocumentResponse {
+    public static class ForeignKeyDocumentResponse implements DiffAble<ForeignKeyDocumentResponse> {
 
         private Integer id;
 
@@ -104,6 +117,8 @@ public class TableDocumentResponse {
         private String fkTableName;
 
         private String fkColumnName;
+
+        private Integer keySeq;
 
         private String pkName;
 
@@ -116,13 +131,17 @@ public class TableDocumentResponse {
         private String deleteRule;
 
         private LocalDateTime createAt;
+
+        private DiffType diffType;
+
+        private ForeignKeyDocumentResponse original;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class TriggerDocumentResponse {
+    public static class TriggerDocumentResponse implements DiffAble<TriggerDocumentResponse> {
 
         private Integer id;
 
@@ -137,5 +156,9 @@ public class TableDocumentResponse {
         private String triggerCreateAt;
 
         private LocalDateTime createAt;
+
+        private DiffType diffType;
+
+        private TriggerDocumentResponse original;
     }
 }

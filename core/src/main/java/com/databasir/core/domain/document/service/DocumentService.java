@@ -7,8 +7,12 @@ import com.databasir.core.diff.Diffs;
 import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.DomainErrors;
+import com.databasir.core.domain.document.comparator.DiffResult;
+import com.databasir.core.domain.document.comparator.DocumentDiffs;
+import com.databasir.core.domain.document.comparator.TableDiffResult;
 import com.databasir.core.domain.document.converter.*;
 import com.databasir.core.domain.document.data.*;
+import com.databasir.core.domain.document.data.TableDocumentResponse.ForeignKeyDocumentResponse;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
 import com.databasir.core.domain.document.generator.DocumentFileType;
@@ -16,6 +20,7 @@ import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.core.meta.data.DatabaseMeta;
+import com.databasir.core.meta.data.TableMeta;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
 import com.databasir.dao.value.DocumentDiscussionCountPojo;
@@ -32,11 +37,11 @@ import org.springframework.util.CollectionUtils;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +55,6 @@ public class DocumentService {
     private final DataSourceDao dataSourceDao;
 
     private final DataSourcePropertyDao dataSourcePropertyDao;
-
-    private final SysKeyDao sysKeyDao;
 
     private final DatabaseConnectionService databaseConnectionService;
 
@@ -199,13 +202,16 @@ public class DocumentService {
                 projectId, meta.getDatabaseName(), version);
     }
 
-    public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId, Long version) {
+    public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId,
+                                                                            Long version,
+                                                                            Long originalVersion) {
         Optional<DatabaseDocumentPojo> documentOption;
         if (version == null) {
             documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
             documentOption = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version);
         }
+
         return documentOption.map(document -> {
             Integer id = document.getId();
             var tables = tableDocumentDao.selectByDatabaseDocumentId(id);
@@ -213,7 +219,7 @@ public class DocumentService {
                     documentDiscussionDao.selectTableDiscussionCount(projectId)
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getCount(), (a, b) -> a));
-            Map<String, String> descriptionMapByTableName =
+            var descriptionMapByTableName =
                     documentDescriptionDao.selectTableDescriptionByProjectId(projectId)
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getContent(), (a, b) -> a));
@@ -222,8 +228,68 @@ public class DocumentService {
                     discussionCountMapByTableName,
                     descriptionMapByTableName
             );
-            return documentSimpleResponseConverter.of(document, tableMetas);
+
+            // if original version is not null mean version diff enabled
+            if (originalVersion != null) {
+                var originalDocument =
+                        databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
+                                .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+                var originalTables = tableDocumentDao.selectByDatabaseDocumentId(originalDocument.getId());
+                var originalTableMetas = documentSimpleResponseConverter.of(
+                        originalTables,
+                        discussionCountMapByTableName,
+                        descriptionMapByTableName
+                );
+                var originalMap = originalTableMetas.stream()
+                        .collect(Collectors.toMap(t -> t.getName(), Function.identity(), (a, b) -> a));
+                var currentMap = tableMetas.stream()
+                        .collect(Collectors.toMap(t -> t.getName(), Function.identity(), (a, b) -> a));
+                List<TableDiffResult> diffResults = tableDiffs(projectId, originalVersion, version);
+
+                List<DatabaseDocumentSimpleResponse.TableData> result = new ArrayList<>();
+                for (TableDiffResult diffResult : diffResults) {
+                    var cur = currentMap.get(diffResult.getId());
+                    var org = originalMap.get(diffResult.getId());
+                    if (diffResult.getDiffType() == DiffType.ADDED) {
+                        cur.setDiffType(DiffType.ADDED);
+                        result.add(cur);
+                    } else if (diffResult.getDiffType() == DiffType.MODIFIED) {
+                        cur.setDiffType(DiffType.MODIFIED);
+                        cur.setOriginal(org);
+                        result.add(cur);
+                    } else if (diffResult.getDiffType() == DiffType.REMOVED) {
+                        org.setDiffType(DiffType.REMOVED);
+                        result.add(org);
+                    } else {
+                        cur.setDiffType(DiffType.NONE);
+                        result.add(cur);
+                    }
+                }
+                result.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
+                DiffType diffType = result.stream()
+                        .anyMatch(t -> t.getDiffType() == DiffType.MODIFIED) ? DiffType.MODIFIED : DiffType.NONE;
+                return documentSimpleResponseConverter.of(document, result, diffType);
+            } else {
+                tableMetas.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
+                return documentSimpleResponseConverter.of(document, tableMetas, DiffType.NONE);
+            }
         });
+    }
+
+    public List<TableDiffResult> tableDiffs(Integer projectId, Long originalVersion, Long currentVersion) {
+        var original = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
+                .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        DatabaseDocumentPojo current;
+        if (currentVersion == null) {
+            current = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        } else {
+            current = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, currentVersion)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        }
+        DatabaseMeta currMeta = retrieveOriginalDatabaseMeta(current);
+        DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
+        return DocumentDiffs.tableDiff(originalMeta, currMeta);
     }
 
     public Optional<DatabaseDocumentResponse> getOneByProjectId(Integer projectId, Long version) {
@@ -252,11 +318,11 @@ public class DocumentService {
             var tableDocumentResponseList = tables.stream()
                     .map(table -> {
                         Integer tableId = table.getId();
-                        var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                        var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                        var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                        var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, emptyList());
+                        var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, emptyList());
+                        var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, emptyList());
                         var subForeignKeys =
-                                foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                                foreignKeysGroupByTableMetaId.getOrDefault(tableId, emptyList());
                         return documentResponseConverter.of(
                                 table,
                                 subColumns,
@@ -284,10 +350,10 @@ public class DocumentService {
 
     public List<TableDocumentResponse> getTableDetails(Integer projectId,
                                                        Integer databaseDocumentId,
-                                                       List<Integer> tableIds) {
+                                                       Collection<Integer> tableIds) {
         // maybe deleted
         if (CollectionUtils.isEmpty(tableIds) || !projectDao.existsById(projectId)) {
-            return Collections.emptyList();
+            return emptyList();
         }
         var tables =
                 tableDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
@@ -338,10 +404,10 @@ public class DocumentService {
         return tables.stream()
                 .map(table -> {
                     Integer tableId = table.getId();
-                    var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                    var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                    var subForeignKeys = foreignKeysGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
-                    var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, Collections.emptyList());
+                    var subColumns = columnsGroupByTableMetaId.getOrDefault(tableId, emptyList());
+                    var subIndexes = indexesGroupByTableMetaId.getOrDefault(tableId, emptyList());
+                    var subForeignKeys = foreignKeysGroupByTableMetaId.getOrDefault(tableId, emptyList());
+                    var subTriggers = triggersGroupByTableMetaId.getOrDefault(tableId, emptyList());
                     var discussionCount = discussionCountMapByJoinName.get(table.getName());
                     var description = descriptionMapByJoinName.get(table.getName());
                     var columnResponses = documentResponseConverter.of(
@@ -362,6 +428,87 @@ public class DocumentService {
                 .collect(Collectors.toList());
     }
 
+    public List<TableDocumentResponse> getTableDetails(Integer projectId,
+                                                       Integer databaseDocumentId,
+                                                       TableDocumentRequest request) {
+        // maybe deleted
+        if (CollectionUtils.isEmpty(request.getTableIds()) || !projectDao.existsById(projectId)) {
+            return emptyList();
+        }
+        var current = this.getTableDetails(projectId, databaseDocumentId, request.getTableIds());
+        if (request.getOriginalVersion() != null) {
+            DatabaseDocumentPojo doc =
+                    databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, request.getOriginalVersion())
+                            .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+            List<String> tableNames = current.stream().map(t -> t.getName()).distinct().collect(Collectors.toList());
+            List<Integer> originalTableIds =
+                    tableDocumentDao.selectTableIdsByDatabaseDocumentIdAndTableNameIn(doc.getId(), tableNames);
+            var original = this.getTableDetails(projectId, doc.getId(), originalTableIds);
+            Map<String, TableDocumentResponse> currentMapByName = current.stream()
+                    .collect(Collectors.toMap(TableDocumentResponse::getName, Function.identity(), (a, b) -> a));
+            Map<String, TableDocumentResponse> originalMapByName = original.stream()
+                    .collect(Collectors.toMap(TableDocumentResponse::getName, Function.identity(), (a, b) -> a));
+            List<TableMeta> currentMeta = databaseMetaConverter.of(current);
+            List<TableMeta> originalMeta = databaseMetaConverter.of(original);
+            List<TableDiffResult> diffs = DocumentDiffs.tableDiff(originalMeta, currentMeta);
+            return diffs.stream()
+                    .map(diff -> {
+                        if (diff.getDiffType() == DiffType.ADDED) {
+                            TableDocumentResponse c = currentMapByName.get(diff.getId());
+                            c.setDiffType(DiffType.ADDED);
+                            var cols =
+                                    diff(diff.getColumnDiffResults(), emptyList(), c.getColumns(), i -> i.getName());
+                            c.setColumns(cols);
+                            var indexes =
+                                    diff(diff.getIndexDiffResults(), emptyList(), c.getIndexes(), i -> i.getName());
+                            c.setIndexes(indexes);
+                            var foreignKeys = foreignKeyDiff(diff.getForeignKeyDiffResults(),
+                                    emptyList(), c.getForeignKeys());
+                            c.setForeignKeys(foreignKeys);
+                            var triggers =
+                                    diff(diff.getTriggerDiffResults(), emptyList(), c.getTriggers(), t -> t.getName());
+                            c.setTriggers(triggers);
+                            return c;
+                        }
+                        if (diff.getDiffType() == DiffType.REMOVED) {
+                            TableDocumentResponse t = originalMapByName.get(diff.getId());
+                            t.setDiffType(DiffType.REMOVED);
+                            return t;
+                        }
+                        if (diff.getDiffType() == DiffType.MODIFIED) {
+                            TableDocumentResponse c = currentMapByName.get(diff.getId());
+                            TableDocumentResponse o = originalMapByName.get(diff.getId());
+                            c.setDiffType(DiffType.MODIFIED);
+                            c.setOriginal(o);
+                            var cols =
+                                    diff(diff.getColumnDiffResults(), o.getColumns(), c.getColumns(),
+                                            col -> col.getName());
+                            c.setColumns(cols);
+                            var indexes =
+                                    diff(diff.getIndexDiffResults(), o.getIndexes(), c.getIndexes(), i -> i.getName());
+                            c.setIndexes(indexes);
+                            var foreignKeys = foreignKeyDiff(diff.getForeignKeyDiffResults(),
+                                    o.getForeignKeys(), c.getForeignKeys());
+                            c.setForeignKeys(foreignKeys);
+                            var triggers =
+                                    diff(diff.getTriggerDiffResults(), o.getTriggers(), c.getTriggers(),
+                                            t -> t.getName());
+                            c.setTriggers(triggers);
+                            return c;
+                        }
+                        TableDocumentResponse t = currentMapByName.get(diff.getId());
+                        t.setDiffType(DiffType.NONE);
+                        return t;
+                    })
+                    .sorted(Comparator.comparing(TableDocumentResponse::getName))
+                    .collect(Collectors.toList());
+
+        } else {
+            current.sort(Comparator.comparing(TableDocumentResponse::getName));
+            return current;
+        }
+    }
+
     public void export(Integer projectId,
                        Long version,
                        DocumentFileType type,
@@ -379,22 +526,6 @@ public class DocumentService {
                 });
     }
 
-    public RootDiff diff(Integer projectId, Long originalVersion, Long currentVersion) {
-        var original = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
-                .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
-        DatabaseDocumentPojo current;
-        if (currentVersion == null) {
-            current = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
-                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
-        } else {
-            current = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, currentVersion)
-                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
-        }
-        DatabaseMeta currMeta = retrieveOriginalDatabaseMeta(current);
-        DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
-        return Diffs.diff(originalMeta, currMeta);
-    }
-
     public List<TableResponse> getTableAndColumns(Integer projectId, Long version) {
         Optional<DatabaseDocumentPojo> documentOption;
         if (version == null) {
@@ -403,7 +534,7 @@ public class DocumentService {
             documentOption = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version);
         }
         if (documentOption.isEmpty()) {
-            return Collections.emptyList();
+            return emptyList();
         } else {
             DatabaseDocumentPojo databaseDoc = documentOption.get();
             var tables = tableDocumentDao.selectByDatabaseDocumentId(databaseDoc.getId());
@@ -412,5 +543,47 @@ public class DocumentService {
                     .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
             return tableResponseConverter.from(tables, columnMapByTableId);
         }
+    }
+
+    private <T extends DiffAble> List<T> diff(Collection<DiffResult> diffs,
+                                              Collection<T> original,
+                                              Collection<T> current,
+                                              Function<T, String> idMapping) {
+        var currentMapByName = current.stream()
+                .collect(Collectors.toMap(idMapping, Function.identity(), (a, b) -> a));
+        var originalMapByName = original.stream()
+                .collect(Collectors.toMap(idMapping, Function.identity(), (a, b) -> a));
+        return diffs.stream().map(diff -> {
+                    if (diff.getDiffType() == DiffType.ADDED) {
+                        var t = currentMapByName.get(diff.getId());
+                        t.setDiffType(DiffType.ADDED);
+                        return t;
+                    }
+                    if (diff.getDiffType() == DiffType.REMOVED) {
+                        var t = originalMapByName.get(diff.getId());
+                        t.setDiffType(DiffType.REMOVED);
+                        return t;
+                    }
+                    if (diff.getDiffType() == DiffType.MODIFIED) {
+                        var c = currentMapByName.get(diff.getId());
+                        var o = originalMapByName.get(diff.getId());
+                        c.setDiffType(DiffType.MODIFIED);
+                        c.setOriginal(o);
+                        return c;
+                    }
+                    var t = currentMapByName.get(diff.getId());
+                    t.setDiffType(DiffType.NONE);
+                    return t;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<ForeignKeyDocumentResponse> foreignKeyDiff(Collection<DiffResult> diffs,
+                                                            Collection<ForeignKeyDocumentResponse> original,
+                                                            Collection<ForeignKeyDocumentResponse> current) {
+        Function<ForeignKeyDocumentResponse, String> idMapping = fk -> {
+            return fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySeq();
+        };
+        return diff(diffs, original, current, idMapping);
     }
 }

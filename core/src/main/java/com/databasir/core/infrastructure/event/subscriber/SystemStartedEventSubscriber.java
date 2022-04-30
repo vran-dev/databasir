@@ -61,7 +61,7 @@ public class SystemStartedEventSubscriber {
             DocumentTemplatePropertyPojo pojo = new DocumentTemplatePropertyPojo();
             pojo.setType(type);
             pojo.setKey(key);
-            pojo.setDefaultValue(fieldChineseMap.get(key));
+            pojo.setDefaultValue(fieldChineseMap.getOrDefault(key, def));
             return pojo;
         };
         // table field name;
