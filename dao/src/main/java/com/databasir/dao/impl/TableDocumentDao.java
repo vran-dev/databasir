@@ -7,6 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class TableDocumentDao extends BaseDao<TableDocumentPojo> {
     }
 
     public List<TableDocumentPojo> selectByDatabaseDocumentIdAndIdIn(Integer databaseDocumentId,
-                                                                     List<Integer> idList) {
+                                                                     Collection<Integer> idList) {
         if (idList == null || idList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -59,5 +60,17 @@ public class TableDocumentDao extends BaseDao<TableDocumentPojo> {
                 .where(TABLE_DOCUMENT.DATABASE_DOCUMENT_ID.eq(databaseDocumentId)
                         .and(TABLE_DOCUMENT.ID.eq(id)))
                 .fetchOptionalInto(TableDocumentPojo.class);
+    }
+
+    public List<Integer> selectTableIdsByDatabaseDocumentIdAndTableNameIn(Integer databaseDocumentId,
+                                                                         Collection<String> tableNames) {
+        if (tableNames == null || tableNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getDslContext()
+                .select(TABLE_DOCUMENT.ID).from(TABLE_DOCUMENT)
+                .where(TABLE_DOCUMENT.DATABASE_DOCUMENT_ID.eq(databaseDocumentId)
+                        .and(TABLE_DOCUMENT.NAME.in(tableNames)))
+                .fetchInto(Integer.class);
     }
 }

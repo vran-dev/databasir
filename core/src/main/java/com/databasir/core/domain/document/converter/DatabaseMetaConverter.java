@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.converter;
 
+import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.core.meta.data.ColumnMeta;
 import com.databasir.core.meta.data.DatabaseMeta;
@@ -63,6 +64,10 @@ public interface DatabaseMetaConverter {
     @Mapping(target = "isUniqueKey", source = "pojo.isUnique")
     @Mapping(target = "columnNames", source = "pojo.columnNameArray")
     IndexMeta of(TableIndexDocumentPojo pojo);
+
+    List<TableMeta> of(List<TableDocumentResponse> table);
+
+    TableMeta of(TableDocumentResponse table);
 
     default <R> Map<Integer, List<R>> groupBy(List<R> content, Function<R, Integer> idMapping) {
         return content.stream()

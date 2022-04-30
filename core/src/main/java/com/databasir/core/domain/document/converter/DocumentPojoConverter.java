@@ -1,10 +1,7 @@
 package com.databasir.core.domain.document.converter;
 
 import com.databasir.core.infrastructure.converter.JsonConverter;
-import com.databasir.core.meta.data.ColumnMeta;
-import com.databasir.core.meta.data.ForeignKeyMeta;
-import com.databasir.core.meta.data.IndexMeta;
-import com.databasir.core.meta.data.TriggerMeta;
+import com.databasir.core.meta.data.*;
 import com.databasir.dao.tables.pojos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +17,7 @@ public interface DocumentPojoConverter {
     @Mapping(target = "schemaName", source = "meta.schemaName")
     @Mapping(target = "isArchive", constant = "false")
     DatabaseDocumentPojo toDatabasePojo(Integer projectId,
-                                        com.databasir.core.meta.data.DatabaseMeta meta,
+                                        DatabaseMeta meta,
                                         Long version);
 
     TableDocumentPojo toTablePojo(Integer databaseDocumentId,

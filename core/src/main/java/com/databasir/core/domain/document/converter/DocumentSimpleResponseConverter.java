@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.converter;
 
+import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
@@ -19,7 +20,8 @@ public interface DocumentSimpleResponseConverter {
     @Mapping(target = "createAt", source = "databaseDocument.createAt")
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
     DatabaseDocumentSimpleResponse of(DatabaseDocumentPojo databaseDocument,
-                                      List<DatabaseDocumentSimpleResponse.TableData> tables);
+                                      List<DatabaseDocumentSimpleResponse.TableData> tables,
+                                      DiffType diffType);
 
     DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables,
                                                 Integer discussionCount,

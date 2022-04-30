@@ -2,7 +2,6 @@ package com.databasir.api;
 
 import com.databasir.api.common.LoginUserContext;
 import com.databasir.common.JsonData;
-import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
@@ -20,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +41,6 @@ public class DocumentController {
         Integer userId = LoginUserContext.getLoginUserId();
         Optional<Integer> taskIdOpt = projectService.createSyncTask(projectId, userId, false);
         return JsonData.ok(taskIdOpt);
-    }
-
-    @GetMapping(Routes.Document.DIFF)
-    public JsonData<RootDiff> diff(@PathVariable Integer projectId,
-                                   @RequestParam(name = "originalVersion") Long originalVersion,
-                                   @RequestParam(required = false) Long currentVersion) {
-        return JsonData.ok(documentService.diff(projectId, originalVersion, currentVersion));
     }
 
     @GetMapping(Routes.Document.GET_ONE)
@@ -85,16 +78,17 @@ public class DocumentController {
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)
     public JsonData<DatabaseDocumentSimpleResponse> getSimpleByProjectId(@PathVariable Integer projectId,
                                                                          @RequestParam(required = false)
-                                                                         Long version) {
-        return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version));
+                                                                         Long version,
+                                                                         @RequestParam(required = false)
+                                                                         Long originalVersion) {
+        return JsonData.ok(documentService.getSimpleOneByProjectId(projectId, version, originalVersion));
     }
 
     @PostMapping(Routes.Document.GET_TABLE_DETAIL)
-    public JsonData<List<TableDocumentResponse>> getTableDocument(
-            @PathVariable Integer projectId,
-            @PathVariable Integer documentId,
-            @RequestBody List<Integer> tableIds) {
-        return JsonData.ok(documentService.getTableDetails(projectId, documentId, tableIds));
+    public JsonData<List<TableDocumentResponse>> getTableDocument(@PathVariable Integer projectId,
+                                                                  @PathVariable Integer documentId,
+                                                                  @RequestBody @Valid TableDocumentRequest request) {
+        return JsonData.ok(documentService.getTableDetails(projectId, documentId, request));
     }
 
     @GetMapping(Routes.Document.LIST_TABLES)

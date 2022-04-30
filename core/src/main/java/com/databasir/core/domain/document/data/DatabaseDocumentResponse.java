@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.data;
 
+import com.databasir.core.diff.data.DiffType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,5 +32,7 @@ public class DatabaseDocumentResponse {
     private List<TableDocumentResponse> tables = new ArrayList<>();
 
     private LocalDateTime createAt;
+
+    private DiffType diffType;
 
 }

@@ -6,6 +6,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class TableIndexDocumentDao extends BaseDao<TableIndexDocumentPojo> {
     }
 
     public List<TableIndexDocumentPojo> selectByDatabaseDocumentIdAndIdIn(Integer documentId,
-                                                                          List<Integer> tableIdIn) {
+                                                                          Collection<Integer> tableIdIn) {
         if (tableIdIn == null || tableIdIn.isEmpty()) {
             return Collections.emptyList();
         }
