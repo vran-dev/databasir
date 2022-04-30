@@ -1,7 +1,6 @@
 package com.databasir.core.domain.document.comparator;
 
 import com.databasir.core.diff.data.DiffType;
-import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse.TableData;
 import com.databasir.core.meta.data.*;
 import lombok.extern.slf4j.Slf4j;
 
