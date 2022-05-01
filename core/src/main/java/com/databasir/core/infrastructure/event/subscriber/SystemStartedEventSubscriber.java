@@ -53,7 +53,7 @@ public class SystemStartedEventSubscriber {
 
     private void initTemplatePropertiesIfNecessary() {
         List<String> ignoreFields = List.of("createAt", "discussionCount", "id",
-                "columns", "indexes", "triggers", "foreignKeys");
+                "columns", "indexes", "triggers", "foreignKeys", "diffType", "original");
         Map<String, String> fieldChineseMap = fieldChineseMap();
         BiFunction<Field, DocumentTemplatePropertyType, DocumentTemplatePropertyPojo> mapping = (field, type) -> {
             String key = field.getName();
