@@ -8,32 +8,26 @@
 
 问题反馈：https://github.com/vran-dev/databasir/issues
 
-平台演示：[https://demo.databasir.com](http://121.4.67.27/)
+平台演示：[https://demo.databasir.com](http://demo.databasir.com)
 
 | 账号 | 密码    | 角色       |
 | ---- | ------- | ---------- |
 | demo | demo123 | 系统管理员 |
 | dev  | dev123  | 普通       |
 
-## 社区
+## 联系我
 
-[点击加入 Databasir 交流群](https://doc.databasir.com/#/?id=联系)
+微信扫码加入 Databasir 交流群，获取第一手版本内容。
 
-## 特性
+<img src="https://s2.loli.net/2022/05/04/c2b5O7yEgB6Yvpo.jpg" width="250px" />
 
-1. 兼容市面多数数据库：支持所有拥有 JDBC 驱动的数据库，mysql、postgresql 开箱即用
-2. 丰富的文档管理功能：支持文档自动同步，版本历史回溯，版本差异对比，文档讨论，UML 生成， 文档导出，数据 SQL 生成等，应有尽有
-3. 面向团队的协作能力：扁平化的角色管理，支持 Github \ Github Enterprise \ Gitlab 的 OAuth2 登录，日志审计
+[点击查看更多联系方式](https://doc.databasir.com/#/?id=联系)
 
 ## 多图展示
 
 - 文档同步
 
 ![sync.gif](https://s2.loli.net/2022/04/22/aoiSR1V3MuN67m8.gif)
-
-- 文档模板定义
-
-![](docs/README/index/template.gif)
 
 - 版本差异对比
 
@@ -46,6 +40,10 @@
 - 导出 Markdown 格式展示
 
 ![](docs/README/index/markdown-exported.gif)
+
+## 捐赠
+
+<img src="docs/img/sponsor.jpg" width="280">
 
 ## License
 
