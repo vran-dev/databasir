@@ -1,3 +1,5 @@
+* 快速开始
+  * [项目特性](README.md)
 * 系统部署
     * [Jar 包部署](README/deploy/jar-deploy.md)
     * [Docker 部署](README/deploy/docker-deploy.md)
