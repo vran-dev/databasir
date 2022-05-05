@@ -54,7 +54,8 @@ public class ProjectSyncTaskScheduler {
             updateSyncTaskStatus(taskId, ProjectSyncTaskStatus.FINISHED, "ok");
             saveOperationLog(projectId, userId, null);
         } catch (Exception e) {
-            updateSyncTaskStatus(taskId, ProjectSyncTaskStatus.FAILED, e.getMessage());
+            String result = Objects.requireNonNullElse(e.getMessage(), "unknown");
+            updateSyncTaskStatus(taskId, ProjectSyncTaskStatus.FAILED, result);
             saveOperationLog(projectId, userId, e);
             throw e;
         }

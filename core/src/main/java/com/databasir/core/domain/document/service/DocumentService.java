@@ -143,13 +143,16 @@ public class DocumentService {
         databasirConfig.setIgnoreTableNameRegex(jsonConverter.fromJson(rule.getIgnoreTableNameRegexArray()));
         databasirConfig.setIgnoreTableColumnNameRegex(jsonConverter.fromJson(rule.getIgnoreColumnNameRegexArray()));
         try {
+            if (jdbcConnection == null) {
+                throw DomainErrors.CONNECT_DATABASE_FAILED.exception();
+            }
             DatabaseMeta databaseMeta = Databasir.of(databasirConfig)
                     .get(jdbcConnection, dataSource.getDatabaseName(), dataSource.getSchemaName())
                     .orElseThrow(DomainErrors.DATABASE_META_NOT_FOUND::exception);
             return databaseMeta;
         } finally {
             try {
-                if (!jdbcConnection.isClosed()) {
+                if (jdbcConnection != null && !jdbcConnection.isClosed()) {
                     jdbcConnection.close();
                 }
             } catch (SQLException e) {
