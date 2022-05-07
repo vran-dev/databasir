@@ -4,3 +4,5 @@
 **/.DS_Store
 drivers/**
 temp/**
+node_modules/
+.cache/
