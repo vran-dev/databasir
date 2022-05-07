@@ -16,7 +16,7 @@ GET /live
 
 ## 部署流程
 
-1.  拉取最新版镜像，当然你也可以将 latest 替换成你想要得版本号，具体有哪些镜像版本可以拉取可以在[这里](https://registry.hub.docker.com/r/vrantt/databasir)查看
+1.  拉取镜像（更多版本[点击这里](https://registry.hub.docker.com/r/vrantt/databasir)查看）
 
 ```shell
 docker pull vrantt/databasir:latest

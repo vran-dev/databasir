@@ -45,7 +45,7 @@ java -jar databasir.jar --databasir.db.url=127.0.0.1:3306 --databasir.db.usernam
 
 
 
-## 通过配置文件指定参数
+## 配置文件
 
 除了在命令行指定参数启动外，还可以通过配置文件来保存
 
