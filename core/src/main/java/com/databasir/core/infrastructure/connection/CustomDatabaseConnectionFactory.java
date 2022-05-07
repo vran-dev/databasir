@@ -79,6 +79,9 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         Properties info = new Properties();
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());
+        if (context.getProperties() != null && !context.getProperties().isEmpty()) {
+            info.putAll(context.getProperties());
+        }
         return driver.connect(jdbcUrl, info);
     }
 
