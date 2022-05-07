@@ -71,17 +71,17 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常：" + e.getMessage());
         }
 
-        String urlPattern = type.getUrlPattern();
-        String jdbcUrl = urlPattern.replace("{{jdbc.protocol}}", type.getJdbcProtocol())
-                .replace("{{db.url}}", context.getUrl())
-                .replace("{{db.name}}", context.getDatabaseName())
-                .replace("{{db.schema}}", context.getSchemaName());
         Properties info = new Properties();
         info.put("user", context.getUsername());
         info.put("password", context.getPassword());
         if (context.getProperties() != null && !context.getProperties().isEmpty()) {
             info.putAll(context.getProperties());
         }
+        String urlPattern = type.getUrlPattern();
+        String jdbcUrl = urlPattern.replace("{{jdbc.protocol}}", type.getJdbcProtocol())
+                .replace("{{db.url}}", context.getUrl())
+                .replace("{{db.name}}", context.getDatabaseName())
+                .replace("{{db.schema}}", context.getSchemaName());
         return driver.connect(jdbcUrl, info);
     }
 
