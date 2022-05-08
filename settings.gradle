@@ -8,7 +8,7 @@ pluginManagement {
 }
 
 rootProject.name = 'databasir'
-include 'plugin'
+include 'meta'
 include 'api'
 include 'common'
 include 'dao'

@@ -1,0 +1,60 @@
+package com.databasir.core.meta.provider;
+
+import com.databasir.core.meta.provider.jdbc.*;
+import com.databasir.core.meta.provider.mysql.MysqlTableTriggerMetaProvider;
+import lombok.extern.slf4j.Slf4j;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
+@Slf4j
+public class MetaProviders {
+
+    public static DatabaseMetaProvider jdbc() {
+        var columnMetaProvider = new JdbcColumnMetaProvider();
+        var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
+        var indexMetaProvider = new JdbcIndexMetaProvider();
+        var triggerMetaProvider = new JdbcTriggerMetaProvider();
+        var tableMetaProvider = new JdbcTableMetaProvider(
+                columnMetaProvider,
+                indexMetaProvider,
+                triggerMetaProvider,
+                foreignKeyMetaProvider
+        );
+        return new JdbcDatabaseMetaProvider(tableMetaProvider);
+    }
+
+    public static DatabaseMetaProvider of(Connection connection) {
+        String url;
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            url = metaData.getURL();
+        } catch (SQLException e) {
+            log.warn("failed to get connect url, {}, fallback to jdbc provider", e.getMessage());
+            return jdbc();
+        }
+        if (url.contains(":sqlserver:")) {
+            return jdbc();
+        }
+        if (url.contains(":mysql:")) {
+            return mysql();
+        }
+        return jdbc();
+    }
+
+    private static DatabaseMetaProvider mysql() {
+        var columnMetaProvider = new JdbcColumnMetaProvider();
+        var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
+        var indexMetaProvider = new JdbcIndexMetaProvider();
+        var triggerMetaProvider = new MysqlTableTriggerMetaProvider();
+        var tableMetaProvider = new JdbcTableMetaProvider(
+                columnMetaProvider,
+                indexMetaProvider,
+                triggerMetaProvider,
+                foreignKeyMetaProvider
+        );
+        return new JdbcDatabaseMetaProvider(tableMetaProvider);
+    }
+
+}

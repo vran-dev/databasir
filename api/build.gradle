@@ -20,7 +20,7 @@ bootBuildImage {
 
 dependencies {
     implementation project(":common")
-    implementation project(":plugin")
+    implementation project(":meta")
     implementation project(":core")
     implementation project(":dao")
 
