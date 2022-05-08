@@ -1,12 +1,12 @@
-package com.databasir.core.meta.repository;
+package com.databasir.core.meta.provider;
 
 import com.databasir.core.meta.data.ForeignKeyMeta;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.condition.TableCondition;
 
 import java.sql.Connection;
 import java.util.List;
 
-public interface ForeignKeyMetaRepository {
+public interface ForeignKeyMetaProvider {
 
     List<ForeignKeyMeta> selectForeignKeys(Connection connection, TableCondition condition);
 

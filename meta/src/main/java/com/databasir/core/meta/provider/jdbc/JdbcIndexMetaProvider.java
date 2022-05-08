@@ -1,8 +1,8 @@
-package com.databasir.core.meta.repository.impl.jdbc;
+package com.databasir.core.meta.provider.jdbc;
 
 import com.databasir.core.meta.data.IndexMeta;
-import com.databasir.core.meta.repository.IndexMetaRepository;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.IndexMetaProvider;
+import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Slf4j
-public class JdbcIndexMetaRepository implements IndexMetaRepository {
+public class JdbcIndexMetaProvider implements IndexMetaProvider {
     @Override
     public List<IndexMeta> selectIndexes(Connection connection, TableCondition condition) {
         try {

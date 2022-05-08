@@ -1,8 +1,8 @@
-package com.databasir.core.meta.repository.impl.extension;
+package com.databasir.core.meta.provider.mysql;
 
 import com.databasir.core.meta.data.TriggerMeta;
-import com.databasir.core.meta.repository.TriggerMetaRepository;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.TriggerMetaProvider;
+import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class MysqlTableTriggerMetaRepository implements TriggerMetaRepository {
+public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
 
     @Override
     public List<TriggerMeta> selectTriggers(Connection connection, TableCondition condition) {

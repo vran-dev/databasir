@@ -55,7 +55,6 @@ subprojects {
         implementation "com.alibaba:easyexcel:${easyExcelVersion}"
         implementation "org.freemarker:freemarker:${freemarkerVersion}"
         implementation "commons-io:commons-io:${commonsIoVersion}"
-
     }
 
     test {

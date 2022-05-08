@@ -1,10 +1,10 @@
-package com.databasir.core.meta.repository.impl.jdbc;
+package com.databasir.core.meta.provider.jdbc;
 
 import com.databasir.core.meta.data.DatabaseMeta;
 import com.databasir.core.meta.data.TableMeta;
-import com.databasir.core.meta.repository.DatabaseMetaRepository;
-import com.databasir.core.meta.repository.TableMetaRepository;
-import com.databasir.core.meta.repository.condition.Condition;
+import com.databasir.core.meta.provider.DatabaseMetaProvider;
+import com.databasir.core.meta.provider.TableMetaProvider;
+import com.databasir.core.meta.provider.condition.Condition;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;
@@ -16,9 +16,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class JdbcDatabaseMetaRepository implements DatabaseMetaRepository {
+public class JdbcDatabaseMetaProvider implements DatabaseMetaProvider {
 
-    private final TableMetaRepository tableMetaRepository;
+    private final TableMetaProvider tableMetaProvider;
 
     @Override
     public Optional<DatabaseMeta> select(Connection connection, Condition condition) {
@@ -28,7 +28,7 @@ public class JdbcDatabaseMetaRepository implements DatabaseMetaRepository {
             while (catalogs.next()) {
                 String catalogName = catalogs.getString("TABLE_CAT");
                 if (Objects.equals(condition.getDatabaseName(), catalogName)) {
-                    List<TableMeta> tableDocs = tableMetaRepository.selectTables(connection, condition);
+                    List<TableMeta> tableDocs = tableMetaProvider.selectTables(connection, condition);
                     DatabaseMeta meta = DatabaseMeta.builder()
                             .productName(metaData.getDatabaseProductName())
                             .productVersion(metaData.getDatabaseProductVersion())
@@ -44,7 +44,7 @@ public class JdbcDatabaseMetaRepository implements DatabaseMetaRepository {
             while (schemas.next()) {
                 String schemaName = schemas.getString("TABLE_SCHEM");
                 if (Objects.equals(condition.getSchemaName(), schemaName)) {
-                    List<TableMeta> tableDocs = tableMetaRepository.selectTables(connection, condition);
+                    List<TableMeta> tableDocs = tableMetaProvider.selectTables(connection, condition);
                     DatabaseMeta meta = DatabaseMeta.builder()
                             .productName(metaData.getDatabaseProductName())
                             .productVersion(metaData.getDatabaseProductVersion())

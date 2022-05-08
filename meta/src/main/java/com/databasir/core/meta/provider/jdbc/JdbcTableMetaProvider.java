@@ -1,10 +1,10 @@
-package com.databasir.core.meta.repository.impl.jdbc;
+package com.databasir.core.meta.provider.jdbc;
 
 import com.databasir.core.meta.data.ColumnMeta;
 import com.databasir.core.meta.data.TableMeta;
-import com.databasir.core.meta.repository.*;
-import com.databasir.core.meta.repository.condition.Condition;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.*;
+import com.databasir.core.meta.provider.condition.Condition;
+import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,15 +16,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JdbcTableMetaRepository implements TableMetaRepository {
+public class JdbcTableMetaProvider implements TableMetaProvider {
 
-    private final ColumnMetaRepository columnMetaRepository;
+    private final ColumnMetaProvider columnMetaProvider;
 
-    private final IndexMetaRepository indexMetaRepository;
+    private final IndexMetaProvider indexMetaProvider;
 
-    private final TriggerMetaRepository triggerMetaRepository;
+    private final TriggerMetaProvider triggerMetaProvider;
 
-    private final ForeignKeyMetaRepository foreignKeyMetaRepository;
+    private final ForeignKeyMetaProvider foreignKeyMetaProvider;
 
     @Override
     public List<TableMeta> selectTables(Connection connection, Condition condition) {
@@ -51,7 +51,7 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
                     String tableType = tablesResult.getString("TABLE_TYPE");
                     String tableComment = tablesResult.getString("REMARKS");
                     TableCondition tableCondition = TableCondition.of(condition, tableName);
-                    List<ColumnMeta> columns = columnMetaRepository.selectColumns(connection, tableCondition);
+                    List<ColumnMeta> columns = columnMetaProvider.selectColumns(connection, tableCondition);
                     if (columns.isEmpty()) {
                         if (log.isWarnEnabled()) {
                             log.warn("ignored table: " + databaseName + "." + tableName
@@ -64,9 +64,9 @@ public class JdbcTableMetaRepository implements TableMetaRepository {
                             .type(tableType)
                             .comment(tableComment)
                             .columns(columns)
-                            .foreignKeys(foreignKeyMetaRepository.selectForeignKeys(connection, tableCondition))
-                            .indexes(indexMetaRepository.selectIndexes(connection, tableCondition))
-                            .triggers(triggerMetaRepository.selectTriggers(connection, tableCondition))
+                            .foreignKeys(foreignKeyMetaProvider.selectForeignKeys(connection, tableCondition))
+                            .indexes(indexMetaProvider.selectIndexes(connection, tableCondition))
+                            .triggers(triggerMetaProvider.selectTriggers(connection, tableCondition))
                             .build();
                     tableMetas.add(tableMeta);
                 }

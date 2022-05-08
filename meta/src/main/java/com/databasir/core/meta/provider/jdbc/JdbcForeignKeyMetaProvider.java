@@ -1,8 +1,8 @@
-package com.databasir.core.meta.repository.impl.jdbc;
+package com.databasir.core.meta.provider.jdbc;
 
 import com.databasir.core.meta.data.ForeignKeyMeta;
-import com.databasir.core.meta.repository.ForeignKeyMetaRepository;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.ForeignKeyMetaProvider;
+import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class JdbcForeignKeyMetaRepository implements ForeignKeyMetaRepository {
+public class JdbcForeignKeyMetaProvider implements ForeignKeyMetaProvider {
 
     @Override
     public List<ForeignKeyMeta> selectForeignKeys(Connection connection, TableCondition condition) {

@@ -1,4 +1,4 @@
-package com.databasir.core.meta.repository.condition;
+package com.databasir.core.meta.provider.condition;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +63,9 @@ public interface DocumentPojoConverter {
     TableTriggerDocumentPojo toTriggerPojo(Integer databaseDocumentId,
                                            Integer tableDocumentId,
                                            TriggerMeta meta);
+    default LocalDateTime toLocalDateTime(String dateTime) {
+        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 
     default List<TableForeignKeyDocumentPojo> toForeignKeyPojo(Integer docId,
                                                                Integer tableMetaId,

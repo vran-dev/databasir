@@ -1,8 +1,8 @@
-package com.databasir.core.meta.repository.impl.jdbc;
+package com.databasir.core.meta.provider.jdbc;
 
 import com.databasir.core.meta.data.ColumnMeta;
-import com.databasir.core.meta.repository.ColumnMetaRepository;
-import com.databasir.core.meta.repository.condition.TableCondition;
+import com.databasir.core.meta.provider.ColumnMetaProvider;
+import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JdbcColumnMetaRepository implements ColumnMetaRepository {
+public class JdbcColumnMetaProvider implements ColumnMetaProvider {
 
     @Override
     public List<ColumnMeta> selectColumns(Connection connection, TableCondition tableCondition) {
