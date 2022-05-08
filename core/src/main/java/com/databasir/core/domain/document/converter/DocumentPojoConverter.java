@@ -63,6 +63,7 @@ public interface DocumentPojoConverter {
     TableTriggerDocumentPojo toTriggerPojo(Integer databaseDocumentId,
                                            Integer tableDocumentId,
                                            TriggerMeta meta);
+
     default LocalDateTime toLocalDateTime(String dateTime) {
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
