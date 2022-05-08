@@ -7,7 +7,7 @@ dependencies {
     // internal module
     implementation project(":common")
     implementation project(":dao")
-    implementation project(":plugin")
+    implementation project(":meta")
 
     // spring boot
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
