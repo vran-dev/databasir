@@ -61,7 +61,7 @@ public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
             }
             return triggers;
         } catch (SQLException e) {
-            log.warn("create trigger doc failed", e);
+            log.warn("get trigger meta failed", e);
             return Collections.emptyList();
         }
     }
