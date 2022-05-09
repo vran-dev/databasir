@@ -2,6 +2,9 @@ package com.databasir.core.meta.provider;
 
 import com.databasir.core.meta.provider.jdbc.*;
 import com.databasir.core.meta.provider.mysql.MysqlTableTriggerMetaProvider;
+import com.databasir.core.meta.provider.sqlserver.SqlServerColumnMetaProvider;
+import com.databasir.core.meta.provider.sqlserver.SqlServerTableMetaProvider;
+import com.databasir.core.meta.provider.sqlserver.SqlServerTriggerMetaProvider;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -35,7 +38,7 @@ public class MetaProviders {
             return jdbc();
         }
         if (url.contains(":sqlserver:")) {
-            return jdbc();
+            return sqlServer();
         }
         if (url.contains(":mysql:")) {
             return mysql();
@@ -57,4 +60,17 @@ public class MetaProviders {
         return new JdbcDatabaseMetaProvider(tableMetaProvider);
     }
 
+    private static DatabaseMetaProvider sqlServer() {
+        var columnMetaProvider = new SqlServerColumnMetaProvider();
+        var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
+        var indexMetaProvider = new JdbcIndexMetaProvider();
+        var triggerMetaProvider = new SqlServerTriggerMetaProvider();
+        var tableMetaProvider = new SqlServerTableMetaProvider(
+                columnMetaProvider,
+                indexMetaProvider,
+                foreignKeyMetaProvider,
+                triggerMetaProvider
+        );
+        return new JdbcDatabaseMetaProvider(tableMetaProvider);
+    }
 }
