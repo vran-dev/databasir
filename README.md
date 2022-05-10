@@ -19,7 +19,7 @@
 
 微信扫码加入 Databasir 交流群，获取第一手版本内容。
 
-<img src="https://s2.loli.net/2022/05/04/c2b5O7yEgB6Yvpo.jpg" width="250px" />
+<img src="https://s2.loli.net/2022/05/10/u2CQHePStbcxUWi.jpg" width="250px" />
 
 [点击查看更多联系方式](https://doc.databasir.com/#/?id=联系)
 
@@ -31,15 +31,15 @@
 
 - 版本差异对比
 
-![](docs/README/index/diff.gif)
+![](docs/guid/index/diff.gif)
 
 - UML 图片导出
 
-![](docs/README/index/uml-export.gif)
+![](docs/guid/index/uml-export.gif)
 
 - 导出 Markdown 格式展示
 
-![](docs/README/index/markdown-exported.gif)
+![](docs/guid/index/markdown-exported.gif)
 
 ## 捐赠
 
