@@ -35,16 +35,16 @@ public class SqlServerColumnMetaProvider implements ColumnMetaProvider {
 
     private Map<String, String> getColumnRemarks(Connection connection,
                                                  TableCondition condition) {
-        String sql = "SELECT col.name AS COLUMN_NAME,\n" +
-                "       ep.value AS REMARKS\n" +
-                "FROM sys.tables AS tab\n" +
-                "         INNER JOIN sys.columns AS col\n" +
-                "                    ON tab.object_id = col.object_id\n" +
-                "         LEFT JOIN sys.extended_properties AS ep " +
-                "ON ep.major_id = col.object_id AND ep.minor_id = col.column_id\n" +
-                "WHERE tab.name LIKE ?\n" +
-                "  AND SCHEMA_NAME(tab.schema_id) LIKE ?\n" +
-                "ORDER BY tab.name, column_id;";
+        String sql = "SELECT col.name AS COLUMN_NAME,\n"
+                + "       ep.value AS REMARKS\n"
+                + "FROM sys.tables AS tab\n"
+                + "         INNER JOIN sys.columns AS col\n"
+                + "                    ON tab.object_id = col.object_id\n"
+                + "         LEFT JOIN sys.extended_properties AS ep "
+                + "ON ep.major_id = col.object_id AND ep.minor_id = col.column_id\n"
+                + "WHERE tab.name LIKE ?\n"
+                + "  AND SCHEMA_NAME(tab.schema_id) LIKE ?\n"
+                + "ORDER BY tab.name, column_id;";
 
         Map<String, String> map = new HashMap<>();
         PreparedStatement preparedStatement = null;
