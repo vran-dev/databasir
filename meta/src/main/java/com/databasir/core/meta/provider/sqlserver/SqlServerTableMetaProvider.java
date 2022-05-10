@@ -30,16 +30,16 @@ public class SqlServerTableMetaProvider implements TableMetaProvider {
 
     @Override
     public List<TableMeta> selectTables(Connection connection, Condition condition) {
-        String sql = "SELECT sys.objects.name                            AS TABLE_NAME,\n" +
-                "       sys.objects.type_desc                            AS TABLE_TYPE,\n" +
-                "       CAST(extended_properties.value AS NVARCHAR(500)) AS REMARKS\n" +
-                "FROM sys.objects\n" +
-                "         LEFT JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id\n" +
-                "         LEFT JOIN sys.extended_properties " +
-                "ON sys.objects.object_id = sys.extended_properties.major_id\n" +
-                "WHERE (type = 'U' OR type = 'V')\n" +
-                "  AND sys.extended_properties.minor_id = 0\n" +
-                "  AND sys.schemas.name LIKE ?;\n";
+        String sql = "SELECT sys.objects.name                            AS TABLE_NAME,\n"
+                + "       sys.objects.type_desc                            AS TABLE_TYPE,\n"
+                + "       CAST(extended_properties.value AS NVARCHAR(500)) AS REMARKS\n"
+                + "FROM sys.objects\n"
+                + "         LEFT JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id\n"
+                + "         LEFT JOIN sys.extended_properties "
+                + "ON sys.objects.object_id = sys.extended_properties.major_id\n"
+                + "WHERE (type = 'U' OR type = 'V')\n"
+                + "  AND sys.extended_properties.minor_id = 0\n"
+                + "  AND sys.schemas.name LIKE ?;\n";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(sql);
