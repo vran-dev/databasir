@@ -20,7 +20,7 @@
 
 扫码加入微信群，随时获取第一手更新内容
 
-<img src="https://s2.loli.net/2022/05/04/c2b5O7yEgB6Yvpo.jpg" width="250px" />
+<img src="https://s2.loli.net/2022/05/10/u2CQHePStbcxUWi.jpg" width="250px" />
 
 #### **公众号**
 
