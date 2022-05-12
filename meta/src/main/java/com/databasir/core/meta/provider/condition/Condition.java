@@ -19,16 +19,18 @@ public class Condition {
     private String schemaName;
 
     @Builder.Default
-    private Collection<String> ignoreTableNameRegex = Collections.emptyList();
+    @Builder.ObtainVia(method = "ignoreTableNameRegexes")
+    private Collection<Pattern> ignoreTableNamePatterns = Collections.emptyList();
 
     @Builder.Default
-    private Collection<String> ignoreTableColumnNameRegex = Collections.emptyList();
+    @Builder.ObtainVia(method = "ignoreTableColumnNameRegexes")
+    private Collection<Pattern> ignoreTableColumnNamePatterns = Collections.emptyList();
 
     public boolean tableIsIgnored(String tableName) {
-        return ignoreTableNameRegex.stream().anyMatch(regex -> Pattern.matches(regex, tableName));
+        return ignoreTableNamePatterns.stream().anyMatch(regex -> regex.matcher(tableName).matches());
     }
 
     public boolean columnIsIgnored(String column) {
-        return ignoreTableColumnNameRegex.stream().anyMatch(regex -> Pattern.matches(regex, column));
+        return ignoreTableColumnNamePatterns.stream().anyMatch(regex -> regex.matcher(column).matches());
     }
 }
