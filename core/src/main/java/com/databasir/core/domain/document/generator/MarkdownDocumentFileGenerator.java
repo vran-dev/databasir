@@ -1,5 +1,6 @@
 package com.databasir.core.domain.document.generator;
 
+import com.alibaba.excel.util.StringUtils;
 import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesResponse;
@@ -61,7 +62,7 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         builder.primaryTitle(doc.getDatabaseName());
         // overview
         overviewBuild(builder, doc);
-        // tables
+        // field map by table name
         Map<String, String> columnTitleMap = properties.getColumnFieldNameProperties()
                 .stream()
                 .collect(Collectors.toMap(d -> d.getKey(),
@@ -78,8 +79,13 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
                 .stream()
                 .collect(Collectors.toMap(d -> d.getKey(),
                         d -> Objects.requireNonNullElse(d.getValue(), d.getDefaultValue())));
+        // table document build
         doc.getTables().forEach(table -> {
-            builder.secondTitle(table.getName());
+            if (StringUtils.isNotBlank(table.getComment())) {
+                builder.secondTitle(table.getName() + " /\\*" + table.getComment() + "\\*/");
+            } else {
+                builder.secondTitle(table.getName());
+            }
             columnBuild(builder, table, columnTitleMap);
             indexBuild(builder, table, indexTitleMap);
             foreignKeyBuild(builder, table, foreignKeyTitleMap);
@@ -210,11 +216,14 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
             List<List<String>> triggerContent = new ArrayList<>();
             for (int i = 0; i < table.getTriggers().size(); i++) {
                 var trigger = table.getTriggers().get(i);
-                triggerContent.add(List.of((i + 1) + "",
-                        trigger.getName(),
-                        trigger.getTiming(),
-                        trigger.getManipulation(),
-                        trigger.getStatement()));
+                triggerContent.add(
+                        List.of(
+                                (i + 1) + "",
+                                Objects.requireNonNullElse(trigger.getName(), ""),
+                                Objects.requireNonNullElse(trigger.getTiming(), ""),
+                                Objects.requireNonNullElse(trigger.getManipulation(), ""),
+                                Objects.requireNonNullElse(trigger.getStatement(), "")
+                        ));
             }
             builder.thirdTitle("Triggers");
             builder.table(
