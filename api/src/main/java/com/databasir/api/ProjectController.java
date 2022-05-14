@@ -107,6 +107,8 @@ public class ProjectController {
 
     @PatchMapping(Routes.GroupProject.CANCEL_MANUAL_TASK)
     @Operation(summary = "取消同步任务")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "取消同步任务", involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     public JsonData<Void> cancelTask(@PathVariable Integer projectId,
                                      @PathVariable Integer taskId) {
         projectService.cancelTask(projectId, taskId);

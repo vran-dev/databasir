@@ -2,6 +2,7 @@ package com.databasir.api;
 
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.JsonData;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.user.data.FavoriteProjectPageCondition;
 import com.databasir.core.domain.user.data.FavoriteProjectPageResponse;
 import com.databasir.core.domain.user.service.UserProjectService;
@@ -39,6 +40,9 @@ public class UserProjectController {
 
     @PostMapping(Routes.UserProject.ADD)
     @Operation(summary = "添加用户关注项目")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "关注项目",
+            involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     public JsonData<Void> addFavorite(@PathVariable Integer projectId) {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -50,6 +54,9 @@ public class UserProjectController {
 
     @DeleteMapping(Routes.UserProject.REMOVE)
     @Operation(summary = "删除用户关注项目")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "取消关注",
+            involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     public JsonData<Void> removeFavorite(@PathVariable Integer projectId) {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()

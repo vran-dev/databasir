@@ -35,7 +35,7 @@ public class DocumentDiscussionController {
                                                               @PathVariable Integer projectId,
                                                               @PageableDefault(sort = "id",
                                                                       direction = Sort.Direction.DESC)
-                                                                      Pageable request,
+                                                              Pageable request,
                                                               DiscussionListCondition condition) {
         var data = documentDiscussionService.list(groupId, projectId, request, condition);
         return JsonData.ok(data);
@@ -45,7 +45,8 @@ public class DocumentDiscussionController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId)")
     @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "删除评论",
-            involvedProjectId = "#projectId")
+            involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     @Operation(summary = "删除评论")
     public JsonData<Void> delete(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,
@@ -58,7 +59,8 @@ public class DocumentDiscussionController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
     @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "新增评论",
-            involvedProjectId = "#projectId")
+            involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     @Operation(summary = "新增评论")
     public JsonData<Void> create(@PathVariable Integer groupId,
                                  @PathVariable Integer projectId,

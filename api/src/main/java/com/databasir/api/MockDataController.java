@@ -1,6 +1,7 @@
 package com.databasir.api;
 
 import com.databasir.common.JsonData;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.mock.MockDataService;
 import com.databasir.core.domain.mock.data.ColumnMockRuleSaveRequest;
 import com.databasir.core.domain.mock.data.MockDataGenerateCondition;
@@ -45,6 +46,9 @@ public class MockDataController {
     @PostMapping(Routes.MockData.SAVE_MOCK_RULE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
     @Operation(summary = "保存 Mock Rule")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "保存 Mock Rule",
+            involvedProjectId = "#projectId",
+            involvedGroupId = "#groupId")
     public JsonData<Void> saveMockRules(@PathVariable Integer groupId,
                                         @PathVariable Integer projectId,
                                         @PathVariable Integer tableId,

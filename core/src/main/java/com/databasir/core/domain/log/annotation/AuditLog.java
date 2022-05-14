@@ -28,6 +28,8 @@ public @interface AuditLog {
      */
     String involvedUserId() default "N/A";
 
+    boolean retrieveInvolvedGroupId() default false;
+
     interface Modules {
         String UNKNOWN = "UNKNOWN";
         String PROJECT = "project";
