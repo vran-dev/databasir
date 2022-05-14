@@ -4,7 +4,7 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesResponse;
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesUpdateRequest;
 import com.databasir.core.domain.document.service.DocumentTemplateService;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +29,7 @@ public class DocumentTemplateController {
 
     @PatchMapping(Routes.DocumentTemplateProperty.API)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
-    @Operation(module = Operation.Modules.SETTING, name = "更新模板")
+    @AuditLog(module = AuditLog.Modules.SETTING, name = "更新模板")
     public JsonData<Void> updateByType(@RequestBody @Valid DocumentTemplatePropertiesUpdateRequest request) {
         documentTemplateService.updateByType(request);
         return JsonData.ok();

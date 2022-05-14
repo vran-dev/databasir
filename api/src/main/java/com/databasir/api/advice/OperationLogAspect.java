@@ -2,7 +2,7 @@ package com.databasir.api.advice;
 
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.log.data.OperationLogRequest;
 import com.databasir.core.domain.log.service.OperationLogService;
 import lombok.RequiredArgsConstructor;
@@ -38,17 +38,17 @@ public class OperationLogAspect {
     private ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
     @AfterReturning(value = "@annotation(operation)", returning = "returnValue")
-    public void log(JoinPoint joinPoint, Object returnValue, Operation operation) {
+    public void log(JoinPoint joinPoint, Object returnValue, AuditLog operation) {
         saveLog(operation, joinPoint, (JsonData<Object>) returnValue);
     }
 
     @AfterThrowing(value = "@annotation(operation)", throwing = "ex")
-    public void log(JoinPoint joinPoint, RuntimeException ex, Operation operation) {
+    public void log(JoinPoint joinPoint, RuntimeException ex, AuditLog operation) {
         saveLog(operation, joinPoint, JsonData.error("-1", ex.getMessage()));
         throw ex;
     }
 
-    private void saveLog(Operation operation, JoinPoint joinPoint, JsonData<Object> result) {
+    private void saveLog(AuditLog operation, JoinPoint joinPoint, JsonData<Object> result) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Object[] arguments = joinPoint.getArgs();
@@ -65,7 +65,7 @@ public class OperationLogAspect {
         int userId = userId();
         String username = principal.getUserPojo().getUsername();
         String nickname = principal.getUserPojo().getNickname();
-        if (userId == Operation.Types.SYSTEM_USER_ID) {
+        if (userId == AuditLog.Types.SYSTEM_USER_ID) {
             username = "system";
             nickname = "system";
         }

@@ -5,7 +5,7 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,7 +36,7 @@ public class DocumentController {
     private final ProjectService projectService;
 
     @PostMapping(Routes.Document.SYNC_ONE)
-    @Operation(module = Operation.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
     public JsonData<Integer> sync(@PathVariable Integer projectId) {
         Integer userId = LoginUserContext.getLoginUserId();
         Optional<Integer> taskIdOpt = projectService.createSyncTask(projectId, userId, false);

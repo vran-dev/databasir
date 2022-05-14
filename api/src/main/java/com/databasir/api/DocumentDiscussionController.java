@@ -2,7 +2,7 @@ package com.databasir.api;
 
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.discussion.data.DiscussionCreateRequest;
 import com.databasir.core.domain.discussion.data.DiscussionListCondition;
 import com.databasir.core.domain.discussion.data.DiscussionResponse;
@@ -39,7 +39,7 @@ public class DocumentDiscussionController {
 
     @DeleteMapping(Routes.DocumentDiscussion.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId)")
-    @Operation(module = Operation.Modules.PROJECT,
+    @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "删除评论",
             involvedProjectId = "#projectId")
     public JsonData<Void> delete(@PathVariable Integer groupId,
@@ -51,7 +51,7 @@ public class DocumentDiscussionController {
 
     @PostMapping(Routes.DocumentDiscussion.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
-    @Operation(module = Operation.Modules.PROJECT,
+    @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "新增评论",
             involvedProjectId = "#projectId")
     public JsonData<Void> create(@PathVariable Integer groupId,

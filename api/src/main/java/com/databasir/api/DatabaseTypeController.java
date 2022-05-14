@@ -4,7 +4,7 @@ import com.databasir.api.validator.DatabaseTypeValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.database.data.*;
 import com.databasir.core.domain.database.service.DatabaseTypeService;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +43,7 @@ public class DatabaseTypeController {
     }
 
     @PostMapping(Routes.DatabaseType.CREATE)
-    @Operation(module = Operation.Modules.DATABASE_TYPE, name = "创建数据库类型")
+    @AuditLog(module = AuditLog.Modules.DATABASE_TYPE, name = "创建数据库类型")
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     public JsonData<Integer> create(@RequestBody @Valid DatabaseTypeCreateRequest request) {
         databaseTypeValidator.isValidUrlPattern(request.getUrlPattern());
@@ -52,7 +52,7 @@ public class DatabaseTypeController {
     }
 
     @PatchMapping(Routes.DatabaseType.UPDATE)
-    @Operation(module = Operation.Modules.DATABASE_TYPE, name = "更新数据库类型")
+    @AuditLog(module = AuditLog.Modules.DATABASE_TYPE, name = "更新数据库类型")
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     public JsonData<Void> update(@RequestBody @Valid DatabaseTypeUpdateRequest request) {
         databaseTypeValidator.isValidUrlPattern(request.getUrlPattern());
@@ -61,7 +61,7 @@ public class DatabaseTypeController {
     }
 
     @DeleteMapping(Routes.DatabaseType.DELETE_ONE)
-    @Operation(module = Operation.Modules.DATABASE_TYPE, name = "删除数据库类型")
+    @AuditLog(module = AuditLog.Modules.DATABASE_TYPE, name = "删除数据库类型")
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     public JsonData<Void> delete(@PathVariable Integer id) {
         databaseTypeService.deleteById(id);

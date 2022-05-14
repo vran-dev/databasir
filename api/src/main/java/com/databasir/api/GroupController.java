@@ -4,7 +4,7 @@ import com.databasir.api.validator.UserOperationValidator;
 import com.databasir.common.JsonData;
 import com.databasir.core.domain.group.data.*;
 import com.databasir.core.domain.group.service.GroupService;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ public class GroupController {
 
     @PostMapping(Routes.Group.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
-    @Operation(module = Operation.Modules.GROUP, name = "创建分组")
+    @AuditLog(module = AuditLog.Modules.GROUP, name = "创建分组")
     public JsonData<Void> create(@RequestBody @Valid GroupCreateRequest request) {
         groupService.create(request);
         return JsonData.ok();
@@ -40,7 +40,7 @@ public class GroupController {
 
     @PatchMapping(Routes.Group.UPDATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER'.concat('?groupId='.concat(#request.id)))")
-    @Operation(module = Operation.Modules.GROUP,
+    @AuditLog(module = AuditLog.Modules.GROUP,
             name = "更新分组",
             involvedGroupId = "#request.id")
     public JsonData<Void> update(@RequestBody @Valid GroupUpdateRequest request) {
@@ -57,7 +57,7 @@ public class GroupController {
 
     @DeleteMapping(Routes.Group.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER'.concat('?groupId='.concat(#groupId)))")
-    @Operation(module = Operation.Modules.GROUP,
+    @AuditLog(module = AuditLog.Modules.GROUP,
             name = "删除分组",
             involvedGroupId = "#groupId")
     public JsonData<Void> deleteById(@PathVariable Integer groupId) {
@@ -81,7 +81,7 @@ public class GroupController {
 
     @PostMapping(Routes.Group.ADD_MEMBER)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER'.concat('?groupId='.concat(#groupId)))")
-    @Operation(module = Operation.Modules.GROUP,
+    @AuditLog(module = AuditLog.Modules.GROUP,
             name = "添加组员",
             involvedGroupId = "#groupId",
             involvedUserId = "#request.userId")
@@ -98,7 +98,7 @@ public class GroupController {
 
     @DeleteMapping(Routes.Group.DELETE_MEMBER)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER'.concat('?groupId='.concat(#groupId)))")
-    @Operation(module = Operation.Modules.GROUP,
+    @AuditLog(module = AuditLog.Modules.GROUP,
             name = "移除组员",
             involvedGroupId = "#groupId",
             involvedUserId = "#userId")
@@ -111,7 +111,7 @@ public class GroupController {
 
     @PatchMapping(Routes.Group.UPDATE_MEMBER)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER'.concat('?groupId='.concat(#groupId)))")
-    @Operation(module = Operation.Modules.GROUP,
+    @AuditLog(module = AuditLog.Modules.GROUP,
             name = "更新组员角色",
             involvedGroupId = "#groupId",
             involvedUserId = "#userId")

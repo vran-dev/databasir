@@ -5,7 +5,7 @@ import com.databasir.common.DatabasirException;
 import com.databasir.common.JsonData;
 import com.databasir.common.exception.InvalidTokenException;
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.login.data.AccessTokenRefreshRequest;
 import com.databasir.core.domain.login.data.AccessTokenRefreshResponse;
 import com.databasir.core.domain.login.data.UserLoginResponse;
@@ -31,7 +31,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @GetMapping(Routes.Login.LOGOUT)
-    @Operation(module = Operation.Modules.USER, name = "注销登录")
+    @AuditLog(module = AuditLog.Modules.USER, name = "注销登录")
     public JsonData<Void> logout() {
         SecurityContextHolder.clearContext();
         return JsonData.ok();

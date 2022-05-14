@@ -1,7 +1,7 @@
 package com.databasir.core.domain.log.service;
 
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.log.converter.OperationLogPojoConverter;
 import com.databasir.core.domain.log.converter.OperationLogRequestConverter;
 import com.databasir.core.domain.log.data.OperationLogPageCondition;
@@ -55,7 +55,7 @@ public class OperationLogService {
             OperationLogRequest log = OperationLogRequest.builder()
                     .isSuccess(false)
                     .operationCode("login")
-                    .operationModule(Operation.Modules.LOGIN)
+                    .operationModule(AuditLog.Modules.LOGIN)
                     .operationName("登录")
                     .operatorNickname(username)
                     .operatorUsername(username)
@@ -81,7 +81,7 @@ public class OperationLogService {
                     .isSuccess(success)
                     .involvedUserId(user.getId())
                     .operationCode("login")
-                    .operationModule(Operation.Modules.LOGIN)
+                    .operationModule(AuditLog.Modules.LOGIN)
                     .operationName("登录")
                     .operatorNickname(user.getNickname())
                     .operatorUsername(user.getUsername())

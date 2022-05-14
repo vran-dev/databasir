@@ -4,7 +4,7 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.app.OpenAuthAppService;
 import com.databasir.core.domain.app.data.*;
 import com.databasir.core.domain.app.handler.OpenAuthHandlers;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +69,7 @@ public class LoginAppController {
     @PostMapping(Routes.OAuth2App.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "创建登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "创建登录应用")
     public JsonData<Integer> create(@RequestBody @Valid OAuthAppCreateRequest request) {
         Integer id = openAuthAppService.create(request);
         return JsonData.ok(id);
@@ -78,7 +78,7 @@ public class LoginAppController {
     @PatchMapping(Routes.OAuth2App.UPDATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "更新登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "更新登录应用")
     public JsonData<Void> updateById(@RequestBody @Valid OAuthAppUpdateRequest request) {
         openAuthAppService.updateById(request);
         return JsonData.ok();
@@ -87,7 +87,7 @@ public class LoginAppController {
     @DeleteMapping(Routes.OAuth2App.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "删除登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "删除登录应用")
     public JsonData<Void> deleteById(@PathVariable Integer id) {
         openAuthAppService.deleteById(id);
         return JsonData.ok();

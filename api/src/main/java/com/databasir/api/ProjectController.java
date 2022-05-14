@@ -3,7 +3,7 @@ package com.databasir.api;
 import com.databasir.api.config.security.DatabasirUserDetails;
 import com.databasir.api.validator.CronExpressionValidator;
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.project.data.*;
 import com.databasir.core.domain.project.data.task.ProjectSimpleTaskResponse;
 import com.databasir.core.domain.project.data.task.ProjectTaskListCondition;
@@ -33,7 +33,7 @@ public class ProjectController {
     @PostMapping(Routes.GroupProject.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#request.groupId, "
             + "'GROUP_MEMBER?groupId='+#request.groupId)")
-    @Operation(module = Operation.Modules.PROJECT,
+    @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "创建项目",
             involvedGroupId = "#request.groupId")
     public JsonData<Void> create(@RequestBody @Valid ProjectCreateRequest request) {
@@ -44,7 +44,7 @@ public class ProjectController {
 
     @PatchMapping(Routes.GroupProject.UPDATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
-    @Operation(module = Operation.Modules.PROJECT,
+    @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "更新项目",
             involvedGroupId = "#groupId",
             involvedProjectId = "#request.id")
@@ -57,7 +57,7 @@ public class ProjectController {
 
     @DeleteMapping(Routes.GroupProject.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
-    @Operation(module = Operation.Modules.PROJECT,
+    @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "删除项目",
             involvedGroupId = "#groupId",
             involvedProjectId = "#projectId")
