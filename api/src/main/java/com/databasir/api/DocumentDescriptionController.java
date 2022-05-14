@@ -30,7 +30,8 @@ public class DocumentDescriptionController {
     @PreAuthorize("hasAnyAuthority('SYS_OWNER', 'GROUP_OWNER?groupId='+#groupId, 'GROUP_MEMBER?groupId='+#groupId)")
     @AuditLog(module = AuditLog.Modules.PROJECT,
             name = "更新描述",
-            involvedProjectId = "#projectId")
+            involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     @Operation(summary = "更新描述")
     public JsonData<Void> save(@PathVariable Integer groupId,
                                @PathVariable Integer projectId,

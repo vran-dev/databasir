@@ -115,4 +115,15 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
                 .groupBy(DATA_SOURCE.DATABASE_TYPE)
                 .fetchMap(DATA_SOURCE.DATABASE_TYPE, DSL.count(DATA_SOURCE));
     }
+
+    public Map<Integer, Integer> selectGroupIdsByProjectIdIn(List<Integer> projectIds) {
+        if (projectIds == null || projectIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return getDslContext()
+                .select(PROJECT.ID, PROJECT.GROUP_ID)
+                .from(PROJECT)
+                .where(PROJECT.ID.in(projectIds))
+                .fetchMap(PROJECT.ID, PROJECT.GROUP_ID);
+    }
 }

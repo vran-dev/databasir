@@ -5,6 +5,8 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.log.data.OperationLogRequest;
 import com.databasir.core.domain.log.service.OperationLogService;
+import com.databasir.dao.impl.ProjectDao;
+import com.databasir.dao.tables.pojos.ProjectPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -33,13 +35,19 @@ public class OperationLogAspect {
 
     private final OperationLogService operationLogService;
 
+    private final ProjectDao projectDao;
+
     private SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
 
     private ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
     @AfterReturning(value = "@annotation(operation)", returning = "returnValue")
     public void log(JoinPoint joinPoint, Object returnValue, AuditLog operation) {
-        saveLog(operation, joinPoint, (JsonData<Object>) returnValue);
+        if (returnValue instanceof JsonData) {
+            saveLog(operation, joinPoint, (JsonData<Object>) returnValue);
+        } else {
+            saveLog(operation, joinPoint, JsonData.ok());
+        }
     }
 
     @AfterThrowing(value = "@annotation(operation)", throwing = "ex")
@@ -62,6 +70,14 @@ public class OperationLogAspect {
                 .orElse(null);
         Integer involvedUserId = getValueBySPEL(method, arguments, operation.involvedUserId(), Integer.class)
                 .orElse(null);
+        // auto fill involvedProjectId
+        if (involvedGroupId == null
+                && operation.retrieveInvolvedGroupId()
+                && involvedProjectId != null) {
+            involvedGroupId = projectDao.selectOptionalById(involvedProjectId)
+                    .map(ProjectPojo::getGroupId)
+                    .orElse(null);
+        }
         int userId = userId();
         String username = principal.getUserPojo().getUsername();
         String nickname = principal.getUserPojo().getNickname();

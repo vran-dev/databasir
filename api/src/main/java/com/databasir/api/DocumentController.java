@@ -39,9 +39,10 @@ public class DocumentController {
     private final ProjectService projectService;
 
     @PostMapping(Routes.Document.SYNC_ONE)
-    @AuditLog(module = AuditLog.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
-    @Operation(summary = "同步文档")
-    public JsonData<Integer> sync(@PathVariable Integer projectId) {
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "创建同步任务", involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
+    @Operation(summary = "创建同步任务")
+    public JsonData<Integer> createSyncTask(@PathVariable Integer projectId) {
         Integer userId = LoginUserContext.getLoginUserId();
         Optional<Integer> taskIdOpt = projectService.createSyncTask(projectId, userId, false);
         return JsonData.ok(taskIdOpt);
@@ -67,6 +68,8 @@ public class DocumentController {
 
     @GetMapping(Routes.Document.EXPORT)
     @Operation(summary = "导出文档")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "导出文档", involvedProjectId = "#projectId",
+            retrieveInvolvedGroupId = true)
     public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
                                                                   @RequestParam(required = false)
                                                                   Long version,

@@ -25,7 +25,9 @@ public class AuditLogController {
     private final OperationLogService operationLogService;
 
     @GetMapping(Routes.OperationLog.LIST)
-    @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
+    @PreAuthorize("hasAnyAuthority('SYS_OWNER',"
+            + " 'GROUP_OWNER?groupId='+#condition.involveGroupId,"
+            + " 'GROUP_MEMBER?groupId='+#condition.involveGroupId)")
     @Operation(summary = "查询操作日志")
     public JsonData<Page<OperationLogPageResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
                                                          Pageable page,
