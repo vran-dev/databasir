@@ -10,6 +10,8 @@ import com.databasir.core.domain.login.data.AccessTokenRefreshRequest;
 import com.databasir.core.domain.login.data.AccessTokenRefreshResponse;
 import com.databasir.core.domain.login.data.UserLoginResponse;
 import com.databasir.core.domain.login.service.LoginService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,18 +28,21 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
+@Tag(name = "LoginController", description = "登录 API")
 public class LoginController {
 
     private final LoginService loginService;
 
     @GetMapping(Routes.Login.LOGOUT)
     @AuditLog(module = AuditLog.Modules.USER, name = "注销登录")
+    @Operation(summary = "注销登录")
     public JsonData<Void> logout() {
         SecurityContextHolder.clearContext();
         return JsonData.ok();
     }
 
     @PostMapping(Routes.Login.REFRESH_ACCESS_TOKEN)
+    @Operation(summary = "刷新 Access Token")
     public JsonData<AccessTokenRefreshResponse> refreshAccessTokens(@RequestBody
                                                                     @Valid AccessTokenRefreshRequest request) {
         try {
@@ -54,6 +59,7 @@ public class LoginController {
     }
 
     @GetMapping(Routes.Login.LOGIN_INFO)
+    @Operation(summary = "获取登录信息")
     public JsonData<UserLoginResponse> getUserLoginData() {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()

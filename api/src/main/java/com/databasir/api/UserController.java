@@ -8,6 +8,8 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.domain.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "UserController", description = "用户 API")
 public class UserController {
 
     private final UserService userService;
@@ -29,8 +32,9 @@ public class UserController {
     private final UserOperationValidator userOperationValidator;
 
     @GetMapping(Routes.User.LIST)
+    @Operation(summary = "分页查询用户")
     public JsonData<Page<UserPageResponse>> list(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
-                                                         Pageable pageable,
+                                                 Pageable pageable,
                                                  UserPageCondition condition) {
         return JsonData.ok(userService.list(pageable, condition));
     }
@@ -38,6 +42,7 @@ public class UserController {
     @PostMapping(Routes.User.DISABLE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "禁用用户", involvedUserId = "#userId")
+    @Operation(summary = "禁用用户")
     public JsonData<Void> disableUser(@PathVariable Integer userId) {
         if (userOperationValidator.isMyself(userId)) {
             throw DomainErrors.CANNOT_UPDATE_SELF_ENABLED_STATUS.exception();
@@ -49,6 +54,7 @@ public class UserController {
     @PostMapping(Routes.User.ENABLE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "启用用户", involvedUserId = "#userId")
+    @Operation(summary = "启用用户")
     public JsonData<Void> enableUser(@PathVariable Integer userId) {
         if (userOperationValidator.isMyself(userId)) {
             throw DomainErrors.CANNOT_UPDATE_SELF_ENABLED_STATUS.exception();
@@ -60,18 +66,21 @@ public class UserController {
     @PostMapping(Routes.User.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "创建用户")
+    @Operation(summary = "创建用户")
     public JsonData<Void> create(@RequestBody @Valid UserCreateRequest request) {
         userService.create(request, UserSource.MANUAL);
         return JsonData.ok();
     }
 
     @GetMapping(Routes.User.GET_ONE)
+    @Operation(summary = "根据 ID 查询用户")
     public JsonData<UserDetailResponse> getOne(@PathVariable Integer userId) {
         return JsonData.ok(userService.get(userId));
     }
 
     @DeleteMapping(Routes.User.DELETE_ONE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
+    @Operation(summary = "根据 ID 删除用户")
     public JsonData<Void> deleteOne(@PathVariable Integer userId) {
         if (userOperationValidator.isMyself(userId)) {
             throw DomainErrors.CANNOT_DELETE_SELF.exception();
@@ -83,6 +92,7 @@ public class UserController {
     @PostMapping(Routes.User.RENEW_PASSWORD)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "重置用户密码", involvedUserId = "#userId")
+    @Operation(summary = "重置用户密码")
     public JsonData<Void> renewPassword(@PathVariable Integer userId) {
         Integer operatorUserId = LoginUserContext.getLoginUserId();
         userService.renewPassword(operatorUserId, userId);
@@ -92,6 +102,7 @@ public class UserController {
     @PostMapping(Routes.User.ADD_OR_REMOVE_SYS_OWNER)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "添加系统管理员", involvedUserId = "#userId")
+    @Operation(summary = "添加系统管理员")
     public JsonData<Void> addSysOwner(@PathVariable Integer userId) {
         userOperationValidator.forbiddenIfUpdateSelfRole(userId);
         userService.addSysOwnerTo(userId);
@@ -101,6 +112,7 @@ public class UserController {
     @DeleteMapping(Routes.User.ADD_OR_REMOVE_SYS_OWNER)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @AuditLog(module = AuditLog.Modules.USER, name = "移除系统管理员", involvedUserId = "#userId")
+    @Operation(summary = "移除系统管理员")
     public JsonData<Void> removeSysOwner(@PathVariable Integer userId) {
         userOperationValidator.forbiddenIfUpdateSelfRole(userId);
         userService.removeSysOwnerFrom(userId);
@@ -109,6 +121,7 @@ public class UserController {
 
     @PostMapping(Routes.User.UPDATE_PASSWORD)
     @AuditLog(module = AuditLog.Modules.USER, name = "更新密码", involvedUserId = "#userId")
+    @Operation(summary = "更新密码")
     public JsonData<Void> updatePassword(@PathVariable Integer userId,
                                          @RequestBody @Valid UserPasswordUpdateRequest request) {
         if (userOperationValidator.isMyself(userId)) {
@@ -121,6 +134,7 @@ public class UserController {
 
     @PostMapping(Routes.User.UPDATE_NICKNAME)
     @AuditLog(module = AuditLog.Modules.USER, name = "更新昵称", involvedUserId = "#userId")
+    @Operation(summary = "更新昵称")
     public JsonData<Void> updateNickname(@PathVariable Integer userId,
                                          @RequestBody @Valid UserNicknameUpdateRequest request) {
         if (userOperationValidator.isMyself(userId)) {
