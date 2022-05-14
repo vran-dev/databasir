@@ -5,8 +5,10 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentService;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.project.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 @Validated
 @RestController
+@Tag(name = "DocumentController", description = "数据库文档 API")
 public class DocumentController {
 
     private final DocumentService documentService;
@@ -36,7 +39,8 @@ public class DocumentController {
     private final ProjectService projectService;
 
     @PostMapping(Routes.Document.SYNC_ONE)
-    @Operation(module = Operation.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
+    @AuditLog(module = AuditLog.Modules.PROJECT, name = "文档同步", involvedProjectId = "#projectId")
+    @Operation(summary = "同步文档")
     public JsonData<Integer> sync(@PathVariable Integer projectId) {
         Integer userId = LoginUserContext.getLoginUserId();
         Optional<Integer> taskIdOpt = projectService.createSyncTask(projectId, userId, false);
@@ -44,6 +48,7 @@ public class DocumentController {
     }
 
     @GetMapping(Routes.Document.GET_ONE)
+    @Operation(summary = "获取文档")
     public JsonData<DatabaseDocumentResponse> getByProjectId(@PathVariable Integer projectId,
                                                              @RequestParam(required = false) Long version) {
         return documentService.getOneByProjectId(projectId, version)
@@ -52,6 +57,7 @@ public class DocumentController {
     }
 
     @GetMapping(Routes.Document.LIST_VERSIONS)
+    @Operation(summary = "获取文档版本列表")
     public JsonData<Page<DatabaseDocumentVersionResponse>> getVersionsByProjectId(@PathVariable Integer projectId,
                                                                                   @PageableDefault(sort = "id",
                                                                                           direction = DESC)
@@ -60,6 +66,7 @@ public class DocumentController {
     }
 
     @GetMapping(Routes.Document.EXPORT)
+    @Operation(summary = "导出文档")
     public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
                                                                   @RequestParam(required = false)
                                                                   Long version,
@@ -76,6 +83,7 @@ public class DocumentController {
     }
 
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)
+    @Operation(summary = "获取文档（无详情信息）")
     public JsonData<DatabaseDocumentSimpleResponse> getSimpleByProjectId(@PathVariable Integer projectId,
                                                                          @RequestParam(required = false)
                                                                          Long version,
@@ -85,6 +93,7 @@ public class DocumentController {
     }
 
     @PostMapping(Routes.Document.GET_TABLE_DETAIL)
+    @Operation(summary = "获取表详情")
     public JsonData<List<TableDocumentResponse>> getTableDocument(@PathVariable Integer projectId,
                                                                   @PathVariable Integer documentId,
                                                                   @RequestBody @Valid TableDocumentRequest request) {
@@ -92,6 +101,7 @@ public class DocumentController {
     }
 
     @GetMapping(Routes.Document.LIST_TABLES)
+    @Operation(summary = "获取表列表")
     public JsonData<List<TableResponse>> listTables(@PathVariable Integer projectId,
                                                     @RequestParam(required = false) Long version) {
         return JsonData.ok(documentService.getTableAndColumns(projectId, version));

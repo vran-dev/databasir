@@ -4,13 +4,16 @@ import com.databasir.common.JsonData;
 import com.databasir.core.domain.app.OpenAuthAppService;
 import com.databasir.core.domain.app.data.*;
 import com.databasir.core.domain.app.handler.OpenAuthHandlers;
-import com.databasir.core.domain.log.annotation.Operation;
+import com.databasir.core.domain.log.annotation.AuditLog;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +25,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
+@Tag(name = "LoginAppController", description = "OAuth2 应用 API")
 public class LoginAppController {
 
     private final OpenAuthAppService openAuthAppService;
@@ -33,6 +38,7 @@ public class LoginAppController {
      */
     @GetMapping("/oauth2/apps")
     @ResponseBody
+    @Operation(summary = "获取登录应用")
     public JsonData<List<OAuthAppResponse>> listApps() {
         return JsonData.ok(openAuthAppService.listAll());
     }
@@ -42,6 +48,7 @@ public class LoginAppController {
      */
     @GetMapping("/oauth2/authorization/{registrationId}")
     @ResponseBody
+    @Operation(summary = "OAuth2 授权回调")
     public JsonData<String> authorization(@PathVariable String registrationId,
                                           HttpServletRequest request) {
         Map<String, String[]> parameters = request.getParameterMap();
@@ -52,8 +59,9 @@ public class LoginAppController {
     @GetMapping(Routes.OAuth2App.LIST_PAGE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
+    @Operation(summary = "分页查询登录应用")
     public JsonData<Page<OAuthAppPageResponse>> listPage(@PageableDefault(sort = "id", direction = DESC)
-                                                                 Pageable page,
+                                                         Pageable page,
                                                          OAuthAppPageCondition condition) {
         return JsonData.ok(openAuthAppService.listPage(page, condition));
     }
@@ -61,6 +69,7 @@ public class LoginAppController {
     @GetMapping(Routes.OAuth2App.GET_ONE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
+    @Operation(summary = "查询登录应用详情")
     public JsonData<OAuthAppDetailResponse> getOne(@PathVariable Integer id) {
         return JsonData.ok(openAuthAppService.getOne(id));
 
@@ -69,7 +78,8 @@ public class LoginAppController {
     @PostMapping(Routes.OAuth2App.CREATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "创建登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "创建登录应用")
+    @Operation(summary = "创建登录应用")
     public JsonData<Integer> create(@RequestBody @Valid OAuthAppCreateRequest request) {
         Integer id = openAuthAppService.create(request);
         return JsonData.ok(id);
@@ -78,7 +88,8 @@ public class LoginAppController {
     @PatchMapping(Routes.OAuth2App.UPDATE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "更新登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "更新登录应用")
+    @Operation(summary = "更新登录应用")
     public JsonData<Void> updateById(@RequestBody @Valid OAuthAppUpdateRequest request) {
         openAuthAppService.updateById(request);
         return JsonData.ok();
@@ -87,7 +98,8 @@ public class LoginAppController {
     @DeleteMapping(Routes.OAuth2App.DELETE)
     @PreAuthorize("hasAnyAuthority('SYS_OWNER')")
     @ResponseBody
-    @Operation(module = Operation.Modules.LOGIN_APP, name = "删除登录应用")
+    @AuditLog(module = AuditLog.Modules.LOGIN_APP, name = "删除登录应用")
+    @Operation(summary = "删除登录应用")
     public JsonData<Void> deleteById(@PathVariable Integer id) {
         openAuthAppService.deleteById(id);
         return JsonData.ok();
