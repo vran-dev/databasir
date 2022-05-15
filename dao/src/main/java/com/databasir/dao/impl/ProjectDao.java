@@ -2,6 +2,7 @@ package com.databasir.dao.impl;
 
 import com.databasir.dao.tables.pojos.ProjectPojo;
 import com.databasir.dao.value.GroupProjectCountPojo;
+import com.databasir.dao.value.ProjectQueryPojo;
 import lombok.Getter;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -19,8 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.databasir.dao.Tables.DATA_SOURCE;
-import static com.databasir.dao.Tables.PROJECT;
+import static com.databasir.dao.Tables.*;
 
 @Repository
 public class ProjectDao extends BaseDao<ProjectPojo> {
@@ -125,5 +125,29 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
                 .from(PROJECT)
                 .where(PROJECT.ID.in(projectIds))
                 .fetchMap(PROJECT.ID, PROJECT.GROUP_ID);
+    }
+
+    public List<ProjectQueryPojo> selectByProjectNameOrDatabaseOrSchemaOrGroup(String query) {
+        return getDslContext()
+                .select(
+                        PROJECT.ID.as("project_id"),
+                        PROJECT.NAME.as("project_name"),
+                        PROJECT.DESCRIPTION.as("project_description"),
+                        DATA_SOURCE.DATABASE_NAME,
+                        DATA_SOURCE.SCHEMA_NAME,
+                        GROUP.NAME.as("group_name"),
+                        GROUP.ID.as("group_id")
+                )
+                .from(PROJECT)
+                .leftJoin(DATA_SOURCE).on(DATA_SOURCE.PROJECT_ID.eq(PROJECT.ID))
+                .leftJoin(GROUP).on(GROUP.ID.eq(PROJECT.GROUP_ID))
+                .where(PROJECT.DELETED.eq(false)
+                        .and(GROUP.DELETED.eq(false))
+                        .and(PROJECT.NAME.contains(query)
+                                .or(DATA_SOURCE.DATABASE_NAME.contains(query))
+                                .or(DATA_SOURCE.SCHEMA_NAME.contains(query))
+                                .or(GROUP.NAME.contains(query)))
+                )
+                .fetchInto(ProjectQueryPojo.class);
     }
 }

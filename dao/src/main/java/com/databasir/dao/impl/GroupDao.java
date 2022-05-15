@@ -69,4 +69,12 @@ public class GroupDao extends BaseDao<GroupPojo> {
                 .where(GROUP.ID.in(ids))
                 .fetchInto(GroupPojo.class);
     }
+
+    public List<GroupPojo> selectByName(String nameContains) {
+        return getDslContext()
+                .select(GROUP.fields()).from(GROUP)
+                .where(GROUP.NAME.contains(nameContains))
+                .and(GROUP.DELETED.eq(false))
+                .fetchInto(GroupPojo.class);
+    }
 }
