@@ -182,4 +182,8 @@ public interface Routes {
         String GET_SQL_MOCK_DATA = BASE + "/groups/{groupId}/projects/{projectId}/mock_data/sql";
 
     }
+
+    interface Search {
+        String SEARCH = BASE + "/search";
+    }
 }
