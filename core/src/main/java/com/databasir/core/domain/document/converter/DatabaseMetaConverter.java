@@ -2,10 +2,7 @@ package com.databasir.core.domain.document.converter;
 
 import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.infrastructure.converter.JsonConverter;
-import com.databasir.core.meta.data.ColumnMeta;
-import com.databasir.core.meta.data.DatabaseMeta;
-import com.databasir.core.meta.data.IndexMeta;
-import com.databasir.core.meta.data.TableMeta;
+import com.databasir.core.meta.data.*;
 import com.databasir.dao.tables.pojos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -64,6 +61,9 @@ public interface DatabaseMetaConverter {
     @Mapping(target = "isUniqueKey", source = "pojo.isUnique")
     @Mapping(target = "columnNames", source = "pojo.columnNameArray")
     IndexMeta of(TableIndexDocumentPojo pojo);
+
+    @Mapping(target = "createAt", source = "pojo.triggerCreateAt")
+    TriggerMeta of(TableTriggerDocumentPojo pojo);
 
     List<TableMeta> of(List<TableDocumentResponse> table);
 

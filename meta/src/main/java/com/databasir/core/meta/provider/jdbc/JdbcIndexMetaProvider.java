@@ -35,14 +35,17 @@ public class JdbcIndexMetaProvider implements IndexMetaProvider {
             return indexMetas;
         }
 
-        Map<String, IndexMeta> pojoGroupByName = new HashMap<>();
+        Map<String, IndexMeta> metaGroupByName = new HashMap<>();
         try {
             while (indexResults.next()) {
                 Boolean nonUnique = indexResults.getBoolean("NON_UNIQUE");
                 String indexName = indexResults.getString("INDEX_NAME");
                 String columnName = indexResults.getString("COLUMN_NAME");
-                if (pojoGroupByName.containsKey(indexName)) {
-                    pojoGroupByName.get(indexName).getColumnNames().add(columnName);
+                if (indexName == null) {
+                    continue;
+                }
+                if (metaGroupByName.containsKey(indexName)) {
+                    metaGroupByName.get(indexName).getColumnNames().add(columnName);
                 } else {
                     List<String> columns = new ArrayList<>();
                     columns.add(columnName);
@@ -51,13 +54,13 @@ public class JdbcIndexMetaProvider implements IndexMetaProvider {
                             .columnNames(columns)
                             .isUniqueKey(Objects.equals(nonUnique, false))
                             .build();
-                    pojoGroupByName.put(indexName, indexMeta);
+                    metaGroupByName.put(indexName, indexMeta);
                 }
             }
         } finally {
             indexResults.close();
         }
-        return new ArrayList<>(pojoGroupByName.values());
+        return new ArrayList<>(metaGroupByName.values());
     }
 
 }
