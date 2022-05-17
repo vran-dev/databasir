@@ -6,4 +6,4 @@
 
 ## 扫码加群
 
-<img src="../img/qrcode-group.jpg" width="280">
+<img src="https://s2.loli.net/2022/05/17/cBElowCb7gDfyQW.jpg" width="250px" />

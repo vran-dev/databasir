@@ -20,7 +20,7 @@
 
 扫码加入微信群，随时获取第一手更新内容
 
-<img src="https://s2.loli.net/2022/05/10/u2CQHePStbcxUWi.jpg" width="250px" />
+<img src="https://s2.loli.net/2022/05/17/cBElowCb7gDfyQW.jpg" width="250px" />
 
 #### **公众号**
 
@@ -31,6 +31,23 @@
 vran_dev@foxmail.com
 
 <!-- tabs:end -->
+
+## 支持平台
+
+理论上支持拥有 JDBC 驱动的任何数据库，以下是社区内已验证过的数据库
+
+- MySQL
+- PostgreSQL
+- Oracle
+- SqlServer
+- 达梦
+- TIDB
+- Hive
+- Clickhouse
+- MariaDB
+- .....
+
+注意：以上列表是目前社区已经验证过的，并不代表 [Databasir](https://github.com/vran-dev/databasir) 只支持这些。
 
 ## 多图展示
 
