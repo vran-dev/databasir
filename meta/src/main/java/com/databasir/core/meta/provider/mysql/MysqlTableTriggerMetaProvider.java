@@ -12,14 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
-
-    private static final Pattern DATE_TIME_PATTERN =
-            Pattern.compile("(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})(.*)");
 
     @Override
     public List<TriggerMeta> selectTriggers(Connection connection, TableCondition condition) {
@@ -55,11 +50,8 @@ public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
                 String timing = results.getString("ACTION_TIMING");
                 String manipulation = results.getString("EVENT_MANIPULATION");
                 String created = results.getString("CREATED");
-                if (created != null) {
-                    Matcher matcher = DATE_TIME_PATTERN.matcher(created);
-                    if (matcher.matches()) {
-                        created = matcher.group(1);
-                    }
+                if (created == null) {
+                    created = "unknown";
                 }
                 TriggerMeta meta = TriggerMeta.builder()
                         .name(name)

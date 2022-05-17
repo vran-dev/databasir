@@ -2,6 +2,7 @@ package com.databasir.core.meta.provider;
 
 import com.databasir.core.meta.provider.jdbc.*;
 import com.databasir.core.meta.provider.mysql.MysqlTableTriggerMetaProvider;
+import com.databasir.core.meta.provider.postgresql.PostgresqlTriggerMetaProvider;
 import com.databasir.core.meta.provider.sqlserver.SqlServerColumnMetaProvider;
 import com.databasir.core.meta.provider.sqlserver.SqlServerTableMetaProvider;
 import com.databasir.core.meta.provider.sqlserver.SqlServerTriggerMetaProvider;
@@ -43,6 +44,9 @@ public class MetaProviders {
         if (url.contains(":mysql:")) {
             return mysql();
         }
+        if (url.contains(":postgresql:") || url.contains(":pgsql:")) {
+            return postgresql();
+        }
         return jdbc();
     }
 
@@ -70,6 +74,20 @@ public class MetaProviders {
                 indexMetaProvider,
                 foreignKeyMetaProvider,
                 triggerMetaProvider
+        );
+        return new JdbcDatabaseMetaProvider(tableMetaProvider);
+    }
+
+    private static DatabaseMetaProvider postgresql() {
+        var columnMetaProvider = new JdbcColumnMetaProvider();
+        var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
+        var indexMetaProvider = new JdbcIndexMetaProvider();
+        var triggerMetaProvider = new PostgresqlTriggerMetaProvider();
+        var tableMetaProvider = new JdbcTableMetaProvider(
+                columnMetaProvider,
+                indexMetaProvider,
+                triggerMetaProvider,
+                foreignKeyMetaProvider
         );
         return new JdbcDatabaseMetaProvider(tableMetaProvider);
     }
