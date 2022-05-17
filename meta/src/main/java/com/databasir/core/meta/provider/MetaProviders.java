@@ -1,6 +1,7 @@
 package com.databasir.core.meta.provider;
 
 import com.databasir.core.meta.provider.jdbc.*;
+import com.databasir.core.meta.provider.maria.MariaTriggerMetaProvider;
 import com.databasir.core.meta.provider.mysql.MysqlTableTriggerMetaProvider;
 import com.databasir.core.meta.provider.postgresql.PostgresqlTriggerMetaProvider;
 import com.databasir.core.meta.provider.sqlserver.SqlServerColumnMetaProvider;
@@ -47,6 +48,9 @@ public class MetaProviders {
         if (url.contains(":postgresql:") || url.contains(":pgsql:")) {
             return postgresql();
         }
+        if (url.contains(":mariadb:")) {
+            return mariaDB();
+        }
         return jdbc();
     }
 
@@ -83,6 +87,20 @@ public class MetaProviders {
         var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
         var indexMetaProvider = new JdbcIndexMetaProvider();
         var triggerMetaProvider = new PostgresqlTriggerMetaProvider();
+        var tableMetaProvider = new JdbcTableMetaProvider(
+                columnMetaProvider,
+                indexMetaProvider,
+                triggerMetaProvider,
+                foreignKeyMetaProvider
+        );
+        return new JdbcDatabaseMetaProvider(tableMetaProvider);
+    }
+
+    private static DatabaseMetaProvider mariaDB() {
+        var columnMetaProvider = new JdbcColumnMetaProvider();
+        var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
+        var indexMetaProvider = new JdbcIndexMetaProvider();
+        var triggerMetaProvider = new MariaTriggerMetaProvider();
         var tableMetaProvider = new JdbcTableMetaProvider(
                 columnMetaProvider,
                 indexMetaProvider,
