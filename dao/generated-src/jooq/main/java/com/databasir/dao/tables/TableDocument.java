@@ -74,7 +74,7 @@ public class TableDocument extends TableImpl<TableDocumentRecord> {
     /**
      * The column <code>databasir.table_document.comment</code>.
      */
-    public final TableField<TableDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(512), this, "");
+    public final TableField<TableDocumentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>databasir.table_document.create_at</code>.
