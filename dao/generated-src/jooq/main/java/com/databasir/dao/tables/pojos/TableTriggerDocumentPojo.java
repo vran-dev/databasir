@@ -17,6 +17,7 @@ public class TableTriggerDocumentPojo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer       id;
+    private String        name;
     private Integer       tableDocumentId;
     private Integer       databaseDocumentId;
     private String        timing;
@@ -29,6 +30,7 @@ public class TableTriggerDocumentPojo implements Serializable {
 
     public TableTriggerDocumentPojo(TableTriggerDocumentPojo value) {
         this.id = value.id;
+        this.name = value.name;
         this.tableDocumentId = value.tableDocumentId;
         this.databaseDocumentId = value.databaseDocumentId;
         this.timing = value.timing;
@@ -40,6 +42,7 @@ public class TableTriggerDocumentPojo implements Serializable {
 
     public TableTriggerDocumentPojo(
         Integer       id,
+        String        name,
         Integer       tableDocumentId,
         Integer       databaseDocumentId,
         String        timing,
@@ -49,6 +52,7 @@ public class TableTriggerDocumentPojo implements Serializable {
         LocalDateTime createAt
     ) {
         this.id = id;
+        this.name = name;
         this.tableDocumentId = tableDocumentId;
         this.databaseDocumentId = databaseDocumentId;
         this.timing = timing;
@@ -70,6 +74,20 @@ public class TableTriggerDocumentPojo implements Serializable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * Getter for <code>databasir.table_trigger_document.name</code>.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Setter for <code>databasir.table_trigger_document.name</code>.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -181,6 +199,7 @@ public class TableTriggerDocumentPojo implements Serializable {
         StringBuilder sb = new StringBuilder("TableTriggerDocumentPojo (");
 
         sb.append(id);
+        sb.append(", ").append(name);
         sb.append(", ").append(tableDocumentId);
         sb.append(", ").append(databaseDocumentId);
         sb.append(", ").append(timing);

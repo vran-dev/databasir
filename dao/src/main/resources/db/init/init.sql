@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS table_document
     database_document_id INT          NOT NULL,
     name                 TEXT         NOT NULL,
     type                 VARCHAR(255) NOT NULL,
-    comment              VARCHAR(512)          DEFAULT NULL,
+    comment              TEXT                  DEFAULT NULL,
     create_at            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_database_document_id (database_document_id)
 ) CHARSET utf8mb4
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS table_column_document
     name                 TEXT         NOT NULL,
     type                 VARCHAR(255) NOT NULL,
     data_type            INT          NOT NULL DEFAULT 99999,
-    comment              VARCHAR(512)          DEFAULT NULL,
+    comment              TEXT                  DEFAULT NULL,
     default_value        VARCHAR(512)          DEFAULT NULL,
     size                 INT          NOT NULL,
     decimal_digits       INT                   DEFAULT NULL,
@@ -209,6 +209,7 @@ CREATE TABLE IF NOT EXISTS table_trigger_document
 (
 
     id                   INT PRIMARY KEY AUTO_INCREMENT,
+    name                 VARCHAR(1024)         DEFAULT '' NOT NULL,
     table_document_id    INT          NOT NULL,
     database_document_id INT          NOT NULL,
     timing               VARCHAR(64)  NOT NULL,

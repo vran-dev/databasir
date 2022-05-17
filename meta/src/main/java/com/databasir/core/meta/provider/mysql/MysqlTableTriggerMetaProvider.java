@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
@@ -45,7 +46,7 @@ public class MysqlTableTriggerMetaProvider implements TriggerMetaProvider {
             ResultSet results = preparedStatement.executeQuery();
             List<TriggerMeta> triggers = new ArrayList<>();
             while (results.next()) {
-                String name = results.getString("TRIGGER_NAME");
+                String name = Objects.requireNonNullElse(results.getString("TRIGGER_NAME"), "");
                 String statement = results.getString("ACTION_STATEMENT");
                 String timing = results.getString("ACTION_TIMING");
                 String manipulation = results.getString("EVENT_MANIPULATION");

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
@@ -56,7 +57,7 @@ public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
             preparedStatement.setString(2, condition.getTableName());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                String triggerName = resultSet.getString("trigger_name");
+                String triggerName = Objects.requireNonNullElse(resultSet.getString("trigger_name"), "");
                 String timing = resultSet.getString("timing");
                 String manipulation = resultSet.getString("manipulation");
                 String statement = resultSet.getString("statement");
