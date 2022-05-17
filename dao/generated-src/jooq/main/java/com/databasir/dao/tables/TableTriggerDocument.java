@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -55,6 +55,11 @@ public class TableTriggerDocument extends TableImpl<TableTriggerDocumentRecord> 
      * The column <code>databasir.table_trigger_document.id</code>.
      */
     public final TableField<TableTriggerDocumentRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>databasir.table_trigger_document.name</code>.
+     */
+    public final TableField<TableTriggerDocumentRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column
@@ -176,11 +181,11 @@ public class TableTriggerDocument extends TableImpl<TableTriggerDocumentRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, Integer, String, String, String, String, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, Integer, Integer, String, String, String, String, LocalDateTime> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

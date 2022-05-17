@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class PostgresqlTriggerMetaProvider implements TriggerMetaProvider {
@@ -37,7 +38,7 @@ public class PostgresqlTriggerMetaProvider implements TriggerMetaProvider {
             ResultSet results = preparedStatement.executeQuery();
             List<TriggerMeta> triggers = new ArrayList<>();
             while (results.next()) {
-                String name = results.getString("name");
+                String name = Objects.requireNonNullElse(results.getString("name"), "");
                 String statement = results.getString("statement");
                 String timing = results.getString("timing");
                 String manipulation = results.getString("manipulation");
