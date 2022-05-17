@@ -11,14 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
-
-    private static final Pattern DATE_TIME_PATTERN =
-            Pattern.compile("(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})(.*)");
 
     @Override
     public List<TriggerMeta> selectTriggers(Connection connection, TableCondition condition) {
@@ -65,12 +60,9 @@ public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
                 String timing = resultSet.getString("timing");
                 String manipulation = resultSet.getString("manipulation");
                 String statement = resultSet.getString("statement");
-                Matcher matcher = DATE_TIME_PATTERN.matcher(resultSet.getString("create_date"));
-                String createAt;
-                if (matcher.matches()) {
-                    createAt = matcher.group(1);
-                } else {
-                    createAt = "1970-01-01 00:00:00";
+                String createAt = resultSet.getString("create_date");
+                if (createAt == null) {
+                    createAt = "unknown";
                 }
                 triggerMetas.add(TriggerMeta.builder()
                         .name(triggerName)
