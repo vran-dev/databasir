@@ -1,64 +1,44 @@
 package com.databasir.core.meta.provider.oracle;
 
-import com.databasir.core.meta.data.TriggerMeta;
-import com.databasir.core.meta.provider.TriggerMetaProvider;
+import com.databasir.core.meta.provider.AbstractSqlTriggerMetaProvider;
 import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class OracleTriggerMetaProvider implements TriggerMetaProvider {
+public class OracleTriggerMetaProvider extends AbstractSqlTriggerMetaProvider {
     @Override
-    public List<TriggerMeta> selectTriggers(Connection connection, TableCondition condition) {
+    protected String sql(TableCondition condition) {
         String sql = "SELECT trig.table_owner AS schema_name,\n"
                 + "       trig.table_name,\n"
                 + "       trig.owner AS trigger_schema_name,\n"
-                + "       trig.trigger_name,\n"
-                + "       trig.trigger_type,\n"
-                + "       trig.triggering_event,\n"
+                + "       trig.trigger_name as TRIGGER_NAME,\n"
+                + "       trig.trigger_type AS ACTION_TIMING,\n"
+                + "       trig.triggering_event as EVENT_MANIPULATION,\n"
                 + "       trig.status,\n"
-                + "       trig.trigger_body AS script\n"
+                + "       trig.trigger_body AS ACTION_STATEMENT \n"
                 + "FROM sys.all_triggers trig\n"
                 + "         INNER JOIN sys.all_tables tab ON trig.table_owner = tab.owner\n"
                 + "    AND trig.table_name = tab.table_name\n"
-                + "WHERE trig.base_object_type = 'TABLE' AND trig.owner = ? AND trig.TABLE_NAME = ?";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setObject(1, condition.getSchemaName());
-            preparedStatement.setObject(2, condition.getTableName());
-            ResultSet results = preparedStatement.executeQuery();
-            List<TriggerMeta> triggers = new ArrayList<>();
-            while (results.next()) {
-                String status = results.getString("status");
-                String name = Objects.requireNonNullElse(results.getString("trigger_name"), "")
-                        + " ("
-                        + status
-                        + ")";
-                String statement = results.getString("script");
-                String timing = results.getString("trigger_type");
-                String manipulation = results.getString("triggering_event");
-                String created = "unknown";
-                TriggerMeta meta = TriggerMeta.builder()
-                        .name(name)
-                        .manipulation(manipulation)
-                        .timing(timing)
-                        .statement(statement)
-                        .createAt(created)
-                        .build();
-                triggers.add(meta);
-            }
-            return triggers;
-        } catch (SQLException e) {
-            log.warn("get trigger meta failed", e);
-            return Collections.emptyList();
-        }
+                + "WHERE trig.base_object_type = 'TABLE' AND trig.owner = '%s' AND trig.TABLE_NAME = '%s'";
+        return String.format(sql, condition.getSchemaName(), condition.getTableName());
+    }
+
+    @Override
+    protected String getTriggerName(ResultSet results) throws SQLException {
+        String status = results.getString("status");
+        String name = Objects.requireNonNullElse(results.getString("trigger_name"), "")
+                + " ("
+                + status
+                + ")";
+        return name;
+    }
+
+    @Override
+    protected String getCreateAt(ResultSet results) throws SQLException {
+        return "unknown";
     }
 }

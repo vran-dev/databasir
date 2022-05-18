@@ -1,29 +1,19 @@
 package com.databasir.core.meta.provider.sqlserver;
 
-import com.databasir.core.meta.data.TriggerMeta;
-import com.databasir.core.meta.provider.TriggerMetaProvider;
+import com.databasir.core.meta.provider.AbstractSqlTriggerMetaProvider;
 import com.databasir.core.meta.provider.condition.TableCondition;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 @Slf4j
-public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
-
+public class SqlServerTriggerMetaProvider extends AbstractSqlTriggerMetaProvider {
     @Override
-    public List<TriggerMeta> selectTriggers(Connection connection, TableCondition condition) {
+    protected String sql(TableCondition condition) {
         String sql = "SELECT SCHEMA_NAME(tab.schema_id) + '.' + tab.name AS table_name,\n"
-                + "       trig.name                                   AS trigger_name,\n"
-                + "       trig.create_date                            AS create_date,\n"
+                + "       trig.name                                   AS TRIGGER_NAME,\n"
+                + "       trig.create_date                            AS CREATED,\n"
                 + "       CASE\n"
                 + "           WHEN is_instead_of_trigger = 1 THEN 'Instead of'\n"
-                + "           ELSE 'After' END                        AS timing,\n"
+                + "           ELSE 'After' END                        AS ACTION_TIMING,\n"
                 + "       (CASE\n"
                 + "            WHEN OBJECTPROPERTY(trig.object_id, 'ExecIsUpdateTrigger') = 1\n"
                 + "                THEN 'Update '\n"
@@ -36,7 +26,7 @@ public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
                 + "                 WHEN OBJECTPROPERTY(trig.object_id, 'ExecIsInsertTrigger') = 1\n"
                 + "                     THEN 'Insert '\n"
                 + "                 ELSE '' END\n"
-                + "           )                                       AS manipulation,\n"
+                + "           )                                       AS EVENT_MANIPULATION,\n"
                 + "       CASE\n"
                 + "           WHEN trig.[type] = 'TA' THEN 'Assembly (CLR) trigger'\n"
                 + "           WHEN trig.[type] = 'TR' THEN 'SQL trigger'\n"
@@ -44,50 +34,12 @@ public class SqlServerTriggerMetaProvider implements TriggerMetaProvider {
                 + "       CASE\n"
                 + "           WHEN is_disabled = 1 THEN 'Disabled'\n"
                 + "           ELSE 'Active' END                       AS [status],\n"
-                + "       OBJECT_DEFINITION(trig.object_id)           AS STATEMENT\n"
+                + "       OBJECT_DEFINITION(trig.object_id)           AS ACTION_STATEMENT\n"
                 + "FROM sys.triggers trig\n"
                 + "         INNER JOIN sys.objects tab\n"
                 + "                    ON trig.parent_id = tab.object_id\n"
-                + "WHERE SCHEMA_NAME(tab.schema_id) = ? AND tab.name = ?";
-        PreparedStatement preparedStatement = null;
-        List<TriggerMeta> triggerMetas = new ArrayList<>();
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, condition.getSchemaName());
-            preparedStatement.setString(2, condition.getTableName());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String triggerName = Objects.requireNonNullElse(resultSet.getString("trigger_name"), "");
-                String timing = resultSet.getString("timing");
-                String manipulation = resultSet.getString("manipulation");
-                String statement = resultSet.getString("statement");
-                String createAt = resultSet.getString("create_date");
-                if (createAt == null) {
-                    createAt = "unknown";
-                }
-                triggerMetas.add(TriggerMeta.builder()
-                        .name(triggerName)
-                        .timing(timing)
-                        .manipulation(manipulation)
-                        .statement(statement)
-                        .createAt(createAt)
-                        .build());
-            }
-        } catch (SQLException e) {
-            log.warn("ignore trigger meta by error {}", e.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("ignore trigger meta by error ", e);
-            }
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    // ignore
-                }
-            }
-        }
-        return triggerMetas;
+                + "WHERE SCHEMA_NAME(tab.schema_id) = '%s' AND tab.name = '%s'";
+        return String.format(sql, condition.getSchemaName(), condition.getTableName());
     }
 
 }
