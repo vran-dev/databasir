@@ -208,6 +208,10 @@ public class DocumentService {
     public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId,
                                                                             Long version,
                                                                             Long originalVersion) {
+        String projectName = projectDao.selectOptionalById(projectId)
+                .map(ProjectPojo::getName)
+                .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
+
         Optional<DatabaseDocumentPojo> documentOption;
         if (version == null) {
             documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
@@ -271,10 +275,10 @@ public class DocumentService {
                 result.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
                 DiffType diffType = result.stream()
                         .anyMatch(t -> t.getDiffType() == DiffType.MODIFIED) ? DiffType.MODIFIED : DiffType.NONE;
-                return documentSimpleResponseConverter.of(document, result, diffType);
+                return documentSimpleResponseConverter.of(document, result, diffType, projectName);
             } else {
                 tableMetas.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
-                return documentSimpleResponseConverter.of(document, tableMetas, DiffType.NONE);
+                return documentSimpleResponseConverter.of(document, tableMetas, DiffType.NONE, projectName);
             }
         });
     }
