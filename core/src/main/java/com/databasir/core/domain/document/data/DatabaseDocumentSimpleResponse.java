@@ -12,6 +12,8 @@ public class DatabaseDocumentSimpleResponse {
 
     private Integer id;
 
+    private String projectName;
+
     private String databaseName;
 
     private String schemaName;

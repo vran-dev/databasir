@@ -21,7 +21,8 @@ public interface DocumentSimpleResponseConverter {
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
     DatabaseDocumentSimpleResponse of(DatabaseDocumentPojo databaseDocument,
                                       List<DatabaseDocumentSimpleResponse.TableData> tables,
-                                      DiffType diffType);
+                                      DiffType diffType,
+                                      String projectName);
 
     DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables,
                                                 Integer discussionCount,
@@ -31,6 +32,7 @@ public interface DocumentSimpleResponseConverter {
                                                               Map<String, Integer> discussionCountMapByTableName,
                                                               Map<String, String> descriptionMapByTableName) {
         return tables.stream()
+                
                 .map(table -> {
                     Integer count = discussionCountMapByTableName.get(table.getName());
                     String description = descriptionMapByTableName.get(table.getName());
