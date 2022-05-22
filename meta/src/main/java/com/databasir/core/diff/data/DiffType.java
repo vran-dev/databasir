@@ -6,4 +6,12 @@ public enum DiffType {
     public static boolean isModified(DiffType type) {
         return type != null && type != NONE;
     }
+
+    public boolean isAdded() {
+        return this == ADDED;
+    }
+
+    public boolean isNone() {
+        return this == NONE;
+    }
 }

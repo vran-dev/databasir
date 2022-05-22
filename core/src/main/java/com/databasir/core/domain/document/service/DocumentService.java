@@ -273,8 +273,16 @@ public class DocumentService {
                     }
                 }
                 result.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
-                DiffType diffType = result.stream()
-                        .anyMatch(t -> t.getDiffType() == DiffType.MODIFIED) ? DiffType.MODIFIED : DiffType.NONE;
+                boolean allAdded = result.stream()
+                        .filter(item -> !item.getDiffType().isNone())
+                        .allMatch(item -> item.getDiffType().isAdded());
+                DiffType diffType;
+                if (allAdded) {
+                    diffType = DiffType.ADDED;
+                } else {
+                    diffType = result.stream()
+                            .anyMatch(t -> t.getDiffType() != DiffType.NONE) ? DiffType.MODIFIED : DiffType.NONE;
+                }
                 return documentSimpleResponseConverter.of(document, result, diffType, projectName);
             } else {
                 tableMetas.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
