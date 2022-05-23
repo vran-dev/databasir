@@ -36,7 +36,7 @@
 
 微信扫码加入 Databasir 交流群，获取第一手版本内容。
 
-<img src="https://s2.loli.net/2022/05/17/cBElowCb7gDfyQW.jpg" width="250px" />
+<img src="https://s2.loli.net/2022/05/23/w3nDImdk9KAjr4L.jpg" width="250px" />
 
 [点击查看更多联系方式](https://doc.databasir.com/#/?id=联系)
 
@@ -60,7 +60,7 @@
 
 ## 捐赠
 
-<img src="docs/img/sponsor.jpg" width="280">
+<img src="https://s2.loli.net/2022/05/23/phDIKagHwjZl3kA.jpg" width="280">
 
 ## License
 
