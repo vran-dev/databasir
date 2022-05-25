@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.Valid;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -75,14 +76,23 @@ public class DocumentController {
                                                                   Long version,
                                                                   @RequestParam DocumentFileType fileType) {
         HttpHeaders headers = new HttpHeaders();
-        String fileName = "project[" + projectId + "]." + fileType.getFileExtension();
+        String projectName = projectService.getOne(projectId).getName();
+        String fileName = projectName + "." + fileType.getFileExtension();
         headers.setContentDisposition(ContentDisposition.attachment()
-                .filename("demo.md", StandardCharsets.UTF_8)
+                .filename(fileName)
                 .build());
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(out -> documentService.export(projectId, version, fileType, out));
+    }
+
+    @GetMapping(Routes.Document.EXPORT_TYPES)
+    public JsonData<List<DocumentFileTypeResponse>> getDocumentFileTypes() {
+        List<DocumentFileTypeResponse> types = Arrays.stream(DocumentFileType.values())
+                .map(type -> new DocumentFileTypeResponse(type.getName(), type.getFileExtension(), type))
+                .collect(Collectors.toList());
+        return JsonData.ok(types);
     }
 
     @GetMapping(Routes.Document.GET_SIMPLE_ONE)

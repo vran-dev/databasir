@@ -92,6 +92,8 @@ public interface Routes {
 
         String EXPORT = BASE + "/projects/{projectId}/document_files";
 
+        String EXPORT_TYPES = BASE + "/document_file_types";
+
         String LIST_TABLES = BASE + "/projects/{projectId}/tables";
     }
 
