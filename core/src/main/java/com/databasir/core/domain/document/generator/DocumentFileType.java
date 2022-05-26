@@ -7,7 +7,15 @@ import lombok.Getter;
 @Getter
 public enum DocumentFileType {
 
-    MARKDOWN("md"), EXCEL("xlsx");
+    MARKDOWN("md", "Markdown"),
+
+    PLANT_UML_ER_SVG("svg", "UML SVG"),
+
+    PLANT_UML_ER_PNG("png", "UML PNG"),
+    ;
 
     private String fileExtension;
+
+    private String name;
+
 }

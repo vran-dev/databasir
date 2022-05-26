@@ -11,15 +11,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.format.DateTimeFormatter;
 
 @Configuration
 @EnableSpringDataWebSupport
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        ThreadPoolTaskExecutor mvcExecutor = new ThreadPoolTaskExecutor();
+        int maxCorePoolSize = 64;
+        int availableProcessorCount = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Math.min(maxCorePoolSize, availableProcessorCount);
+        mvcExecutor.setCorePoolSize(corePoolSize);
+        mvcExecutor.setMaxPoolSize(maxCorePoolSize);
+        mvcExecutor.setThreadNamePrefix("mvc-executor-");
+        mvcExecutor.initialize();
+        configurer.setTaskExecutor(mvcExecutor);
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
