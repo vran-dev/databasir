@@ -274,9 +274,9 @@ public class DocumentService {
                     }
                 }
                 result.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
-                boolean allAdded = result.stream()
-                        .filter(item -> !item.getDiffType().isNone())
-                        .allMatch(item -> item.getDiffType().isAdded());
+                var notNoneDiffs = result.stream().filter(item -> !item.getDiffType().isNone());
+                boolean allAdded = notNoneDiffs.count() > 0
+                        && notNoneDiffs.allMatch(item -> item.getDiffType().isAdded());
                 DiffType diffType;
                 if (allAdded) {
                     diffType = DiffType.ADDED;
