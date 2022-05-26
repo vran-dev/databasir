@@ -1,1 +1,0 @@
-* [变更记录](/changelog/index.md)
