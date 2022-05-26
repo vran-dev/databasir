@@ -4,7 +4,6 @@ import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
@@ -34,12 +33,23 @@ public abstract class BasePlantUmlFileGenerator implements DocumentFileGenerator
 
     protected abstract FileFormatOption fileFormatOption();
 
-    @RequiredArgsConstructor
     public class ErDsl {
 
         private final DocumentFileGenerateContext context;
 
         private Set<String> foreignKeyRelations = new HashSet<>(16);
+
+        private Set<String> tables = new HashSet<>(16);
+
+        public ErDsl(DocumentFileGenerateContext context) {
+            this.context = context;
+            Set<String> tables = context.getDatabaseDocument()
+                    .getTables()
+                    .stream()
+                    .map(TableDocumentResponse::getName)
+                    .collect(Collectors.toSet());
+            this.tables = tables;
+        }
 
         public String toDsl() {
             DatabaseDocumentResponse databaseDocument = context.getDatabaseDocument();
@@ -115,19 +125,22 @@ public abstract class BasePlantUmlFileGenerator implements DocumentFileGenerator
             dslBuilder.append("}");
             dslBuilder.append(LINE);
 
-            table.getForeignKeys().forEach(fk -> {
-                String fkTableName = fk.getFkTableName();
-                String fkColumnName = fk.getFkColumnName();
-                String pkTableName = fk.getPkTableName();
-                String pkColumnName = fk.getPkColumnName();
-                StringBuilder relationBuilder = new StringBuilder();
-                relationBuilder.append(fkTableName).append("::").append(fkColumnName)
-                        .append(" --> ")
-                        .append(pkTableName).append("::").append(pkColumnName)
-                        .append(" : ")
-                        .append(Objects.requireNonNullElse(fk.getFkName(), ""));
-                foreignKeyRelations.add(relationBuilder.toString());
-            });
+            table.getForeignKeys()
+                    .stream()
+                    .filter(fk -> tables.contains(fk.getFkTableName()) && tables.contains(fk.getPkTableName()))
+                    .forEach(fk -> {
+                        String fkTableName = fk.getFkTableName();
+                        String fkColumnName = fk.getFkColumnName();
+                        String pkTableName = fk.getPkTableName();
+                        String pkColumnName = fk.getPkColumnName();
+                        StringBuilder relationBuilder = new StringBuilder();
+                        relationBuilder.append(fkTableName).append("::").append(fkColumnName)
+                                .append(" --> ")
+                                .append(pkTableName).append("::").append(pkColumnName)
+                                .append(" : ")
+                                .append(Objects.requireNonNullElse(fk.getFkName(), ""));
+                        foreignKeyRelations.add(relationBuilder.toString());
+                    });
             return dslBuilder.toString();
         }
     }

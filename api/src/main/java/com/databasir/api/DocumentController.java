@@ -74,7 +74,10 @@ public class DocumentController {
     public ResponseEntity<StreamingResponseBody> getDocumentFiles(@PathVariable Integer projectId,
                                                                   @RequestParam(required = false)
                                                                   Long version,
-                                                                  @RequestParam DocumentFileType fileType) {
+                                                                  @RequestParam(required = false)
+                                                                  List<Integer> tableIds,
+                                                                  @RequestParam
+                                                                  DocumentFileType fileType) {
         HttpHeaders headers = new HttpHeaders();
         String projectName = projectService.getOne(projectId).getName();
         String fileName = projectName + "." + fileType.getFileExtension();
@@ -84,7 +87,7 @@ public class DocumentController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(out -> documentService.export(projectId, version, fileType, out));
+                .body(out -> documentService.export(projectId, version, tableIds, fileType, out));
     }
 
     @GetMapping(Routes.Document.EXPORT_TYPES)

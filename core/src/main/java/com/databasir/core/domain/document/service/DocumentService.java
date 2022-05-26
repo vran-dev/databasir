@@ -15,6 +15,7 @@ import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.data.TableDocumentResponse.ForeignKeyDocumentResponse;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
+import com.databasir.core.domain.document.generator.DocumentFileGenerator.DocumentFileGenerateContext;
 import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
 import com.databasir.core.infrastructure.converter.JsonConverter;
@@ -526,19 +527,34 @@ public class DocumentService {
 
     public void export(Integer projectId,
                        Long version,
+                       List<Integer> tableIds,
                        DocumentFileType type,
                        OutputStream out) {
-        getOneByProjectId(projectId, version)
-                .ifPresent(doc -> {
-                    var context = DocumentFileGenerator.DocumentFileGenerateContext.builder()
-                            .documentFileType(type)
-                            .databaseDocument(doc)
-                            .build();
-                    documentFileGenerators.stream()
-                            .filter(g -> g.support(type))
-                            .findFirst()
-                            .ifPresent(generator -> generator.generate(context, out));
-                });
+        DatabaseDocumentResponse doc;
+        if (tableIds == null || CollectionUtils.isEmpty(tableIds)) {
+            doc = getOneByProjectId(projectId, version)
+                    .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+        } else {
+            DatabaseDocumentPojo databaseDoc;
+            if (version == null) {
+                databaseDoc = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
+                        .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+            } else {
+                databaseDoc = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, version)
+                        .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
+            }
+            Integer databaseDocId = databaseDoc.getId();
+            List<TableDocumentResponse> tableDocs = getTableDetails(projectId, databaseDocId, tableIds);
+            doc = documentResponseConverter.of(databaseDoc, tableDocs);
+        }
+        var context = DocumentFileGenerateContext.builder()
+                .documentFileType(type)
+                .databaseDocument(doc)
+                .build();
+        documentFileGenerators.stream()
+                .filter(g -> g.support(type))
+                .findFirst()
+                .ifPresent(generator -> generator.generate(context, out));
     }
 
     public List<TableResponse> getTableAndColumns(Integer projectId, Long version) {
