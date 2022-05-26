@@ -1,5 +1,8 @@
 * 构建指南
-    * [后端构建](/develop/build/index.md)
+    * [项目构建](/develop/build/index.md)
+
+* 系统扩展
+    * [如何扩展文件导出类型？](/develop/how-to-add-export-type/index.md)
 
 * 系统架构
     * [模块和包](/develop/module-and-package/index.md)
