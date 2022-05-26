@@ -43,6 +43,14 @@ public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
                 .fetchOptionalInto(DatabaseDocumentPojo.class);
     }
 
+    public Optional<Integer> selectIdByProjectIdAndVersion(Integer projectId,
+                                                           Long version) {
+        return getDslContext()
+                .select(DATABASE_DOCUMENT.ID).from(DATABASE_DOCUMENT)
+                .where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId).and(DATABASE_DOCUMENT.VERSION.eq(version)))
+                .fetchOptionalInto(Integer.class);
+    }
+
     public void update(DatabaseDocumentPojo toPojo) {
         DatabaseDocumentRecord record = getDslContext().newRecord(DATABASE_DOCUMENT, toPojo);
         record.changed(DATABASE_DOCUMENT.ID, false);
