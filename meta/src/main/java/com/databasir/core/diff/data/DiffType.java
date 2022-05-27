@@ -11,6 +11,10 @@ public enum DiffType {
         return this == ADDED;
     }
 
+    public boolean isRemoved() {
+        return this == REMOVED;
+    }
+
     public boolean isNone() {
         return this == NONE;
     }

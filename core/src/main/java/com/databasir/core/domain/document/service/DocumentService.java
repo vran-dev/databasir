@@ -13,6 +13,7 @@ import com.databasir.core.domain.document.comparator.TableDiffResult;
 import com.databasir.core.domain.document.converter.*;
 import com.databasir.core.domain.document.data.*;
 import com.databasir.core.domain.document.data.TableDocumentResponse.ForeignKeyDocumentResponse;
+import com.databasir.core.domain.document.diff.DiffTypePredictor;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator.DocumentFileGenerateContext;
@@ -274,16 +275,7 @@ public class DocumentService {
                     }
                 }
                 result.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
-                var notNoneDiffs = result.stream().filter(item -> !item.getDiffType().isNone());
-                boolean allAdded = notNoneDiffs.count() > 0
-                        && notNoneDiffs.allMatch(item -> item.getDiffType().isAdded());
-                DiffType diffType;
-                if (allAdded) {
-                    diffType = DiffType.ADDED;
-                } else {
-                    diffType = result.stream()
-                            .anyMatch(t -> t.getDiffType() != DiffType.NONE) ? DiffType.MODIFIED : DiffType.NONE;
-                }
+                DiffType diffType = DiffTypePredictor.predict(result);
                 return documentSimpleResponseConverter.of(document, result, diffType, projectName);
             } else {
                 tableMetas.sort(Comparator.comparing(DatabaseDocumentSimpleResponse.TableData::getName));
