@@ -7,12 +7,11 @@ import com.databasir.core.diff.Diffs;
 import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.diff.data.RootDiff;
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.document.comparator.DiffResult;
 import com.databasir.core.domain.document.comparator.DocumentDiffs;
 import com.databasir.core.domain.document.comparator.TableDiffResult;
 import com.databasir.core.domain.document.converter.*;
 import com.databasir.core.domain.document.data.*;
-import com.databasir.core.domain.document.data.TableDocumentResponse.ForeignKeyDocumentResponse;
+import com.databasir.core.domain.document.diff.DiffTypeFills;
 import com.databasir.core.domain.document.diff.DiffTypePredictor;
 import com.databasir.core.domain.document.event.DocumentUpdated;
 import com.databasir.core.domain.document.generator.DocumentFileGenerator;
@@ -28,13 +27,13 @@ import com.databasir.dao.tables.pojos.*;
 import com.databasir.dao.value.DocumentDiscussionCountPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -238,7 +237,7 @@ public class DocumentService {
                     descriptionMapByTableName
             );
 
-            // if original version is not null mean version diff enabled
+            // if original version is not null means version diff enabled
             if (originalVersion != null) {
                 var originalDocument =
                         databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
@@ -444,6 +443,8 @@ public class DocumentService {
             return emptyList();
         }
         var current = this.getTableDetails(projectId, databaseDocumentId, request.getTableIds());
+        List<Integer> currentTableIds = current.stream().map(t -> t.getId()).collect(Collectors.toList());
+        var missedIds = CollectionUtils.disjunction(currentTableIds, request.getTableIds());
         if (request.getOriginalVersion() != null) {
             DatabaseDocumentPojo doc =
                     databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, request.getOriginalVersion())
@@ -451,7 +452,8 @@ public class DocumentService {
             List<String> tableNames = current.stream().map(t -> t.getName()).distinct().collect(Collectors.toList());
             List<Integer> originalTableIds =
                     tableDocumentDao.selectTableIdsByDatabaseDocumentIdAndTableNameIn(doc.getId(), tableNames);
-            var original = this.getTableDetails(projectId, doc.getId(), originalTableIds);
+            var allOriginalTableIds = CollectionUtils.union(missedIds, originalTableIds);
+            var original = this.getTableDetails(projectId, doc.getId(), allOriginalTableIds);
             Map<String, TableDocumentResponse> currentMapByName = current.stream()
                     .collect(Collectors.toMap(TableDocumentResponse::getName, Function.identity(), (a, b) -> a));
             Map<String, TableDocumentResponse> originalMapByName = original.stream()
@@ -463,46 +465,16 @@ public class DocumentService {
                     .map(diff -> {
                         if (diff.getDiffType() == DiffType.ADDED) {
                             TableDocumentResponse c = currentMapByName.get(diff.getId());
-                            c.setDiffType(DiffType.ADDED);
-                            var cols =
-                                    diff(diff.getColumnDiffResults(), emptyList(), c.getColumns(), i -> i.getName());
-                            c.setColumns(cols);
-                            var indexes =
-                                    diff(diff.getIndexDiffResults(), emptyList(), c.getIndexes(), i -> i.getName());
-                            c.setIndexes(indexes);
-                            var foreignKeys = foreignKeyDiff(diff.getForeignKeyDiffResults(),
-                                    emptyList(), c.getForeignKeys());
-                            c.setForeignKeys(foreignKeys);
-                            var triggers =
-                                    diff(diff.getTriggerDiffResults(), emptyList(), c.getTriggers(), t -> t.getName());
-                            c.setTriggers(triggers);
-                            return c;
+                            return DiffTypeFills.fillAdded(c, diff);
                         }
                         if (diff.getDiffType() == DiffType.REMOVED) {
                             TableDocumentResponse t = originalMapByName.get(diff.getId());
-                            t.setDiffType(DiffType.REMOVED);
-                            return t;
+                            return DiffTypeFills.fillRemoved(t);
                         }
                         if (diff.getDiffType() == DiffType.MODIFIED) {
                             TableDocumentResponse c = currentMapByName.get(diff.getId());
                             TableDocumentResponse o = originalMapByName.get(diff.getId());
-                            c.setDiffType(DiffType.MODIFIED);
-                            c.setOriginal(o);
-                            var cols =
-                                    diff(diff.getColumnDiffResults(), o.getColumns(), c.getColumns(),
-                                            col -> col.getName());
-                            c.setColumns(cols);
-                            var indexes =
-                                    diff(diff.getIndexDiffResults(), o.getIndexes(), c.getIndexes(), i -> i.getName());
-                            c.setIndexes(indexes);
-                            var foreignKeys = foreignKeyDiff(diff.getForeignKeyDiffResults(),
-                                    o.getForeignKeys(), c.getForeignKeys());
-                            c.setForeignKeys(foreignKeys);
-                            var triggers =
-                                    diff(diff.getTriggerDiffResults(), o.getTriggers(), c.getTriggers(),
-                                            t -> t.getName());
-                            c.setTriggers(triggers);
-                            return c;
+                            return DiffTypeFills.fillModified(c, o, diff);
                         }
                         TableDocumentResponse t = currentMapByName.get(diff.getId());
                         t.setDiffType(DiffType.NONE);
@@ -566,47 +538,5 @@ public class DocumentService {
                     .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
             return tableResponseConverter.from(tables, columnMapByTableId);
         }
-    }
-
-    private <T extends DiffAble> List<T> diff(Collection<DiffResult> diffs,
-                                              Collection<T> original,
-                                              Collection<T> current,
-                                              Function<T, String> idMapping) {
-        var currentMapByName = current.stream()
-                .collect(Collectors.toMap(idMapping, Function.identity(), (a, b) -> a));
-        var originalMapByName = original.stream()
-                .collect(Collectors.toMap(idMapping, Function.identity(), (a, b) -> a));
-        return diffs.stream().map(diff -> {
-                    if (diff.getDiffType() == DiffType.ADDED) {
-                        var t = currentMapByName.get(diff.getId());
-                        t.setDiffType(DiffType.ADDED);
-                        return t;
-                    }
-                    if (diff.getDiffType() == DiffType.REMOVED) {
-                        var t = originalMapByName.get(diff.getId());
-                        t.setDiffType(DiffType.REMOVED);
-                        return t;
-                    }
-                    if (diff.getDiffType() == DiffType.MODIFIED) {
-                        var c = currentMapByName.get(diff.getId());
-                        var o = originalMapByName.get(diff.getId());
-                        c.setDiffType(DiffType.MODIFIED);
-                        c.setOriginal(o);
-                        return c;
-                    }
-                    var t = currentMapByName.get(diff.getId());
-                    t.setDiffType(DiffType.NONE);
-                    return t;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<ForeignKeyDocumentResponse> foreignKeyDiff(Collection<DiffResult> diffs,
-                                                            Collection<ForeignKeyDocumentResponse> original,
-                                                            Collection<ForeignKeyDocumentResponse> current) {
-        Function<ForeignKeyDocumentResponse, String> idMapping = fk -> {
-            return fk.getFkTableName() + "." + fk.getFkColumnName() + "." + fk.getKeySeq();
-        };
-        return diff(diffs, original, current, idMapping);
     }
 }
