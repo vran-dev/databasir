@@ -238,7 +238,7 @@ public class DocumentService {
         GroupPojo group = groupDao.selectById(project.getGroupId());
         List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByTableDocumentId(table.getId());
         // clear outdated data before save
-        documentFullTextDao.deleteByTableId(table.getId());
+        documentFullTextDao.deleteTableFullText(table.getId());
         List<DocumentFullTextPojo> fullTextPojoList = columns.stream()
                 .map(column -> {
                     String tableName = table.getName();

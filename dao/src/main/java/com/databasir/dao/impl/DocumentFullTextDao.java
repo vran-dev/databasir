@@ -160,8 +160,9 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
         return new PageImpl<>(content, pageable, total.longValue());
     }
 
-    public int deleteByTableId(Integer tableDocumentId) {
-        return this.delete(DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID.eq(tableDocumentId));
+    public int deleteTableFullText(Integer projectId) {
+        return this.delete(DOCUMENT_FULL_TEXT.PROJECT_ID.eq(projectId)
+                .and(DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID.isNotNull()));
     }
 
     public int deleteByGroupId(Integer groupId) {
