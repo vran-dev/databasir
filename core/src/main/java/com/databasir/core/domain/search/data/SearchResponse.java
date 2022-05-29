@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collections;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Data
 @NoArgsConstructor
@@ -14,30 +12,32 @@ import java.util.List;
 @Builder
 public class SearchResponse {
 
-    @Builder.Default
-    private List<GroupSearchResult> groups = Collections.emptyList();
+    private Page<Item> groupPageData;
 
-    @Builder.Default
-    private List<ProjectSearchResult> projects = Collections.emptyList();
+    private Page<Item> projectPageData;
 
-    @Data
-    public static class GroupSearchResult {
+    private Page<Item> tablePageData;
 
-        private Integer id;
-
-        private String name;
-
-        private String description;
-    }
+    private Page<Item> columnPageData;
 
     @Data
-    public static class ProjectSearchResult {
-
-        private Integer projectId;
+    public static class Item {
 
         private Integer groupId;
 
+        private Integer projectId;
+
+        private Integer databaseDocumentId;
+
+        private Integer databaseDocumentVersion;
+
+        private Integer tableDocumentId;
+
+        private Integer tableColumnDocumentId;
+
         private String groupName;
+
+        private String groupDescription;
 
         private String projectName;
 
@@ -47,5 +47,22 @@ public class SearchResponse {
 
         private String schemaName;
 
+        private String databaseProductName;
+
+        private String databaseType;
+
+        private String tableName;
+
+        private String tableComment;
+
+        private String tableDescription;
+
+        private String colName;
+
+        private String colComment;
+
+        private String colDescription;
+
     }
+
 }

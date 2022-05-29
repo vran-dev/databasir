@@ -4,6 +4,10 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.group.converter.GroupPojoConverter;
 import com.databasir.core.domain.group.converter.GroupResponseConverter;
 import com.databasir.core.domain.group.data.*;
+import com.databasir.core.domain.group.event.GroupCreated;
+import com.databasir.core.domain.group.event.GroupDeleted;
+import com.databasir.core.domain.group.event.GroupUpdated;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.GroupPojo;
 import com.databasir.dao.tables.pojos.UserPojo;
@@ -34,6 +38,8 @@ public class GroupService {
 
     private final ProjectDao projectDao;
 
+    private final EventPublisher eventPublisher;
+
     private final ProjectSyncRuleDao projectSyncRuleDao;
 
     private final GroupPojoConverter groupPojoConverter;
@@ -55,6 +61,7 @@ public class GroupService {
                 })
                 .collect(Collectors.toList());
         userRoleDao.batchInsert(roles);
+        eventPublisher.publish(new GroupCreated(groupId, request.getName(), request.getDescription()));
         return groupId;
     }
 
@@ -74,6 +81,7 @@ public class GroupService {
                 })
                 .collect(Collectors.toList());
         userRoleDao.batchInsert(roles);
+        eventPublisher.publish(new GroupUpdated(request.getId(), request.getName(), request.getDescription()));
     }
 
     public void delete(Integer groupId) {
@@ -82,6 +90,7 @@ public class GroupService {
         List<Integer> projectIds = projectDao.selectProjectIdsByGroupId(groupId);
         projectSyncRuleDao.disableAutoSyncByProjectIds(projectIds);
         projectDao.deleteByGroupId(groupId);
+        eventPublisher.publish(new GroupDeleted(groupId));
     }
 
     public Page<GroupPageResponse> list(Pageable pageable, GroupPageCondition condition) {

@@ -100,7 +100,7 @@ public abstract class BaseDao<R> {
                         + condition));
     }
 
-    public List<R> selectInIds(List<? extends Serializable> ids) {
+    public List<R> selectInIds(Collection<? extends Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }

@@ -2,6 +2,8 @@ package com.databasir.core.domain.description.service;
 
 import com.databasir.core.domain.description.converter.DocumentDescriptionPojoConverter;
 import com.databasir.core.domain.description.data.DocumentDescriptionSaveRequest;
+import com.databasir.core.domain.description.event.DescriptionUpdated;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.DocumentDescriptionDao;
 import com.databasir.dao.tables.pojos.DocumentDescriptionPojo;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ public class DocumentDescriptionService {
 
     private final DocumentDescriptionPojoConverter documentDescriptionPojoConverter;
 
+    private final EventPublisher eventPublisher;
+
     @Transactional
     public void save(Integer groupId,
                      Integer projectId,
@@ -28,5 +32,14 @@ public class DocumentDescriptionService {
         } else {
             documentDescriptionDao.update(pojo);
         }
+        DescriptionUpdated event = DescriptionUpdated.builder()
+                .tableName(request.getTableName())
+                .columnName(request.getColumnName())
+                .description(request.getContent())
+                .userId(userId)
+                .projectId(projectId)
+                .groupId(groupId)
+                .build();
+        eventPublisher.publish(event);
     }
 }

@@ -49,6 +49,8 @@ import static java.util.Collections.emptyList;
 @Slf4j
 public class DocumentService {
 
+    private final GroupDao groupDao;
+
     private final ProjectDao projectDao;
 
     private final ProjectSyncRuleDao projectSyncRuleDao;
@@ -73,9 +75,13 @@ public class DocumentService {
 
     private final DocumentDiscussionDao documentDiscussionDao;
 
+    private final DocumentFullTextDao documentFullTextDao;
+
     private final DocumentDescriptionDao documentDescriptionDao;
 
     private final DocumentPojoConverter documentPojoConverter;
+
+    private final DocumentFullTextPojoConverter documentFullTextPojoConverter;
 
     private final DocumentResponseConverter documentResponseConverter;
 
@@ -166,10 +172,11 @@ public class DocumentService {
                                  Long version,
                                  Integer projectId) {
 
-        var pojo = documentPojoConverter.toDatabasePojo(projectId, meta, version);
+        var dbDocPojo = documentPojoConverter.toDatabasePojo(projectId, meta, version);
         final Integer docId;
         try {
-            docId = databaseDocumentDao.insertAndReturnId(pojo);
+            docId = databaseDocumentDao.insertAndReturnId(dbDocPojo);
+            dbDocPojo.setId(docId);
         } catch (DuplicateKeyException e) {
             log.warn("ignore insert database document projectId={} version={}", projectId, version);
             throw new DatabasirException(DomainErrors.DATABASE_DOCUMENT_DUPLICATE_KEY);
@@ -178,6 +185,7 @@ public class DocumentService {
             TableDocumentPojo tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
             Integer tableMetaId = tableDocumentDao.insertAndReturnId(tableMeta);
+            tableMeta.setId(tableMetaId);
             // column
             var columns = documentPojoConverter.toColumnPojo(docId, tableMetaId, table.getColumns());
             tableColumnDocumentDao.batchInsert(columns);
@@ -201,9 +209,46 @@ public class DocumentService {
             // trigger
             var triggers = documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
             tableTriggerDocumentDao.batchInsert(triggers);
+
+            // save full text
+            var descriptionMapByJoinName = documentDescriptionDao.selectByProjectId(projectId)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            d -> {
+                                if (d.getColumnName() == null) {
+                                    return d.getTableName();
+                                }
+                                return String.join(".",
+                                        d.getTableName(),
+                                        StringUtils.defaultIfBlank(d.getColumnName(), ""));
+                            },
+                            DocumentDescriptionPojo::getContent,
+                            (a, b) -> a));
+            saveDocumentFullText(projectId, dbDocPojo, tableMeta, descriptionMapByJoinName);
         });
         log.info("save new version document success: projectId = {}, name = {}, version =  {}",
                 projectId, meta.getDatabaseName(), version);
+    }
+
+    private void saveDocumentFullText(Integer projectId,
+                                      DatabaseDocumentPojo database,
+                                      TableDocumentPojo table,
+                                      Map<String, String> descriptionMapByJoinName) {
+        ProjectPojo project = projectDao.selectById(projectId);
+        GroupPojo group = groupDao.selectById(project.getGroupId());
+        List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByTableDocumentId(table.getId());
+        // clear outdated data before save
+        documentFullTextDao.deleteByTableId(table.getId());
+        List<DocumentFullTextPojo> fullTextPojoList = columns.stream()
+                .map(column -> {
+                    String tableName = table.getName();
+                    String tableDescription = descriptionMapByJoinName.get(tableName);
+                    String columnDescription = descriptionMapByJoinName.get(tableName + "." + column.getName());
+                    return documentFullTextPojoConverter.toPojo(group, project, database, table, column,
+                            tableDescription, columnDescription);
+                })
+                .collect(Collectors.toList());
+        documentFullTextDao.batchInsert(fullTextPojoList);
     }
 
     public Optional<DatabaseDocumentSimpleResponse> getSimpleOneByProjectId(Integer projectId,
