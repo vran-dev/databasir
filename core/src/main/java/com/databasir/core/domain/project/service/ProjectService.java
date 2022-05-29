@@ -137,7 +137,7 @@ public class ProjectService {
             projectDao.updateById(project);
 
             ProjectSaved event = ProjectSaved.builder()
-                    .groupId(project.getGroupId())
+                    .groupId(groupId)
                     .projectId(project.getId())
                     .projectName(project.getName())
                     .projectDescription(project.getDescription())
