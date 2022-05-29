@@ -9,7 +9,10 @@ import com.databasir.core.domain.project.converter.ProjectSimpleTaskResponseConv
 import com.databasir.core.domain.project.data.*;
 import com.databasir.core.domain.project.data.task.ProjectSimpleTaskResponse;
 import com.databasir.core.domain.project.data.task.ProjectTaskListCondition;
+import com.databasir.core.domain.project.event.ProjectDeleted;
+import com.databasir.core.domain.project.event.ProjectSaved;
 import com.databasir.core.infrastructure.connection.DatabaseConnectionService;
+import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.enums.ProjectSyncTaskStatus;
 import com.databasir.dao.impl.*;
 import com.databasir.dao.tables.pojos.*;
@@ -55,6 +58,8 @@ public class ProjectService {
 
     private final ProjectSimpleTaskResponseConverter projectSimpleTaskResponseConverter;
 
+    private final EventPublisher eventPublisher;
+
     public ProjectDetailResponse getOne(Integer id) {
         return projectDao.selectOptionalById(id)
                 .map(schemaSource -> {
@@ -88,6 +93,17 @@ public class ProjectService {
 
         ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
         projectSyncRuleDao.insertAndReturnId(syncRule);
+
+        var event = ProjectSaved.builder()
+                .groupId(project.getGroupId())
+                .projectId(projectId)
+                .projectName(project.getName())
+                .projectDescription(project.getDescription())
+                .databaseType(request.getDataSource().getDatabaseType())
+                .databaseName(dataSource.getDatabaseName())
+                .schemaName(dataSource.getSchemaName())
+                .build();
+        eventPublisher.publish(event);
         return projectId;
     }
 
@@ -119,6 +135,17 @@ public class ProjectService {
             // update project info
             ProjectPojo project = projectPojoConverter.of(request);
             projectDao.updateById(project);
+
+            ProjectSaved event = ProjectSaved.builder()
+                    .groupId(project.getGroupId())
+                    .projectId(project.getId())
+                    .projectName(project.getName())
+                    .projectDescription(project.getDescription())
+                    .databaseType(request.getDataSource().getDatabaseType())
+                    .databaseName(dataSource.getDatabaseName())
+                    .schemaName(dataSource.getSchemaName())
+                    .build();
+            eventPublisher.publish(event);
         } else {
             throw DomainErrors.PROJECT_NOT_FOUND.exception();
         }
@@ -137,6 +164,7 @@ public class ProjectService {
     public void delete(Integer projectId) {
         projectDao.updateDeletedById(true, projectId);
         projectSyncRuleDao.disableAutoSyncByProjectId(projectId);
+        eventPublisher.publish(new ProjectDeleted(projectId));
     }
 
     public Page<ProjectSimpleResponse> list(Integer userId, Pageable page, ProjectListCondition condition) {

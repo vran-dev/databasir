@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class GroupDao extends BaseDao<GroupPojo> {
     }
 
     @Override
-    public List<GroupPojo> selectInIds(List<? extends Serializable> ids) {
+    public List<GroupPojo> selectInIds(Collection<? extends Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }

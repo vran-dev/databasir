@@ -10,6 +10,7 @@ import com.databasir.dao.tables.DatabaseDocument;
 import com.databasir.dao.tables.DatabaseType;
 import com.databasir.dao.tables.DocumentDescription;
 import com.databasir.dao.tables.DocumentDiscussion;
+import com.databasir.dao.tables.DocumentFullText;
 import com.databasir.dao.tables.DocumentTemplateProperty;
 import com.databasir.dao.tables.Group;
 import com.databasir.dao.tables.Login;
@@ -80,6 +81,11 @@ public class Databasir extends SchemaImpl {
      * The table <code>databasir.document_discussion</code>.
      */
     public final DocumentDiscussion DOCUMENT_DISCUSSION = DocumentDiscussion.DOCUMENT_DISCUSSION;
+
+    /**
+     * The table <code>databasir.document_full_text</code>.
+     */
+    public final DocumentFullText DOCUMENT_FULL_TEXT = DocumentFullText.DOCUMENT_FULL_TEXT;
 
     /**
      * template property
@@ -198,6 +204,7 @@ public class Databasir extends SchemaImpl {
             DatabaseType.DATABASE_TYPE,
             DocumentDescription.DOCUMENT_DESCRIPTION,
             DocumentDiscussion.DOCUMENT_DISCUSSION,
+            DocumentFullText.DOCUMENT_FULL_TEXT,
             DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY,
             Group.GROUP,
             Login.LOGIN,

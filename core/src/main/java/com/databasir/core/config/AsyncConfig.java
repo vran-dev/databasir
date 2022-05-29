@@ -28,4 +28,16 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         return executor;
     }
+
+    @Bean
+    public Executor fullTextRefreshThreadPoolTaskExecutor() {
+        final int maxCorePoolSize = 8;
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        int availableProcessorCount = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Math.min(maxCorePoolSize, availableProcessorCount);
+        executor.setCorePoolSize(corePoolSize);
+        executor.setAllowCoreThreadTimeOut(true);
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        return executor;
+    }
 }

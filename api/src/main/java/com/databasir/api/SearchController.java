@@ -6,6 +6,8 @@ import com.databasir.core.domain.search.data.SearchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +23,8 @@ public class SearchController {
 
     @GetMapping(Routes.Search.SEARCH)
     @Operation(summary = "搜索")
-    public JsonData<SearchResponse> search(@RequestParam(name = "query") String keyword) {
-        return JsonData.ok(searchService.search(keyword));
+    public JsonData<SearchResponse> search(@PageableDefault(size = 50) Pageable pageable,
+                                           @RequestParam(name = "query") String keyword) {
+        return JsonData.ok(searchService.search(pageable, keyword));
     }
 }
