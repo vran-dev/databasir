@@ -52,4 +52,22 @@ FROM table_column_document tcd
 WHERE pj.deleted = FALSE
   AND dd.is_archive = FALSE
   AND dft.table_column_document_id IS NULL
-  AND dft.project_id IS NULL
+  AND dft.project_id IS NULL;
+
+-- update table description;
+
+UPDATE document_full_text
+    LEFT JOIN document_description dd ON document_full_text.project_id = dd.project_id
+SET table_description=dd.content
+WHERE dd.table_name = document_full_text.table_name
+  AND dd.project_id = document_full_text.project_id
+  AND dd.column_name IS NULL;
+
+-- update column description;
+UPDATE document_full_text
+    INNER JOIN document_description dd ON document_full_text.project_id = dd.project_id
+SET col_description=dd.content
+WHERE dd.table_name = document_full_text.table_name
+  AND dd.column_name = document_full_text.col_name
+  AND dd.project_id = document_full_text.project_id
+  AND dd.column_name IS NOT NULL;

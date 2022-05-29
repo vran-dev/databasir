@@ -8,26 +8,14 @@ import com.databasir.dao.Databasir;
 import com.databasir.dao.Indexes;
 import com.databasir.dao.Keys;
 import com.databasir.dao.tables.records.DocumentFullTextRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row21;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -147,6 +135,11 @@ public class DocumentFullText extends TableImpl<DocumentFullTextRecord> {
     public final TableField<DocumentFullTextRecord, String> TABLE_COMMENT = createField(DSL.name("table_comment"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>databasir.document_full_text.table_description</code>.
+     */
+    public final TableField<DocumentFullTextRecord, String> TABLE_DESCRIPTION = createField(DSL.name("table_description"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>databasir.document_full_text.col_name</code>.
      */
     public final TableField<DocumentFullTextRecord, String> COL_NAME = createField(DSL.name("col_name"), SQLDataType.CLOB, this, "");
@@ -155,6 +148,11 @@ public class DocumentFullText extends TableImpl<DocumentFullTextRecord> {
      * The column <code>databasir.document_full_text.col_comment</code>.
      */
     public final TableField<DocumentFullTextRecord, String> COL_COMMENT = createField(DSL.name("col_comment"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>databasir.document_full_text.col_description</code>.
+     */
+    public final TableField<DocumentFullTextRecord, String> COL_DESCRIPTION = createField(DSL.name("col_description"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>databasir.document_full_text.update_at</code>.
@@ -245,14 +243,5 @@ public class DocumentFullText extends TableImpl<DocumentFullTextRecord> {
     @Override
     public DocumentFullText rename(Name name) {
         return new DocumentFullText(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row21 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row21<Integer, Integer, Integer, Integer, Integer, Integer, Integer, String, String, String, String, String, String, String, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row21) super.fieldsRow();
     }
 }

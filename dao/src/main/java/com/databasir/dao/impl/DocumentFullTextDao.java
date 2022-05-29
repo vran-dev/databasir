@@ -1,5 +1,6 @@
 package com.databasir.dao.impl;
 
+import com.databasir.dao.Indexes;
 import com.databasir.dao.tables.pojos.DocumentFullTextPojo;
 import com.databasir.dao.value.FullTextProjectInfoUpdatePojo;
 import lombok.Getter;
@@ -31,13 +32,11 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
     }
 
     public Page<DocumentFullTextPojo> selectColumnPage(Pageable pageable, String keyword) {
-
-        String[] fullTextMatchCols = new String[]{
-                DOCUMENT_FULL_TEXT.COL_NAME.getName(),
-                DOCUMENT_FULL_TEXT.COL_COMMENT.getName(),
-                DOCUMENT_FULL_TEXT.DATABASE_PRODUCT_NAME.getName()
-        };
-        String colSegment = String.join(",", fullTextMatchCols);
+        String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_COLUMN.getFields()
+                .stream()
+                .map(f -> f.getName())
+                .toArray(String[]::new);
+        String colSegment = String.join(",", matchCols);
         // sample: match(col_name, col_comment) against('+databasir' in boolean mode)
         String fullTextMatchSqlSegment = new StringBuilder(64)
                 .append("MATCH(").append(colSegment).append(") ")
@@ -58,11 +57,10 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
     }
 
     public Page<DocumentFullTextPojo> selectTablePage(Pageable pageable, String keyword) {
-        String[] matchCols = new String[]{
-                DOCUMENT_FULL_TEXT.TABLE_NAME.getName(),
-                DOCUMENT_FULL_TEXT.TABLE_COMMENT.getName(),
-                DOCUMENT_FULL_TEXT.DATABASE_PRODUCT_NAME.getName()
-        };
+        String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_TABLE.getFields()
+                .stream()
+                .map(f -> f.getName())
+                .toArray(String[]::new);
         TableField[] groupColumns = new TableField[]{
                 DOCUMENT_FULL_TEXT.GROUP_ID,
                 DOCUMENT_FULL_TEXT.GROUP_NAME,
@@ -76,6 +74,7 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                 DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID,
                 DOCUMENT_FULL_TEXT.TABLE_NAME,
                 DOCUMENT_FULL_TEXT.TABLE_COMMENT,
+                DOCUMENT_FULL_TEXT.TABLE_DESCRIPTION,
         };
         String colSegment = String.join(",", matchCols);
 
@@ -104,13 +103,10 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
     }
 
     public Page<DocumentFullTextPojo> selectProjectPage(Pageable pageable, String keyword) {
-        String[] matchCols = new String[]{
-                DOCUMENT_FULL_TEXT.PROJECT_NAME.getName(),
-                DOCUMENT_FULL_TEXT.PROJECT_DESCRIPTION.getName(),
-                DOCUMENT_FULL_TEXT.SCHEMA_NAME.getName(),
-                DOCUMENT_FULL_TEXT.DATABASE_NAME.getName(),
-                DOCUMENT_FULL_TEXT.DATABASE_TYPE.getName(),
-        };
+        String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_PROJECT.getFields()
+                .stream()
+                .map(f -> f.getName())
+                .toArray(String[]::new);
         String colSegment = String.join(",", matchCols);
         // sample: match(col_name, col_comment) against('+databasir' in boolean mode)
         String fullTextMatchSqlSegment = new StringBuilder(64)
@@ -136,10 +132,10 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
     }
 
     public Page<DocumentFullTextPojo> selectGroupPage(Pageable pageable, String keyword) {
-        String[] matchCols = new String[]{
-                DOCUMENT_FULL_TEXT.GROUP_NAME.getName(),
-                DOCUMENT_FULL_TEXT.GROUP_DESCRIPTION.getName()
-        };
+        String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_GROUP.getFields()
+                .stream()
+                .map(f -> f.getName())
+                .toArray(String[]::new);
         String colSegment = String.join(",", matchCols);
 
         String fullTextMatchSqlSegment = new StringBuilder(64)
@@ -196,6 +192,31 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                 .set(DOCUMENT_FULL_TEXT.DATABASE_TYPE, updatePojo.getDatabaseType())
                 .where(DOCUMENT_FULL_TEXT.PROJECT_ID.eq(updatePojo.getProjectId())
                         .and(DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID.isNull()))
+                .execute();
+    }
+
+    public int updateTableDescription(Integer groupId, Integer projectId, String tableName, String description) {
+        return this.getDslContext()
+                .update(DOCUMENT_FULL_TEXT)
+                .set(DOCUMENT_FULL_TEXT.TABLE_DESCRIPTION, description)
+                .where(DOCUMENT_FULL_TEXT.GROUP_ID.eq(groupId)
+                        .and(DOCUMENT_FULL_TEXT.PROJECT_ID.eq(projectId))
+                        .and(DOCUMENT_FULL_TEXT.TABLE_NAME.eq(tableName)))
+                .execute();
+    }
+
+    public int updateColumnDescription(Integer groupId,
+                                       Integer projectId,
+                                       String tableName,
+                                       String columnName,
+                                       String description) {
+        return this.getDslContext()
+                .update(DOCUMENT_FULL_TEXT)
+                .set(DOCUMENT_FULL_TEXT.COL_DESCRIPTION, description)
+                .where(DOCUMENT_FULL_TEXT.GROUP_ID.eq(groupId)
+                        .and(DOCUMENT_FULL_TEXT.PROJECT_ID.eq(projectId))
+                        .and(DOCUMENT_FULL_TEXT.TABLE_NAME.eq(tableName))
+                        .and(DOCUMENT_FULL_TEXT.COL_NAME.eq(columnName)))
                 .execute();
     }
 }

@@ -17,17 +17,19 @@ CREATE TABLE document_full_text
     `database_type`             TEXT,
     `table_name`                TEXT,
     `table_comment`             TEXT,
+    `table_description`         TEXT,
     `col_name`                  TEXT,
     `col_comment`               TEXT,
+    `col_description`           TEXT,
     update_at                   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     create_at                   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX                       IDX_GROUP_ID (group_id),
-    INDEX                       IDX_PROJECT_ID (project_id),
-    INDEX                       IDX_TABLE_DOCUMENT_ID (table_document_id),
-    FULLTEXT                    FIDX_COLUMN (col_name, col_comment, database_product_name) WITH PARSER ngram,
-    FULLTEXT                    FIDX_TABLE (`table_name`, table_comment, database_product_name) WITH PARSER ngram,
-    FULLTEXT                    FIDX_PROJECT (project_name, project_description, SCHEMA_NAME, database_name,
-        database_type) WITH PARSER ngram,
-    FULLTEXT                    FIDX_GROUP (group_name, group_description) WITH PARSER ngram
+    INDEX IDX_GROUP_ID (group_id),
+    INDEX IDX_PROJECT_ID (project_id),
+    INDEX IDX_TABLE_DOCUMENT_ID (table_document_id),
+    FULLTEXT FIDX_COLUMN (col_name, col_comment, col_description, database_product_name) WITH PARSER ngram,
+    FULLTEXT FIDX_TABLE (`table_name`, table_comment, table_description, database_product_name) WITH PARSER ngram,
+    FULLTEXT FIDX_PROJECT (project_name, project_description, SCHEMA_NAME, database_name,
+                           database_type) WITH PARSER ngram,
+    FULLTEXT FIDX_GROUP (group_name, group_description) WITH PARSER ngram
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;

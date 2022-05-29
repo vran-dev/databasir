@@ -55,9 +55,13 @@ public class SearchResponse {
 
         private String tableComment;
 
+        private String tableDescription;
+
         private String colName;
 
         private String colComment;
+
+        private String colDescription;
 
     }
 

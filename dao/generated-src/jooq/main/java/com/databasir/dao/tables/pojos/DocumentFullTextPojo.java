@@ -33,8 +33,10 @@ public class DocumentFullTextPojo implements Serializable {
     private String        databaseType;
     private String        tableName;
     private String        tableComment;
+    private String        tableDescription;
     private String        colName;
     private String        colComment;
+    private String        colDescription;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -58,8 +60,10 @@ public class DocumentFullTextPojo implements Serializable {
         this.databaseType = value.databaseType;
         this.tableName = value.tableName;
         this.tableComment = value.tableComment;
+        this.tableDescription = value.tableDescription;
         this.colName = value.colName;
         this.colComment = value.colComment;
+        this.colDescription = value.colDescription;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -82,8 +86,10 @@ public class DocumentFullTextPojo implements Serializable {
         String        databaseType,
         String        tableName,
         String        tableComment,
+        String        tableDescription,
         String        colName,
         String        colComment,
+        String        colDescription,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -104,8 +110,10 @@ public class DocumentFullTextPojo implements Serializable {
         this.databaseType = databaseType;
         this.tableName = tableName;
         this.tableComment = tableComment;
+        this.tableDescription = tableDescription;
         this.colName = colName;
         this.colComment = colComment;
+        this.colDescription = colDescription;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -369,6 +377,20 @@ public class DocumentFullTextPojo implements Serializable {
     }
 
     /**
+     * Getter for <code>databasir.document_full_text.table_description</code>.
+     */
+    public String getTableDescription() {
+        return this.tableDescription;
+    }
+
+    /**
+     * Setter for <code>databasir.document_full_text.table_description</code>.
+     */
+    public void setTableDescription(String tableDescription) {
+        this.tableDescription = tableDescription;
+    }
+
+    /**
      * Getter for <code>databasir.document_full_text.col_name</code>.
      */
     public String getColName() {
@@ -394,6 +416,20 @@ public class DocumentFullTextPojo implements Serializable {
      */
     public void setColComment(String colComment) {
         this.colComment = colComment;
+    }
+
+    /**
+     * Getter for <code>databasir.document_full_text.col_description</code>.
+     */
+    public String getColDescription() {
+        return this.colDescription;
+    }
+
+    /**
+     * Setter for <code>databasir.document_full_text.col_description</code>.
+     */
+    public void setColDescription(String colDescription) {
+        this.colDescription = colDescription;
     }
 
     /**
@@ -445,8 +481,10 @@ public class DocumentFullTextPojo implements Serializable {
         sb.append(", ").append(databaseType);
         sb.append(", ").append(tableName);
         sb.append(", ").append(tableComment);
+        sb.append(", ").append(tableDescription);
         sb.append(", ").append(colName);
         sb.append(", ").append(colComment);
+        sb.append(", ").append(colDescription);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 

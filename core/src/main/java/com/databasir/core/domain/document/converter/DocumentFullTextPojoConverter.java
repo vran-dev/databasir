@@ -32,5 +32,7 @@ public interface DocumentFullTextPojoConverter {
                                 ProjectPojo project,
                                 DatabaseDocumentPojo db,
                                 TableDocumentPojo table,
-                                TableColumnDocumentPojo column);
+                                TableColumnDocumentPojo column,
+                                String tableDescription,
+                                String columnDescription);
 }
