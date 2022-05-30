@@ -54,7 +54,9 @@ public abstract class BasePlantUmlFileGenerator implements DocumentFileGenerator
         public String toDsl() {
             DatabaseDocumentResponse databaseDocument = context.getDatabaseDocument();
             StringBuilder dslBuilder = new StringBuilder(1024);
-            dslBuilder.append("@startuml").append(LINE);
+            // use smetana engine
+            dslBuilder.append("@startuml").append(LINE)
+                    .append("!pragma layout smetana").append(LINE);
 
             // configuration
             dslBuilder.append("' hide the spot").append(LINE);
