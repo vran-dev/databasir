@@ -11,8 +11,8 @@ import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.DocumentDiscussionDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.DocumentDiscussion;
+import com.databasir.dao.tables.pojos.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,19 +54,19 @@ public class DocumentDiscussionService {
                                          Pageable pageable,
                                          DiscussionListCondition condition) {
         if (projectDao.exists(groupId, projectId)) {
-            Page<DocumentDiscussionPojo> data =
+            Page<DocumentDiscussion> data =
                     documentDiscussionDao.selectByPage(pageable, condition.toCondition(projectId));
             Set<Integer> userIdList = data.getContent()
                     .stream()
-                    .map(DocumentDiscussionPojo::getUserId)
+                    .map(DocumentDiscussion::getUserId)
                     .collect(Collectors.toSet());
-            Map<Integer, UserPojo> userMapById = userDao.selectUserIdIn(userIdList)
+            Map<Integer, User> userMapById = userDao.selectUserIdIn(userIdList)
                     .stream()
-                    .collect(Collectors.toMap(UserPojo::getId, Function.identity()));
+                    .collect(Collectors.toMap(User::getId, Function.identity()));
             return data
                     .map(discussionPojo -> {
-                        UserPojo userPojo = userMapById.get(discussionPojo.getUserId());
-                        return discussionResponseConverter.of(discussionPojo, userPojo);
+                        User user = userMapById.get(discussionPojo.getUserId());
+                        return discussionResponseConverter.of(discussionPojo, user);
                     });
         } else {
             throw new Forbidden();
@@ -75,7 +75,7 @@ public class DocumentDiscussionService {
 
     public void create(Integer groupId, Integer projectId, Integer userId, DiscussionCreateRequest request) {
         if (projectDao.exists(groupId, projectId)) {
-            DocumentDiscussionPojo pojo = new DocumentDiscussionPojo();
+            DocumentDiscussion pojo = new DocumentDiscussion();
             pojo.setUserId(userId);
             pojo.setProjectId(projectId);
             pojo.setContent(request.getContent());

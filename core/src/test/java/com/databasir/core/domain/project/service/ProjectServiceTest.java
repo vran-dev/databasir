@@ -11,7 +11,7 @@ import com.databasir.core.domain.project.data.ProjectUpdateRequest.ProjectSyncRu
 import com.databasir.core.infrastructure.connection.DatabaseTypes;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.ProjectSyncRuleDao;
-import com.databasir.dao.tables.pojos.ProjectSyncRulePojo;
+import com.databasir.dao.tables.pojos.ProjectSyncRule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ class ProjectServiceTest extends BaseTest {
         int projectId = -1000;
         projectService.delete(projectId);
         Assertions.assertFalse(projectDao.existsById(projectId));
-        ProjectSyncRulePojo syncRule = projectSyncRuleDao.selectByProjectId(projectId);
+        ProjectSyncRule syncRule = projectSyncRuleDao.selectByProjectId(projectId);
         Assertions.assertNotNull(syncRule);
         Assertions.assertNotNull(syncRule.getAutoSyncCron());
         Assertions.assertFalse(syncRule.getIsAutoSync());

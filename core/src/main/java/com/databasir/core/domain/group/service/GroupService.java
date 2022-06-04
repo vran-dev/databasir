@@ -1,7 +1,7 @@
 package com.databasir.core.domain.group.service;
 
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.group.converter.GroupPojoConverter;
+import com.databasir.core.domain.group.converter.GroupConverter;
 import com.databasir.core.domain.group.converter.GroupResponseConverter;
 import com.databasir.core.domain.group.data.*;
 import com.databasir.core.domain.group.event.GroupCreated;
@@ -9,9 +9,9 @@ import com.databasir.core.domain.group.event.GroupDeleted;
 import com.databasir.core.domain.group.event.GroupUpdated;
 import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.*;
-import com.databasir.dao.tables.pojos.GroupPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.Group;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import com.databasir.dao.value.GroupMemberSimplePojo;
 import com.databasir.dao.value.GroupProjectCountPojo;
 import lombok.RequiredArgsConstructor;
@@ -42,18 +42,18 @@ public class GroupService {
 
     private final ProjectSyncRuleDao projectSyncRuleDao;
 
-    private final GroupPojoConverter groupPojoConverter;
+    private final GroupConverter groupConverter;
 
     private final GroupResponseConverter groupResponseConverter;
 
     @Transactional
     public Integer create(GroupCreateRequest request) {
-        GroupPojo groupPojo = groupPojoConverter.of(request);
-        Integer groupId = groupDao.insertAndReturnId(groupPojo);
-        List<UserRolePojo> roles = request.getGroupOwnerUserIds()
+        Group group = groupConverter.of(request);
+        Integer groupId = groupDao.insertAndReturnId(group);
+        List<UserRole> roles = request.getGroupOwnerUserIds()
                 .stream()
                 .map(userId -> {
-                    UserRolePojo role = new UserRolePojo();
+                    UserRole role = new UserRole();
                     role.setUserId(userId);
                     role.setRole(GROUP_OWNER);
                     role.setGroupId(groupId);
@@ -67,16 +67,16 @@ public class GroupService {
 
     @Transactional
     public void update(GroupUpdateRequest request) {
-        GroupPojo groupPojo = groupPojoConverter.of(request);
-        groupDao.updateById(groupPojo);
-        userRoleDao.deleteByRoleAndGroupId(GROUP_OWNER, groupPojo.getId());
-        List<UserRolePojo> roles = request.getGroupOwnerUserIds()
+        Group group = groupConverter.of(request);
+        groupDao.updateById(group);
+        userRoleDao.deleteByRoleAndGroupId(GROUP_OWNER, group.getId());
+        List<UserRole> roles = request.getGroupOwnerUserIds()
                 .stream()
                 .map(userId -> {
-                    UserRolePojo role = new UserRolePojo();
+                    UserRole role = new UserRole();
                     role.setUserId(userId);
                     role.setRole(GROUP_OWNER);
-                    role.setGroupId(groupPojo.getId());
+                    role.setGroupId(group.getId());
                     return role;
                 })
                 .collect(Collectors.toList());
@@ -94,10 +94,10 @@ public class GroupService {
     }
 
     public Page<GroupPageResponse> list(Pageable pageable, GroupPageCondition condition) {
-        Page<GroupPojo> page = groupDao.selectByPage(pageable, condition.toCondition());
+        Page<Group> page = groupDao.selectByPage(pageable, condition.toCondition());
         List<Integer> groupIdList = page.getContent()
                 .stream()
-                .map(GroupPojo::getId)
+                .map(Group::getId)
                 .collect(Collectors.toList());
         var ownersGroupByGroupId = userRoleDao.selectOwnerNamesByGroupIdIn(groupIdList)
                 .stream()
@@ -105,15 +105,15 @@ public class GroupService {
         var projectCountMapByGroupId = projectDao.selectCountByGroupIds(groupIdList)
                 .stream()
                 .collect(Collectors.toMap(GroupProjectCountPojo::getGroupId, v -> v));
-        return page.map(groupPojo -> {
-            Integer groupId = groupPojo.getId();
+        return page.map(group -> {
+            Integer groupId = group.getId();
             List<String> owners = ownersGroupByGroupId.getOrDefault(groupId, new ArrayList<>())
                     .stream()
                     .map(GroupMemberSimplePojo::getNickname)
                     .collect(Collectors.toList());
             GroupProjectCountPojo countPojo = projectCountMapByGroupId.get(groupId);
             Integer projectCount = countPojo == null ? 0 : countPojo.getCount();
-            return groupResponseConverter.toResponse(groupPojo, owners, projectCount);
+            return groupResponseConverter.toResponse(group, owners, projectCount);
         });
     }
 
@@ -125,9 +125,9 @@ public class GroupService {
     }
 
     public GroupResponse get(Integer groupId) {
-        GroupPojo groupPojo = groupDao.selectById(groupId);
-        List<UserPojo> users = userDao.selectLimitUsersByRoleAndGroup(groupId, GROUP_OWNER, 50);
-        return groupResponseConverter.toResponse(groupPojo, users);
+        Group group = groupDao.selectById(groupId);
+        List<User> users = userDao.selectLimitUsersByRoleAndGroup(groupId, GROUP_OWNER, 50);
+        return groupResponseConverter.toResponse(group, users);
     }
 
     public void removeMember(Integer groupId, Integer userId) {
@@ -138,7 +138,7 @@ public class GroupService {
         if (userRoleDao.hasRole(request.getUserId(), groupId)) {
             throw DomainErrors.USER_ROLE_DUPLICATE.exception();
         }
-        UserRolePojo pojo = new UserRolePojo();
+        UserRole pojo = new UserRole();
         pojo.setGroupId(groupId);
         pojo.setUserId(request.getUserId());
         pojo.setRole(request.getRole());
@@ -149,7 +149,7 @@ public class GroupService {
         if (!userRoleDao.hasRole(userId, groupId, role)) {
             // TODO 最多 20 个组长
             userRoleDao.deleteByUserIdAndGroupId(userId, groupId);
-            UserRolePojo pojo = new UserRolePojo();
+            UserRole pojo = new UserRole();
             pojo.setUserId(userId);
             pojo.setGroupId(groupId);
             pojo.setRole(role);

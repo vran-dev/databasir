@@ -8,7 +8,7 @@ import com.databasir.core.domain.mock.script.SpelScriptEvaluator;
 import com.databasir.dao.enums.MockDataType;
 import com.databasir.dao.impl.TableColumnDocumentDao;
 import com.databasir.dao.impl.TableDocumentDao;
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +44,7 @@ public class MockDataSaveValidator {
     public void validTableColumn(Integer tableDocId, List<String> requestColumnNames) {
         var existsColumnNames = tableColumnDocumentDao.selectByTableDocumentId(tableDocId)
                 .stream()
-                .map(TableColumnDocumentPojo::getName)
+                .map(TableColumnDocument::getName)
                 .collect(Collectors.toSet());
         for (String colName : requestColumnNames) {
             if (!existsColumnNames.contains(colName)) {

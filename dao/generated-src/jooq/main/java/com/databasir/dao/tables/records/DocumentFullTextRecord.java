@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DocumentFullText;
-import com.databasir.dao.tables.pojos.DocumentFullTextPojo;
+import com.databasir.dao.tables.DocumentFullTextTable;
+import com.databasir.dao.tables.pojos.DocumentFullText;
 
 import java.time.LocalDateTime;
 
@@ -380,14 +380,14 @@ public class DocumentFullTextRecord extends UpdatableRecordImpl<DocumentFullText
      * Create a detached DocumentFullTextRecord
      */
     public DocumentFullTextRecord() {
-        super(DocumentFullText.DOCUMENT_FULL_TEXT);
+        super(DocumentFullTextTable.DOCUMENT_FULL_TEXT);
     }
 
     /**
      * Create a detached, initialised DocumentFullTextRecord
      */
     public DocumentFullTextRecord(Integer id, Integer groupId, Integer projectId, Integer databaseDocumentId, Integer databaseDocumentVersion, Integer tableDocumentId, Integer tableColumnDocumentId, String groupName, String groupDescription, String projectName, String projectDescription, String databaseName, String schemaName, String databaseProductName, String databaseType, String tableName, String tableComment, String tableDescription, String colName, String colComment, String colDescription, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(DocumentFullText.DOCUMENT_FULL_TEXT);
+        super(DocumentFullTextTable.DOCUMENT_FULL_TEXT);
 
         setId(id);
         setGroupId(groupId);
@@ -417,8 +417,8 @@ public class DocumentFullTextRecord extends UpdatableRecordImpl<DocumentFullText
     /**
      * Create a detached, initialised DocumentFullTextRecord
      */
-    public DocumentFullTextRecord(DocumentFullTextPojo value) {
-        super(DocumentFullText.DOCUMENT_FULL_TEXT);
+    public DocumentFullTextRecord(DocumentFullText value) {
+        super(DocumentFullTextTable.DOCUMENT_FULL_TEXT);
 
         if (value != null) {
             setId(value.getId());

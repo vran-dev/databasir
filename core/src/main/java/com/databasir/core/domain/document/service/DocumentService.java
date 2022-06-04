@@ -81,7 +81,7 @@ public class DocumentService {
 
     private final DocumentPojoConverter documentPojoConverter;
 
-    private final DocumentFullTextPojoConverter documentFullTextPojoConverter;
+    private final DocumentFullTextConverter documentFullTextConverter;
 
     private final DocumentResponseConverter documentResponseConverter;
 
@@ -102,9 +102,9 @@ public class DocumentService {
         projectDao.selectOptionalById(projectId)
                 .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
         DatabaseMeta current = retrieveDatabaseMeta(projectId);
-        Optional<DatabaseDocumentPojo> originalOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
+        Optional<DatabaseDocument> originalOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         if (originalOption.isPresent()) {
-            DatabaseDocumentPojo original = originalOption.get();
+            DatabaseDocument original = originalOption.get();
             DatabaseMeta originalMeta = retrieveOriginalDatabaseMeta(original);
             RootDiff diff = Diffs.diff(originalMeta, current);
             if (diff.getDiffType() == DiffType.NONE) {
@@ -117,34 +117,34 @@ public class DocumentService {
             // archive old version
             databaseDocumentDao.updateIsArchiveById(previousDocumentId, true);
             Long version = original.getVersion();
-            saveNewDocument(current, version + 1, original.getProjectId());
-            eventPublisher.publish(new DocumentUpdated(diff, version + 1, version, projectId));
+            Integer docId = saveNewDocument(current, version + 1, original.getProjectId());
+            eventPublisher.publish(new DocumentUpdated(diff, version + 1, version, projectId, docId));
         } else {
-            saveNewDocument(current, 1L, projectId);
+            Integer docId = saveNewDocument(current, 1L, projectId);
             RootDiff diff = null;
             try {
                 diff = Diffs.diff(null, current);
             } catch (Exception e) {
                 log.error("diff project " + projectId + " error, fallback diff type to NONE", e);
             }
-            eventPublisher.publish(new DocumentUpdated(diff, 1L, null, projectId));
+            eventPublisher.publish(new DocumentUpdated(diff, 1L, null, projectId, docId));
         }
     }
 
-    private DatabaseMeta retrieveOriginalDatabaseMeta(DatabaseDocumentPojo original) {
+    private DatabaseMeta retrieveOriginalDatabaseMeta(DatabaseDocument original) {
         Integer docId = original.getId();
-        List<TableDocumentPojo> tables = tableDocumentDao.selectByDatabaseDocumentId(docId);
-        List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByDatabaseDocumentId(docId);
-        List<TableIndexDocumentPojo> indexes = tableIndexDocumentDao.selectByDatabaseMetaId(docId);
-        List<TableTriggerDocumentPojo> triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(docId);
-        List<TableForeignKeyDocumentPojo> fks = tableForeignKeyDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableDocument> tables = tableDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableColumnDocument> columns = tableColumnDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableIndexDocument> indexes = tableIndexDocumentDao.selectByDatabaseMetaId(docId);
+        List<TableTriggerDocument> triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(docId);
+        List<TableForeignKeyDocument> fks = tableForeignKeyDocumentDao.selectByDatabaseDocumentId(docId);
         return databaseMetaConverter.of(original, tables, columns, indexes, triggers, fks);
     }
 
     private DatabaseMeta retrieveDatabaseMeta(Integer projectId) {
-        ProjectSyncRulePojo rule = projectSyncRuleDao.selectByProjectId(projectId);
-        DataSourcePojo dataSource = dataSourceDao.selectByProjectId(projectId);
-        List<DataSourcePropertyPojo> properties = dataSourcePropertyDao.selectByDataSourceId(dataSource.getId());
+        ProjectSyncRule rule = projectSyncRuleDao.selectByProjectId(projectId);
+        DataSource dataSource = dataSourceDao.selectByProjectId(projectId);
+        List<DataSourceProperty> properties = dataSourcePropertyDao.selectByDataSourceId(dataSource.getId());
         Connection jdbcConnection = databaseConnectionService.create(dataSource, properties);
         DatabasirConfig databasirConfig = new DatabasirConfig();
         databasirConfig.setIgnoreTableNameRegex(jsonConverter.fromJson(rule.getIgnoreTableNameRegexArray()));
@@ -168,9 +168,9 @@ public class DocumentService {
         }
     }
 
-    private void saveNewDocument(DatabaseMeta meta,
-                                 Long version,
-                                 Integer projectId) {
+    private Integer saveNewDocument(DatabaseMeta meta,
+                                    Long version,
+                                    Integer projectId) {
 
         var dbDocPojo = documentPojoConverter.toDatabasePojo(projectId, meta, version);
         final Integer docId;
@@ -182,7 +182,7 @@ public class DocumentService {
             throw new DatabasirException(DomainErrors.DATABASE_DOCUMENT_DUPLICATE_KEY);
         }
         meta.getTables().forEach(table -> {
-            TableDocumentPojo tableMeta =
+            TableDocument tableMeta =
                     documentPojoConverter.toTablePojo(docId, table);
             Integer tableMetaId = tableDocumentDao.insertAndReturnId(tableMeta);
             tableMeta.setId(tableMetaId);
@@ -209,42 +209,27 @@ public class DocumentService {
             // trigger
             var triggers = documentPojoConverter.toTriggerPojo(docId, tableMetaId, table.getTriggers());
             tableTriggerDocumentDao.batchInsert(triggers);
-
-            // save full text
-            var descriptionMapByJoinName = documentDescriptionDao.selectByProjectId(projectId)
-                    .stream()
-                    .collect(Collectors.toMap(
-                            d -> {
-                                if (d.getColumnName() == null) {
-                                    return d.getTableName();
-                                }
-                                return String.join(".",
-                                        d.getTableName(),
-                                        StringUtils.defaultIfBlank(d.getColumnName(), ""));
-                            },
-                            DocumentDescriptionPojo::getContent,
-                            (a, b) -> a));
-            saveDocumentFullText(projectId, dbDocPojo, tableMeta, descriptionMapByJoinName);
         });
         log.info("save new version document success: projectId = {}, name = {}, version =  {}",
                 projectId, meta.getDatabaseName(), version);
+        return docId;
     }
 
     private void saveDocumentFullText(Integer projectId,
-                                      DatabaseDocumentPojo database,
-                                      TableDocumentPojo table,
+                                      DatabaseDocument database,
+                                      TableDocument table,
                                       Map<String, String> descriptionMapByJoinName) {
-        ProjectPojo project = projectDao.selectById(projectId);
-        GroupPojo group = groupDao.selectById(project.getGroupId());
-        List<TableColumnDocumentPojo> columns = tableColumnDocumentDao.selectByTableDocumentId(table.getId());
+        Project project = projectDao.selectById(projectId);
+        Group group = groupDao.selectById(project.getGroupId());
+        List<TableColumnDocument> columns = tableColumnDocumentDao.selectByTableDocumentId(table.getId());
         // clear outdated data before save
         documentFullTextDao.deleteTableFullText(table.getId());
-        List<DocumentFullTextPojo> fullTextPojoList = columns.stream()
+        List<DocumentFullText> fullTextPojoList = columns.stream()
                 .map(column -> {
                     String tableName = table.getName();
                     String tableDescription = descriptionMapByJoinName.get(tableName);
                     String columnDescription = descriptionMapByJoinName.get(tableName + "." + column.getName());
-                    return documentFullTextPojoConverter.toPojo(group, project, database, table, column,
+                    return documentFullTextConverter.toPojo(group, project, database, table, column,
                             tableDescription, columnDescription);
                 })
                 .collect(Collectors.toList());
@@ -255,10 +240,10 @@ public class DocumentService {
                                                                             Long version,
                                                                             Long originalVersion) {
         String projectName = projectDao.selectOptionalById(projectId)
-                .map(ProjectPojo::getName)
+                .map(Project::getName)
                 .orElseThrow(DomainErrors.PROJECT_NOT_FOUND::exception);
 
-        Optional<DatabaseDocumentPojo> documentOption;
+        Optional<DatabaseDocument> documentOption;
         if (version == null) {
             documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
@@ -331,7 +316,7 @@ public class DocumentService {
     public List<TableDiffResult> tableDiffs(Integer projectId, Long originalVersion, Long currentVersion) {
         var original = databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, originalVersion)
                 .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
-        DatabaseDocumentPojo current;
+        DatabaseDocument current;
         if (currentVersion == null) {
             current = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
                     .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
@@ -346,7 +331,7 @@ public class DocumentService {
 
     public Optional<DatabaseDocumentResponse> getOneByProjectId(Integer projectId, Long version) {
 
-        Optional<DatabaseDocumentPojo> documentOption;
+        Optional<DatabaseDocument> documentOption;
         if (version == null) {
             documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
@@ -359,14 +344,14 @@ public class DocumentService {
             var indexes = tableIndexDocumentDao.selectByDatabaseMetaId(id);
             var triggers = tableTriggerDocumentDao.selectByDatabaseDocumentId(id);
             var foreignKeys = tableForeignKeyDocumentDao.selectByDatabaseDocumentId(id);
-            Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
-                    .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
-            Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
-                    .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
-            Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
-                    .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
-            Map<Integer, List<TableForeignKeyDocumentPojo>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
-                    .collect(Collectors.groupingBy(TableForeignKeyDocumentPojo::getTableDocumentId));
+            Map<Integer, List<TableColumnDocument>> columnsGroupByTableMetaId = columns.stream()
+                    .collect(Collectors.groupingBy(TableColumnDocument::getTableDocumentId));
+            Map<Integer, List<TableIndexDocument>> indexesGroupByTableMetaId = indexes.stream()
+                    .collect(Collectors.groupingBy(TableIndexDocument::getTableDocumentId));
+            Map<Integer, List<TableTriggerDocument>> triggersGroupByTableMetaId = triggers.stream()
+                    .collect(Collectors.groupingBy(TableTriggerDocument::getTableDocumentId));
+            Map<Integer, List<TableForeignKeyDocument>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
+                    .collect(Collectors.groupingBy(TableForeignKeyDocument::getTableDocumentId));
             var tableDocumentResponseList = tables.stream()
                     .map(table -> {
                         Integer tableId = table.getId();
@@ -412,26 +397,26 @@ public class DocumentService {
         // column
         var columns =
                 tableColumnDocumentDao.selectByDatabaseDocumentIdAndTableIdIn(databaseDocumentId, tableIds);
-        Map<Integer, List<TableColumnDocumentPojo>> columnsGroupByTableMetaId = columns.stream()
-                .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableColumnDocument>> columnsGroupByTableMetaId = columns.stream()
+                .collect(Collectors.groupingBy(TableColumnDocument::getTableDocumentId));
 
         // index
         var indexes =
                 tableIndexDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
-        Map<Integer, List<TableIndexDocumentPojo>> indexesGroupByTableMetaId = indexes.stream()
-                .collect(Collectors.groupingBy(TableIndexDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableIndexDocument>> indexesGroupByTableMetaId = indexes.stream()
+                .collect(Collectors.groupingBy(TableIndexDocument::getTableDocumentId));
 
         // foreign keys
         var foreignKeys =
                 tableForeignKeyDocumentDao.selectByDatabaseDocumentIdAndTableIdIn(databaseDocumentId, tableIds);
-        Map<Integer, List<TableForeignKeyDocumentPojo>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
-                .collect(Collectors.groupingBy(TableForeignKeyDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableForeignKeyDocument>> foreignKeysGroupByTableMetaId = foreignKeys.stream()
+                .collect(Collectors.groupingBy(TableForeignKeyDocument::getTableDocumentId));
 
         // trigger
         var triggers =
                 tableTriggerDocumentDao.selectByDatabaseDocumentIdAndIdIn(databaseDocumentId, tableIds);
-        Map<Integer, List<TableTriggerDocumentPojo>> triggersGroupByTableMetaId = triggers.stream()
-                .collect(Collectors.groupingBy(TableTriggerDocumentPojo::getTableDocumentId));
+        Map<Integer, List<TableTriggerDocument>> triggersGroupByTableMetaId = triggers.stream()
+                .collect(Collectors.groupingBy(TableTriggerDocument::getTableDocumentId));
 
         // discussion
         var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
@@ -450,7 +435,7 @@ public class DocumentService {
                         d -> String.join(".",
                                 d.getTableName(),
                                 StringUtils.defaultIfBlank(d.getColumnName(), "")),
-                        DocumentDescriptionPojo::getContent,
+                        DocumentDescription::getContent,
                         (a, b) -> a));
 
         return tables.stream()
@@ -491,7 +476,7 @@ public class DocumentService {
         List<Integer> currentTableIds = current.stream().map(t -> t.getId()).collect(Collectors.toList());
         var missedIds = CollectionUtils.disjunction(currentTableIds, request.getTableIds());
         if (request.getOriginalVersion() != null) {
-            DatabaseDocumentPojo doc =
+            DatabaseDocument doc =
                     databaseDocumentDao.selectOptionalByProjectIdAndVersion(projectId, request.getOriginalVersion())
                             .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
             List<String> tableNames = current.stream().map(t -> t.getName()).distinct().collect(Collectors.toList());
@@ -544,7 +529,7 @@ public class DocumentService {
             doc = getOneByProjectId(projectId, version)
                     .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
         } else {
-            DatabaseDocumentPojo databaseDoc;
+            DatabaseDocument databaseDoc;
             if (version == null) {
                 databaseDoc = databaseDocumentDao.selectNotArchivedByProjectId(projectId)
                         .orElseThrow(DomainErrors.DOCUMENT_VERSION_IS_INVALID::exception);
@@ -567,7 +552,7 @@ public class DocumentService {
     }
 
     public List<TableResponse> getTableAndColumns(Integer projectId, Long version) {
-        Optional<DatabaseDocumentPojo> documentOption;
+        Optional<DatabaseDocument> documentOption;
         if (version == null) {
             documentOption = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
@@ -576,11 +561,11 @@ public class DocumentService {
         if (documentOption.isEmpty()) {
             return emptyList();
         } else {
-            DatabaseDocumentPojo databaseDoc = documentOption.get();
+            DatabaseDocument databaseDoc = documentOption.get();
             var tables = tableDocumentDao.selectByDatabaseDocumentId(databaseDoc.getId());
             var columns = tableColumnDocumentDao.selectByDatabaseDocumentId(databaseDoc.getId());
             var columnMapByTableId = columns.stream()
-                    .collect(Collectors.groupingBy(TableColumnDocumentPojo::getTableDocumentId));
+                    .collect(Collectors.groupingBy(TableColumnDocument::getTableDocumentId));
             return tableResponseConverter.from(tables, columnMapByTableId);
         }
     }

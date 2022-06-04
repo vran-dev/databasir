@@ -8,8 +8,8 @@ import com.databasir.dao.enums.ProjectSyncTaskStatus;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.ProjectSyncTaskDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.tables.pojos.ProjectSyncTaskPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.ProjectSyncTask;
+import com.databasir.dao.tables.pojos.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -44,9 +44,9 @@ public class ProjectSyncTaskScheduler {
     @Scheduled(fixedRate = 5000L)
     public void startSyncTask() {
         final int size = 10;
-        List<ProjectSyncTaskPojo> tasks = projectSyncTaskDao.listNewTasks(size);
+        List<ProjectSyncTask> tasks = projectSyncTaskDao.listNewTasks(size);
         List<Integer> projectIds = tasks.stream()
-                .map(ProjectSyncTaskPojo::getProjectId)
+                .map(ProjectSyncTask::getProjectId)
                 .distinct()
                 .collect(Collectors.toList());
         Map<Integer, Integer> groupIdAndProjectIdMap = projectDao.selectGroupIdsByProjectIdIn(projectIds);
@@ -88,7 +88,7 @@ public class ProjectSyncTaskScheduler {
             operatorUsername = "system";
             operationName = "定时同步";
         } else {
-            UserPojo user = userDao.selectById(userId);
+            User user = userDao.selectById(userId);
             operatorNickName = user.getNickname();
             operatorUsername = user.getUsername();
             operationName = "手动同步";

@@ -4,32 +4,32 @@
 package com.databasir.dao;
 
 
-import com.databasir.dao.tables.DataSource;
-import com.databasir.dao.tables.DataSourceProperty;
-import com.databasir.dao.tables.DatabaseDocument;
-import com.databasir.dao.tables.DatabaseType;
-import com.databasir.dao.tables.DocumentDescription;
-import com.databasir.dao.tables.DocumentDiscussion;
-import com.databasir.dao.tables.DocumentFullText;
-import com.databasir.dao.tables.DocumentTemplateProperty;
-import com.databasir.dao.tables.Group;
-import com.databasir.dao.tables.Login;
-import com.databasir.dao.tables.MockDataRule;
-import com.databasir.dao.tables.OauthApp;
-import com.databasir.dao.tables.OperationLog;
-import com.databasir.dao.tables.Project;
-import com.databasir.dao.tables.ProjectSyncRule;
-import com.databasir.dao.tables.ProjectSyncTask;
-import com.databasir.dao.tables.SysKey;
-import com.databasir.dao.tables.SysMail;
-import com.databasir.dao.tables.TableColumnDocument;
-import com.databasir.dao.tables.TableDocument;
-import com.databasir.dao.tables.TableForeignKeyDocument;
-import com.databasir.dao.tables.TableIndexDocument;
-import com.databasir.dao.tables.TableTriggerDocument;
-import com.databasir.dao.tables.User;
-import com.databasir.dao.tables.UserFavoriteProject;
-import com.databasir.dao.tables.UserRole;
+import com.databasir.dao.tables.DataSourcePropertyTable;
+import com.databasir.dao.tables.DataSourceTable;
+import com.databasir.dao.tables.DatabaseDocumentTable;
+import com.databasir.dao.tables.DatabaseTypeTable;
+import com.databasir.dao.tables.DocumentDescriptionTable;
+import com.databasir.dao.tables.DocumentDiscussionTable;
+import com.databasir.dao.tables.DocumentFullTextTable;
+import com.databasir.dao.tables.DocumentTemplatePropertyTable;
+import com.databasir.dao.tables.GroupTable;
+import com.databasir.dao.tables.LoginTable;
+import com.databasir.dao.tables.MockDataRuleTable;
+import com.databasir.dao.tables.OauthAppTable;
+import com.databasir.dao.tables.OperationLogTable;
+import com.databasir.dao.tables.ProjectSyncRuleTable;
+import com.databasir.dao.tables.ProjectSyncTaskTable;
+import com.databasir.dao.tables.ProjectTable;
+import com.databasir.dao.tables.SysKeyTable;
+import com.databasir.dao.tables.SysMailTable;
+import com.databasir.dao.tables.TableColumnDocumentTable;
+import com.databasir.dao.tables.TableDocumentTable;
+import com.databasir.dao.tables.TableForeignKeyDocumentTable;
+import com.databasir.dao.tables.TableIndexDocumentTable;
+import com.databasir.dao.tables.TableTriggerDocumentTable;
+import com.databasir.dao.tables.UserFavoriteProjectTable;
+import com.databasir.dao.tables.UserRoleTable;
+import com.databasir.dao.tables.UserTable;
 
 
 /**
@@ -41,130 +41,130 @@ public class Tables {
     /**
      * The table <code>databasir.data_source</code>.
      */
-    public static final DataSource DATA_SOURCE = DataSource.DATA_SOURCE;
+    public static final DataSourceTable DATA_SOURCE = DataSourceTable.DATA_SOURCE;
 
     /**
      * The table <code>databasir.data_source_property</code>.
      */
-    public static final DataSourceProperty DATA_SOURCE_PROPERTY = DataSourceProperty.DATA_SOURCE_PROPERTY;
+    public static final DataSourcePropertyTable DATA_SOURCE_PROPERTY = DataSourcePropertyTable.DATA_SOURCE_PROPERTY;
 
     /**
      * The table <code>databasir.database_document</code>.
      */
-    public static final DatabaseDocument DATABASE_DOCUMENT = DatabaseDocument.DATABASE_DOCUMENT;
+    public static final DatabaseDocumentTable DATABASE_DOCUMENT = DatabaseDocumentTable.DATABASE_DOCUMENT;
 
     /**
      * customer database types
      */
-    public static final DatabaseType DATABASE_TYPE = DatabaseType.DATABASE_TYPE;
+    public static final DatabaseTypeTable DATABASE_TYPE = DatabaseTypeTable.DATABASE_TYPE;
 
     /**
      * custom document description
      */
-    public static final DocumentDescription DOCUMENT_DESCRIPTION = DocumentDescription.DOCUMENT_DESCRIPTION;
+    public static final DocumentDescriptionTable DOCUMENT_DESCRIPTION = DocumentDescriptionTable.DOCUMENT_DESCRIPTION;
 
     /**
      * The table <code>databasir.document_discussion</code>.
      */
-    public static final DocumentDiscussion DOCUMENT_DISCUSSION = DocumentDiscussion.DOCUMENT_DISCUSSION;
+    public static final DocumentDiscussionTable DOCUMENT_DISCUSSION = DocumentDiscussionTable.DOCUMENT_DISCUSSION;
 
     /**
      * The table <code>databasir.document_full_text</code>.
      */
-    public static final DocumentFullText DOCUMENT_FULL_TEXT = DocumentFullText.DOCUMENT_FULL_TEXT;
+    public static final DocumentFullTextTable DOCUMENT_FULL_TEXT = DocumentFullTextTable.DOCUMENT_FULL_TEXT;
 
     /**
      * template property
      */
-    public static final DocumentTemplateProperty DOCUMENT_TEMPLATE_PROPERTY = DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY;
+    public static final DocumentTemplatePropertyTable DOCUMENT_TEMPLATE_PROPERTY = DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY;
 
     /**
      * The table <code>databasir.group</code>.
      */
-    public static final Group GROUP = Group.GROUP;
+    public static final GroupTable GROUP = GroupTable.GROUP;
 
     /**
      * The table <code>databasir.login</code>.
      */
-    public static final Login LOGIN = Login.LOGIN;
+    public static final LoginTable LOGIN = LoginTable.LOGIN;
 
     /**
      * The table <code>databasir.mock_data_rule</code>.
      */
-    public static final MockDataRule MOCK_DATA_RULE = MockDataRule.MOCK_DATA_RULE;
+    public static final MockDataRuleTable MOCK_DATA_RULE = MockDataRuleTable.MOCK_DATA_RULE;
 
     /**
      * oauth app info
      */
-    public static final OauthApp OAUTH_APP = OauthApp.OAUTH_APP;
+    public static final OauthAppTable OAUTH_APP = OauthAppTable.OAUTH_APP;
 
     /**
      * The table <code>databasir.operation_log</code>.
      */
-    public static final OperationLog OPERATION_LOG = OperationLog.OPERATION_LOG;
+    public static final OperationLogTable OPERATION_LOG = OperationLogTable.OPERATION_LOG;
 
     /**
      * The table <code>databasir.project</code>.
      */
-    public static final Project PROJECT = Project.PROJECT;
+    public static final ProjectTable PROJECT = ProjectTable.PROJECT;
 
     /**
      * The table <code>databasir.project_sync_rule</code>.
      */
-    public static final ProjectSyncRule PROJECT_SYNC_RULE = ProjectSyncRule.PROJECT_SYNC_RULE;
+    public static final ProjectSyncRuleTable PROJECT_SYNC_RULE = ProjectSyncRuleTable.PROJECT_SYNC_RULE;
 
     /**
      * The table <code>databasir.project_sync_task</code>.
      */
-    public static final ProjectSyncTask PROJECT_SYNC_TASK = ProjectSyncTask.PROJECT_SYNC_TASK;
+    public static final ProjectSyncTaskTable PROJECT_SYNC_TASK = ProjectSyncTaskTable.PROJECT_SYNC_TASK;
 
     /**
      * The table <code>databasir.sys_key</code>.
      */
-    public static final SysKey SYS_KEY = SysKey.SYS_KEY;
+    public static final SysKeyTable SYS_KEY = SysKeyTable.SYS_KEY;
 
     /**
      * The table <code>databasir.sys_mail</code>.
      */
-    public static final SysMail SYS_MAIL = SysMail.SYS_MAIL;
+    public static final SysMailTable SYS_MAIL = SysMailTable.SYS_MAIL;
 
     /**
      * The table <code>databasir.table_column_document</code>.
      */
-    public static final TableColumnDocument TABLE_COLUMN_DOCUMENT = TableColumnDocument.TABLE_COLUMN_DOCUMENT;
+    public static final TableColumnDocumentTable TABLE_COLUMN_DOCUMENT = TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT;
 
     /**
      * The table <code>databasir.table_document</code>.
      */
-    public static final TableDocument TABLE_DOCUMENT = TableDocument.TABLE_DOCUMENT;
+    public static final TableDocumentTable TABLE_DOCUMENT = TableDocumentTable.TABLE_DOCUMENT;
 
     /**
      * The table <code>databasir.table_foreign_key_document</code>.
      */
-    public static final TableForeignKeyDocument TABLE_FOREIGN_KEY_DOCUMENT = TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT;
+    public static final TableForeignKeyDocumentTable TABLE_FOREIGN_KEY_DOCUMENT = TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT;
 
     /**
      * The table <code>databasir.table_index_document</code>.
      */
-    public static final TableIndexDocument TABLE_INDEX_DOCUMENT = TableIndexDocument.TABLE_INDEX_DOCUMENT;
+    public static final TableIndexDocumentTable TABLE_INDEX_DOCUMENT = TableIndexDocumentTable.TABLE_INDEX_DOCUMENT;
 
     /**
      * The table <code>databasir.table_trigger_document</code>.
      */
-    public static final TableTriggerDocument TABLE_TRIGGER_DOCUMENT = TableTriggerDocument.TABLE_TRIGGER_DOCUMENT;
+    public static final TableTriggerDocumentTable TABLE_TRIGGER_DOCUMENT = TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT;
 
     /**
      * The table <code>databasir.user</code>.
      */
-    public static final User USER = User.USER;
+    public static final UserTable USER = UserTable.USER;
 
     /**
      * The table <code>databasir.user_favorite_project</code>.
      */
-    public static final UserFavoriteProject USER_FAVORITE_PROJECT = UserFavoriteProject.USER_FAVORITE_PROJECT;
+    public static final UserFavoriteProjectTable USER_FAVORITE_PROJECT = UserFavoriteProjectTable.USER_FAVORITE_PROJECT;
 
     /**
      * The table <code>databasir.user_role</code>.
      */
-    public static final UserRole USER_ROLE = UserRole.USER_ROLE;
+    public static final UserRoleTable USER_ROLE = UserRoleTable.USER_ROLE;
 }

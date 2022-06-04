@@ -4,7 +4,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.gitlab.GitlabRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
-import com.databasir.dao.tables.pojos.OauthAppPojo;
+import com.databasir.dao.tables.pojos.OauthApp;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public String authorizationUrl(OauthAppPojo app, Map<String, String[]> params) {
+    public String authorizationUrl(OauthApp app, Map<String, String[]> params) {
         if (!params.containsKey("redirect_uri")) {
             throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception("缺少参数 redirect_uri", null);
         }
@@ -45,7 +45,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public OAuthProcessResult process(OauthAppPojo app, Map<String, String[]> requestParams) {
+    public OAuthProcessResult process(OauthApp app, Map<String, String[]> requestParams) {
         if (!requestParams.containsKey("redirect_uri")) {
             throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception("缺少参数 redirect_uri", null);
         }

@@ -5,7 +5,7 @@ import com.databasir.core.domain.group.event.GroupDeleted;
 import com.databasir.core.domain.group.event.GroupUpdated;
 import com.databasir.dao.Tables;
 import com.databasir.dao.impl.DocumentFullTextDao;
-import com.databasir.dao.tables.pojos.DocumentFullTextPojo;
+import com.databasir.dao.tables.pojos.DocumentFullText;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,7 +24,7 @@ public class GroupEventSubscriber {
     public void refreshFullTextWhenUpdated(GroupUpdated event) {
         if (!documentFullTextDao.exists(Tables.DOCUMENT_FULL_TEXT.GROUP_ID.eq(event.getGroupId())
                 .and(Tables.DOCUMENT_FULL_TEXT.PROJECT_ID.isNull()))) {
-            DocumentFullTextPojo pojo = new DocumentFullTextPojo();
+            DocumentFullText pojo = new DocumentFullText();
             pojo.setGroupId(event.getGroupId());
             pojo.setGroupName(event.getGroupName());
             pojo.setGroupDescription(event.getGroupDescription());
@@ -48,7 +48,7 @@ public class GroupEventSubscriber {
     public void addFullTextWhenCreated(GroupCreated event) {
         if (!documentFullTextDao.exists(Tables.DOCUMENT_FULL_TEXT.GROUP_ID.eq(event.getGroupId())
                 .and(Tables.DOCUMENT_FULL_TEXT.PROJECT_ID.isNull()))) {
-            DocumentFullTextPojo pojo = new DocumentFullTextPojo();
+            DocumentFullText pojo = new DocumentFullText();
             pojo.setGroupId(event.getGroupId());
             pojo.setGroupName(event.getGroupName());
             pojo.setGroupDescription(event.getGroupDescription());

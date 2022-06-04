@@ -9,9 +9,9 @@ import com.databasir.core.infrastructure.jwt.JwtTokens;
 import com.databasir.dao.impl.LoginDao;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.LoginPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.Login;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class LoginService {
     private final JwtTokens jwtTokens;
 
     public AccessTokenRefreshResponse refreshAccessTokens(AccessTokenRefreshRequest request) {
-        LoginPojo login = loginDao.selectByRefreshToken(request.getRefreshToken())
+        Login login = loginDao.selectByRefreshToken(request.getRefreshToken())
                 .orElseThrow(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION::exception);
         // refresh-token 已过期
         if (login.getRefreshTokenExpireAt().isBefore(LocalDateTime.now())) {
@@ -54,7 +54,7 @@ public class LoginService {
         }
 
         // refresh-token 对应的用户已被删除
-        UserPojo user = userDao.selectOptionalById(login.getUserId())
+        User user = userDao.selectOptionalById(login.getUserId())
                 .orElseThrow(() -> {
                     log.warn("user not exists but refresh token exists for " + login.getRefreshToken());
                     return DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.exception("invalid user");
@@ -72,19 +72,19 @@ public class LoginService {
     }
 
     public LoginKeyResponse generate(Integer userId) {
-        UserPojo user = userDao.selectById(userId);
+        User user = userDao.selectById(userId);
         String accessToken = jwtTokens.accessToken(user.getEmail());
         LocalDateTime accessTokenExpireAt = jwtTokens.expireAt(accessToken);
         String refreshToken = UUID.randomUUID().toString().replace("-", "");
         LocalDateTime refreshTokenExpireAt = LocalDateTime.now().plusDays(15);
 
-        LoginPojo loginPojo = new LoginPojo();
-        loginPojo.setAccessToken(accessToken);
-        loginPojo.setAccessTokenExpireAt(accessTokenExpireAt);
-        loginPojo.setRefreshToken(refreshToken);
-        loginPojo.setRefreshTokenExpireAt(refreshTokenExpireAt);
-        loginPojo.setUserId(userId);
-        loginDao.insertOnDuplicateKeyUpdate(loginPojo);
+        Login login = new Login();
+        login.setAccessToken(accessToken);
+        login.setAccessTokenExpireAt(accessTokenExpireAt);
+        login.setRefreshToken(refreshToken);
+        login.setRefreshTokenExpireAt(refreshTokenExpireAt);
+        login.setUserId(userId);
+        loginDao.insertOnDuplicateKeyUpdate(login);
 
         return LoginKeyResponse.builder()
                 .userId(userId)
@@ -98,7 +98,7 @@ public class LoginService {
     public Optional<UserLoginResponse> getUserLoginData(Integer userId) {
         return loginDao.selectByUserId(userId)
                 .map(login -> {
-                    UserPojo user = userDao.selectById(login.getUserId());
+                    User user = userDao.selectById(login.getUserId());
                     UserLoginResponse data = new UserLoginResponse();
                     data.setId(user.getId());
                     data.setNickname(user.getNickname());
@@ -110,7 +110,7 @@ public class LoginService {
                             .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                     data.setAccessTokenExpireAt(expireAt);
                     data.setRefreshToken(login.getRefreshToken());
-                    List<UserRolePojo> rolePojoList =
+                    List<UserRole> rolePojoList =
                             userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
                     List<UserLoginResponse.RoleResponse> roles = rolePojoList
                             .stream()

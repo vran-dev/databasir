@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.Group;
-import com.databasir.dao.tables.pojos.GroupPojo;
+import com.databasir.dao.tables.GroupTable;
+import com.databasir.dao.tables.pojos.Group;
 
 import java.time.LocalDateTime;
 
@@ -133,32 +133,32 @@ public class GroupRecord extends UpdatableRecordImpl<GroupRecord> implements Rec
 
     @Override
     public Field<Integer> field1() {
-        return Group.GROUP.ID;
+        return GroupTable.GROUP.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return Group.GROUP.NAME;
+        return GroupTable.GROUP.NAME;
     }
 
     @Override
     public Field<String> field3() {
-        return Group.GROUP.DESCRIPTION;
+        return GroupTable.GROUP.DESCRIPTION;
     }
 
     @Override
     public Field<Boolean> field4() {
-        return Group.GROUP.DELETED;
+        return GroupTable.GROUP.DELETED;
     }
 
     @Override
     public Field<LocalDateTime> field5() {
-        return Group.GROUP.UPDATE_AT;
+        return GroupTable.GROUP.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return Group.GROUP.CREATE_AT;
+        return GroupTable.GROUP.CREATE_AT;
     }
 
     @Override
@@ -276,14 +276,14 @@ public class GroupRecord extends UpdatableRecordImpl<GroupRecord> implements Rec
      * Create a detached GroupRecord
      */
     public GroupRecord() {
-        super(Group.GROUP);
+        super(GroupTable.GROUP);
     }
 
     /**
      * Create a detached, initialised GroupRecord
      */
     public GroupRecord(Integer id, String name, String description, Boolean deleted, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(Group.GROUP);
+        super(GroupTable.GROUP);
 
         setId(id);
         setName(name);
@@ -296,8 +296,8 @@ public class GroupRecord extends UpdatableRecordImpl<GroupRecord> implements Rec
     /**
      * Create a detached, initialised GroupRecord
      */
-    public GroupRecord(GroupPojo value) {
-        super(Group.GROUP);
+    public GroupRecord(Group value) {
+        super(GroupTable.GROUP);
 
         if (value != null) {
             setId(value.getId());

@@ -5,7 +5,7 @@ import com.databasir.core.domain.document.converter.DocumentTemplatePropertyResp
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesResponse;
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesUpdateRequest;
 import com.databasir.dao.impl.DocumentTemplatePropertyDao;
-import com.databasir.dao.tables.pojos.DocumentTemplatePropertyPojo;
+import com.databasir.dao.tables.pojos.DocumentTemplateProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class DocumentTemplateService {
     private final DocumentTemplatePropertiesUpdateRequestConverter documentTemplatePropertiesUpdateRequestConverter;
 
     public DocumentTemplatePropertiesResponse getAllProperties() {
-        List<DocumentTemplatePropertyPojo> properties = documentTemplatePropertyDao.selectAll();
+        List<DocumentTemplateProperty> properties = documentTemplatePropertyDao.selectAll();
         var propertiesGroupByType = documentTemplatePropertyResponseConverter.of(properties)
                 .stream()
                 .collect(Collectors.groupingBy(d -> d.getType()));
@@ -41,7 +41,7 @@ public class DocumentTemplateService {
     }
 
     public void updateByType(DocumentTemplatePropertiesUpdateRequest request) {
-        List<DocumentTemplatePropertyPojo> pojoList = documentTemplatePropertiesUpdateRequestConverter.toPojo(request);
+        List<DocumentTemplateProperty> pojoList = documentTemplatePropertiesUpdateRequestConverter.toPojo(request);
         documentTemplatePropertyDao.batchInsertOnDuplicateKeyUpdateValue(pojoList);
     }
 }

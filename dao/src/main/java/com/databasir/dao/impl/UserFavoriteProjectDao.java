@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.UserFavoriteProjectPojo;
+import com.databasir.dao.tables.pojos.UserFavoriteProject;
 import lombok.Getter;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -16,14 +16,14 @@ import java.util.List;
 import static com.databasir.dao.Tables.*;
 
 @Repository
-public class UserFavoriteProjectDao extends BaseDao<UserFavoriteProjectPojo> {
+public class UserFavoriteProjectDao extends BaseDao<UserFavoriteProject> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public UserFavoriteProjectDao() {
-        super(USER_FAVORITE_PROJECT, UserFavoriteProjectPojo.class);
+        super(USER_FAVORITE_PROJECT, UserFavoriteProject.class);
     }
 
     public boolean exists(Integer userId, Integer projectId) {
@@ -32,7 +32,7 @@ public class UserFavoriteProjectDao extends BaseDao<UserFavoriteProjectPojo> {
     }
 
     public void insert(Integer userId, Integer projectId) {
-        UserFavoriteProjectPojo pojo = new UserFavoriteProjectPojo();
+        UserFavoriteProject pojo = new UserFavoriteProject();
         pojo.setUserId(userId);
         pojo.setProjectId(projectId);
         this.insertAndReturnId(pojo);
@@ -43,31 +43,31 @@ public class UserFavoriteProjectDao extends BaseDao<UserFavoriteProjectPojo> {
                 .and(USER_FAVORITE_PROJECT.PROJECT_ID.eq(projectId)));
     }
 
-    public Page<UserFavoriteProjectPojo> selectByCondition(Pageable request, Condition condition) {
+    public Page<UserFavoriteProject> selectByCondition(Pageable request, Condition condition) {
         int total = getDslContext()
                 .selectCount().from(USER_FAVORITE_PROJECT)
                 .innerJoin(USER).on(USER.ID.eq(USER_FAVORITE_PROJECT.USER_ID))
                 .innerJoin(PROJECT).on(PROJECT.ID.eq(USER_FAVORITE_PROJECT.PROJECT_ID))
                 .where(PROJECT.DELETED.eq(false).and(condition))
                 .fetchOne(0, int.class);
-        List<UserFavoriteProjectPojo> data = getDslContext()
+        List<UserFavoriteProject> data = getDslContext()
                 .select(USER_FAVORITE_PROJECT.fields()).from(USER_FAVORITE_PROJECT)
                 .innerJoin(USER).on(USER.ID.eq(USER_FAVORITE_PROJECT.USER_ID))
                 .innerJoin(PROJECT).on(PROJECT.ID.eq(USER_FAVORITE_PROJECT.PROJECT_ID))
                 .where(PROJECT.DELETED.eq(false).and(condition))
                 .orderBy(getSortFields(request.getSort()))
                 .offset(request.getOffset()).limit(request.getPageSize())
-                .fetchInto(UserFavoriteProjectPojo.class);
+                .fetchInto(UserFavoriteProject.class);
         return new PageImpl<>(data, request, total);
     }
 
-    public List<UserFavoriteProjectPojo> selectByUserIdAndProjectIds(Integer userId, List<Integer> projectIds) {
+    public List<UserFavoriteProject> selectByUserIdAndProjectIds(Integer userId, List<Integer> projectIds) {
         if (projectIds == null || projectIds.isEmpty()) {
             return Collections.emptyList();
         }
         return this.getDslContext()
                 .select(USER_FAVORITE_PROJECT.fields()).from(USER_FAVORITE_PROJECT)
                 .where(USER_FAVORITE_PROJECT.USER_ID.eq(userId).and(USER_FAVORITE_PROJECT.PROJECT_ID.in(projectIds)))
-                .fetchInto(UserFavoriteProjectPojo.class);
+                .fetchInto(UserFavoriteProject.class);
     }
 }

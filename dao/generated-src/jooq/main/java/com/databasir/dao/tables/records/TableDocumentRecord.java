@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.TableDocument;
-import com.databasir.dao.tables.pojos.TableDocumentPojo;
+import com.databasir.dao.tables.TableDocumentTable;
+import com.databasir.dao.tables.pojos.TableDocument;
 
 import java.time.LocalDateTime;
 
@@ -133,32 +133,32 @@ public class TableDocumentRecord extends UpdatableRecordImpl<TableDocumentRecord
 
     @Override
     public Field<Integer> field1() {
-        return TableDocument.TABLE_DOCUMENT.ID;
+        return TableDocumentTable.TABLE_DOCUMENT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return TableDocument.TABLE_DOCUMENT.DATABASE_DOCUMENT_ID;
+        return TableDocumentTable.TABLE_DOCUMENT.DATABASE_DOCUMENT_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return TableDocument.TABLE_DOCUMENT.NAME;
+        return TableDocumentTable.TABLE_DOCUMENT.NAME;
     }
 
     @Override
     public Field<String> field4() {
-        return TableDocument.TABLE_DOCUMENT.TYPE;
+        return TableDocumentTable.TABLE_DOCUMENT.TYPE;
     }
 
     @Override
     public Field<String> field5() {
-        return TableDocument.TABLE_DOCUMENT.COMMENT;
+        return TableDocumentTable.TABLE_DOCUMENT.COMMENT;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return TableDocument.TABLE_DOCUMENT.CREATE_AT;
+        return TableDocumentTable.TABLE_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -276,14 +276,14 @@ public class TableDocumentRecord extends UpdatableRecordImpl<TableDocumentRecord
      * Create a detached TableDocumentRecord
      */
     public TableDocumentRecord() {
-        super(TableDocument.TABLE_DOCUMENT);
+        super(TableDocumentTable.TABLE_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised TableDocumentRecord
      */
     public TableDocumentRecord(Integer id, Integer databaseDocumentId, String name, String type, String comment, LocalDateTime createAt) {
-        super(TableDocument.TABLE_DOCUMENT);
+        super(TableDocumentTable.TABLE_DOCUMENT);
 
         setId(id);
         setDatabaseDocumentId(databaseDocumentId);
@@ -296,8 +296,8 @@ public class TableDocumentRecord extends UpdatableRecordImpl<TableDocumentRecord
     /**
      * Create a detached, initialised TableDocumentRecord
      */
-    public TableDocumentRecord(TableDocumentPojo value) {
-        super(TableDocument.TABLE_DOCUMENT);
+    public TableDocumentRecord(TableDocument value) {
+        super(TableDocumentTable.TABLE_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

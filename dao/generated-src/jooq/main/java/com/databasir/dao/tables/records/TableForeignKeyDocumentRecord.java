@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.TableForeignKeyDocument;
-import com.databasir.dao.tables.pojos.TableForeignKeyDocumentPojo;
+import com.databasir.dao.tables.TableForeignKeyDocumentTable;
+import com.databasir.dao.tables.pojos.TableForeignKeyDocument;
 
 import java.time.LocalDateTime;
 
@@ -247,67 +247,67 @@ public class TableForeignKeyDocumentRecord extends UpdatableRecordImpl<TableFore
 
     @Override
     public Field<Integer> field1() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.ID;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.TABLE_DOCUMENT_ID;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.TABLE_DOCUMENT_ID;
     }
 
     @Override
     public Field<Integer> field3() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.DATABASE_DOCUMENT_ID;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.DATABASE_DOCUMENT_ID;
     }
 
     @Override
     public Field<Integer> field4() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.KEY_SEQ;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.KEY_SEQ;
     }
 
     @Override
     public Field<String> field5() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.FK_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.FK_NAME;
     }
 
     @Override
     public Field<String> field6() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.FK_TABLE_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.FK_TABLE_NAME;
     }
 
     @Override
     public Field<String> field7() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.FK_COLUMN_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.FK_COLUMN_NAME;
     }
 
     @Override
     public Field<String> field8() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.PK_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.PK_NAME;
     }
 
     @Override
     public Field<String> field9() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.PK_TABLE_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.PK_TABLE_NAME;
     }
 
     @Override
     public Field<String> field10() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.PK_COLUMN_NAME;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.PK_COLUMN_NAME;
     }
 
     @Override
     public Field<String> field11() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.UPDATE_RULE;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.UPDATE_RULE;
     }
 
     @Override
     public Field<String> field12() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.DELETE_RULE;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.DELETE_RULE;
     }
 
     @Override
     public Field<LocalDateTime> field13() {
-        return TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT.CREATE_AT;
+        return TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -544,14 +544,14 @@ public class TableForeignKeyDocumentRecord extends UpdatableRecordImpl<TableFore
      * Create a detached TableForeignKeyDocumentRecord
      */
     public TableForeignKeyDocumentRecord() {
-        super(TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT);
+        super(TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised TableForeignKeyDocumentRecord
      */
     public TableForeignKeyDocumentRecord(Integer id, Integer tableDocumentId, Integer databaseDocumentId, Integer keySeq, String fkName, String fkTableName, String fkColumnName, String pkName, String pkTableName, String pkColumnName, String updateRule, String deleteRule, LocalDateTime createAt) {
-        super(TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT);
+        super(TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT);
 
         setId(id);
         setTableDocumentId(tableDocumentId);
@@ -571,8 +571,8 @@ public class TableForeignKeyDocumentRecord extends UpdatableRecordImpl<TableFore
     /**
      * Create a detached, initialised TableForeignKeyDocumentRecord
      */
-    public TableForeignKeyDocumentRecord(TableForeignKeyDocumentPojo value) {
-        super(TableForeignKeyDocument.TABLE_FOREIGN_KEY_DOCUMENT);
+    public TableForeignKeyDocumentRecord(TableForeignKeyDocument value) {
+        super(TableForeignKeyDocumentTable.TABLE_FOREIGN_KEY_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

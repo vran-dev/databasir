@@ -4,7 +4,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
-import com.databasir.dao.tables.pojos.OauthAppPojo;
+import com.databasir.dao.tables.pojos.OauthApp;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.jooq.tools.StringUtils;
@@ -26,7 +26,7 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public String authorizationUrl(OauthAppPojo app, Map<String, String[]> requestParams) {
+    public String authorizationUrl(OauthApp app, Map<String, String[]> requestParams) {
         String authUrl = app.getAuthUrl();
         String clientId = app.getClientId();
         String authorizeUrl = authUrl + "/login/oauth/authorize";
@@ -40,7 +40,7 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public OAuthProcessResult process(OauthAppPojo app, Map<String, String[]> requestParams) {
+    public OAuthProcessResult process(OauthApp app, Map<String, String[]> requestParams) {
         String clientId = app.getClientId();
         String clientSecret = app.getClientSecret();
         String authUrl = app.getAuthUrl();

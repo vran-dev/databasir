@@ -9,9 +9,9 @@ import com.databasir.core.infrastructure.event.subscriber.UserEventSubscriber;
 import com.databasir.dao.impl.LoginDao;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.LoginPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.Login;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -78,12 +78,12 @@ class UserServiceTest extends BaseTest {
     void switchEnableStatusToFalse() {
         Integer userId = -999;
         userService.switchEnableStatus(userId, false);
-        UserPojo user = userDao.selectById(userId);
+        User user = userDao.selectById(userId);
         assertNotNull(user);
         assertFalse(user.getEnabled());
 
-        Optional<LoginPojo> loginPojoOpt = loginDao.selectByUserId(userId);
-        assertTrue(loginPojoOpt.isEmpty());
+        Optional<Login> login = loginDao.selectByUserId(userId);
+        assertTrue(login.isEmpty());
     }
 
     @Test
@@ -91,7 +91,7 @@ class UserServiceTest extends BaseTest {
     void removeSysOwnerFrom() {
         Integer userId = -998;
         userService.removeSysOwnerFrom(userId);
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId))
+        List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId))
                 .stream().filter(role -> role.getRole().equals(SYS_OWNER))
                 .collect(Collectors.toList());
         assertEquals(0, roles.size());
@@ -102,7 +102,7 @@ class UserServiceTest extends BaseTest {
     void addSysOwnerTo() {
         Integer userId = -999;
         userService.addSysOwnerTo(userId);
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId))
+        List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId))
                 .stream().filter(role -> role.getRole().equals(SYS_OWNER))
                 .collect(Collectors.toList());
 
@@ -120,8 +120,8 @@ class UserServiceTest extends BaseTest {
         Integer userId = -999;
         userService.updatePassword(userId, request);
         // should delete login info
-        Optional<LoginPojo> loginPojoOpt = loginDao.selectByUserId(userId);
-        assertTrue(loginPojoOpt.isEmpty());
+        Optional<Login> login = loginDao.selectByUserId(userId);
+        assertTrue(login.isEmpty());
     }
 
     @Test
@@ -133,7 +133,7 @@ class UserServiceTest extends BaseTest {
         request.setNickname(nickname);
         userService.updateNickname(userId, request);
 
-        UserPojo user = userDao.selectById(userId);
+        User user = userDao.selectById(userId);
         assertNotNull(user);
         assertEquals(nickname, user.getNickname());
     }

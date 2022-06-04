@@ -34,7 +34,7 @@ public class UserProjectController {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = user.getUserPojo().getId();
+        Integer userId = user.getUser().getId();
         return JsonData.ok(userProjectService.listFavorites(pageable, userId, condition));
     }
 
@@ -47,7 +47,7 @@ public class UserProjectController {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = user.getUserPojo().getId();
+        Integer userId = user.getUser().getId();
         userProjectService.addFavorites(projectId, userId);
         return JsonData.ok();
     }
@@ -61,7 +61,7 @@ public class UserProjectController {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = user.getUserPojo().getId();
+        Integer userId = user.getUser().getId();
         userProjectService.removeFavorites(projectId, userId);
         return JsonData.ok();
     }

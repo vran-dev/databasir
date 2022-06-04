@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.UserRole;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.UserRoleTable;
+import com.databasir.dao.tables.pojos.UserRole;
 
 import java.time.LocalDateTime;
 
@@ -121,27 +121,27 @@ public class UserRoleRecord extends UpdatableRecordImpl<UserRoleRecord> implemen
 
     @Override
     public Field<Integer> field1() {
-        return UserRole.USER_ROLE.ID;
+        return UserRoleTable.USER_ROLE.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return UserRole.USER_ROLE.USER_ID;
+        return UserRoleTable.USER_ROLE.USER_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return UserRole.USER_ROLE.ROLE;
+        return UserRoleTable.USER_ROLE.ROLE;
     }
 
     @Override
     public Field<Integer> field4() {
-        return UserRole.USER_ROLE.GROUP_ID;
+        return UserRoleTable.USER_ROLE.GROUP_ID;
     }
 
     @Override
     public Field<LocalDateTime> field5() {
-        return UserRole.USER_ROLE.CREATE_AT;
+        return UserRoleTable.USER_ROLE.CREATE_AT;
     }
 
     @Override
@@ -242,14 +242,14 @@ public class UserRoleRecord extends UpdatableRecordImpl<UserRoleRecord> implemen
      * Create a detached UserRoleRecord
      */
     public UserRoleRecord() {
-        super(UserRole.USER_ROLE);
+        super(UserRoleTable.USER_ROLE);
     }
 
     /**
      * Create a detached, initialised UserRoleRecord
      */
     public UserRoleRecord(Integer id, Integer userId, String role, Integer groupId, LocalDateTime createAt) {
-        super(UserRole.USER_ROLE);
+        super(UserRoleTable.USER_ROLE);
 
         setId(id);
         setUserId(userId);
@@ -261,8 +261,8 @@ public class UserRoleRecord extends UpdatableRecordImpl<UserRoleRecord> implemen
     /**
      * Create a detached, initialised UserRoleRecord
      */
-    public UserRoleRecord(UserRolePojo value) {
-        super(UserRole.USER_ROLE);
+    public UserRoleRecord(UserRole value) {
+        super(UserRoleTable.USER_ROLE);
 
         if (value != null) {
             setId(value.getId());

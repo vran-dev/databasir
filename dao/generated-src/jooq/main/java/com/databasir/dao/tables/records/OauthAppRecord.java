@@ -5,8 +5,8 @@ package com.databasir.dao.tables.records;
 
 
 import com.databasir.dao.enums.OAuthAppType;
-import com.databasir.dao.tables.OauthApp;
-import com.databasir.dao.tables.pojos.OauthAppPojo;
+import com.databasir.dao.tables.OauthAppTable;
+import com.databasir.dao.tables.pojos.OauthApp;
 
 import java.time.LocalDateTime;
 
@@ -218,62 +218,62 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
 
     @Override
     public Field<Integer> field1() {
-        return OauthApp.OAUTH_APP.ID;
+        return OauthAppTable.OAUTH_APP.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return OauthApp.OAUTH_APP.REGISTRATION_ID;
+        return OauthAppTable.OAUTH_APP.REGISTRATION_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return OauthApp.OAUTH_APP.APP_NAME;
+        return OauthAppTable.OAUTH_APP.APP_NAME;
     }
 
     @Override
     public Field<String> field4() {
-        return OauthApp.OAUTH_APP.APP_ICON;
+        return OauthAppTable.OAUTH_APP.APP_ICON;
     }
 
     @Override
     public Field<OAuthAppType> field5() {
-        return OauthApp.OAUTH_APP.APP_TYPE;
+        return OauthAppTable.OAUTH_APP.APP_TYPE;
     }
 
     @Override
     public Field<String> field6() {
-        return OauthApp.OAUTH_APP.CLIENT_ID;
+        return OauthAppTable.OAUTH_APP.CLIENT_ID;
     }
 
     @Override
     public Field<String> field7() {
-        return OauthApp.OAUTH_APP.CLIENT_SECRET;
+        return OauthAppTable.OAUTH_APP.CLIENT_SECRET;
     }
 
     @Override
     public Field<String> field8() {
-        return OauthApp.OAUTH_APP.AUTH_URL;
+        return OauthAppTable.OAUTH_APP.AUTH_URL;
     }
 
     @Override
     public Field<String> field9() {
-        return OauthApp.OAUTH_APP.RESOURCE_URL;
+        return OauthAppTable.OAUTH_APP.RESOURCE_URL;
     }
 
     @Override
     public Field<String> field10() {
-        return OauthApp.OAUTH_APP.SCOPE;
+        return OauthAppTable.OAUTH_APP.SCOPE;
     }
 
     @Override
     public Field<LocalDateTime> field11() {
-        return OauthApp.OAUTH_APP.UPDATE_AT;
+        return OauthAppTable.OAUTH_APP.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field12() {
-        return OauthApp.OAUTH_APP.CREATE_AT;
+        return OauthAppTable.OAUTH_APP.CREATE_AT;
     }
 
     @Override
@@ -493,14 +493,14 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
      * Create a detached OauthAppRecord
      */
     public OauthAppRecord() {
-        super(OauthApp.OAUTH_APP);
+        super(OauthAppTable.OAUTH_APP);
     }
 
     /**
      * Create a detached, initialised OauthAppRecord
      */
     public OauthAppRecord(Integer id, String registrationId, String appName, String appIcon, OAuthAppType appType, String clientId, String clientSecret, String authUrl, String resourceUrl, String scope, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(OauthApp.OAUTH_APP);
+        super(OauthAppTable.OAUTH_APP);
 
         setId(id);
         setRegistrationId(registrationId);
@@ -519,8 +519,8 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     /**
      * Create a detached, initialised OauthAppRecord
      */
-    public OauthAppRecord(OauthAppPojo value) {
-        super(OauthApp.OAUTH_APP);
+    public OauthAppRecord(OauthApp value) {
+        super(OauthAppTable.OAUTH_APP);
 
         if (value != null) {
             setId(value.getId());

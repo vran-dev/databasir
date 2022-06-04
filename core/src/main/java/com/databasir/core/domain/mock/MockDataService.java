@@ -1,6 +1,6 @@
 package com.databasir.core.domain.mock;
 
-import com.databasir.core.domain.mock.converter.MockDataRulePojoConverter;
+import com.databasir.core.domain.mock.converter.MockDataRuleConverter;
 import com.databasir.core.domain.mock.converter.MockDataRuleResponseConverter;
 import com.databasir.core.domain.mock.data.ColumnMockRuleSaveRequest;
 import com.databasir.core.domain.mock.data.MockDataGenerateCondition;
@@ -12,10 +12,10 @@ import com.databasir.core.domain.mock.validator.MockDataValidator;
 import com.databasir.dao.enums.MockDataType;
 import com.databasir.dao.impl.MockDataRuleDao;
 import com.databasir.dao.impl.TableColumnDocumentDao;
-import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
-import com.databasir.dao.tables.pojos.MockDataRulePojo;
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
-import com.databasir.dao.tables.pojos.TableDocumentPojo;
+import com.databasir.dao.tables.pojos.DatabaseDocument;
+import com.databasir.dao.tables.pojos.MockDataRule;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
+import com.databasir.dao.tables.pojos.TableDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class MockDataService {
 
     private final TableColumnDocumentDao tableColumnDocumentDao;
 
-    private final MockDataRulePojoConverter mockDataRulePojoConverter;
+    private final MockDataRuleConverter mockDataRuleConverter;
 
     private final MockDataRuleResponseConverter mockDataRuleResponseConverter;
 
@@ -43,10 +43,10 @@ public class MockDataService {
 
     public String generateMockInsertSql(Integer projectId, MockDataGenerateCondition condition) {
         mockDataValidator.validProject(projectId);
-        DatabaseDocumentPojo databaseDoc =
-                mockDataValidator.validAndGetDatabaseDocumentPojo(projectId, condition.getVersion());
-        TableDocumentPojo tableDoc =
-                mockDataValidator.validAndGetTableDocumentPojo(databaseDoc.getId(), condition.getTableId());
+        DatabaseDocument databaseDoc =
+                mockDataValidator.validAndGetDatabaseDocument(projectId, condition.getVersion());
+        TableDocument tableDoc =
+                mockDataValidator.validAndGetTableDocument(databaseDoc.getId(), condition.getTableId());
         return mockDataGenerator.createInsertSql(projectId, databaseDoc.getId(), tableDoc.getName());
     }
 
@@ -54,10 +54,10 @@ public class MockDataService {
                               Integer tableId,
                               List<ColumnMockRuleSaveRequest> rules) {
         mockDataValidator.validProject(projectId);
-        DatabaseDocumentPojo doc =
-                mockDataValidator.validAndGetDatabaseDocumentPojo(projectId, null);
-        TableDocumentPojo tableDoc =
-                mockDataValidator.validAndGetTableDocumentPojo(doc.getId(), tableId);
+        DatabaseDocument doc =
+                mockDataValidator.validAndGetDatabaseDocument(projectId, null);
+        TableDocument tableDoc =
+                mockDataValidator.validAndGetTableDocument(doc.getId(), tableId);
         List<String> columnNames = rules.stream()
                 .map(ColumnMockRuleSaveRequest::getColumnName)
                 .collect(Collectors.toList());
@@ -67,21 +67,21 @@ public class MockDataService {
         // verify
         mockDataGenerator.createInsertSql(projectId, doc.getId(), tableDoc.getName());
 
-        List<MockDataRulePojo> pojo = mockDataRulePojoConverter.from(projectId, rules);
+        List<MockDataRule> pojo = mockDataRuleConverter.from(projectId, rules);
         mockDataRuleDao.batchSave(pojo);
     }
 
     public List<MockDataRuleResponse> listRules(Integer projectId, MockDataRuleListCondition condition) {
         mockDataValidator.validProject(projectId);
-        DatabaseDocumentPojo databaseDoc =
-                mockDataValidator.validAndGetDatabaseDocumentPojo(projectId, condition.getVersion());
-        TableDocumentPojo tableDoc =
-                mockDataValidator.validAndGetTableDocumentPojo(databaseDoc.getId(), condition.getTableId());
-        List<TableColumnDocumentPojo> columns =
+        DatabaseDocument databaseDoc =
+                mockDataValidator.validAndGetDatabaseDocument(projectId, condition.getVersion());
+        TableDocument tableDoc =
+                mockDataValidator.validAndGetTableDocument(databaseDoc.getId(), condition.getTableId());
+        List<TableColumnDocument> columns =
                 tableColumnDocumentDao.selectByTableDocumentId(condition.getTableId());
         var ruleMapByColumnName = mockDataRuleDao.selectByProjectIdAndTableName(projectId, tableDoc.getName())
                 .stream()
-                .collect(Collectors.toMap(MockDataRulePojo::getColumnName, Function.identity()));
+                .collect(Collectors.toMap(MockDataRule::getColumnName, Function.identity()));
         return columns.stream()
                 .map(col -> {
                     if (ruleMapByColumnName.containsKey(col.getName())) {

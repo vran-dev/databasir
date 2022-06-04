@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DocumentDescription;
-import com.databasir.dao.tables.pojos.DocumentDescriptionPojo;
+import com.databasir.dao.tables.DocumentDescriptionTable;
+import com.databasir.dao.tables.pojos.DocumentDescription;
 
 import java.time.LocalDateTime;
 
@@ -161,42 +161,42 @@ public class DocumentDescriptionRecord extends UpdatableRecordImpl<DocumentDescr
 
     @Override
     public Field<Integer> field1() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.ID;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.CONTENT;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.CONTENT;
     }
 
     @Override
     public Field<Integer> field3() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.PROJECT_ID;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.PROJECT_ID;
     }
 
     @Override
     public Field<String> field4() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.TABLE_NAME;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.TABLE_NAME;
     }
 
     @Override
     public Field<String> field5() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.COLUMN_NAME;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.COLUMN_NAME;
     }
 
     @Override
     public Field<Integer> field6() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.UPDATE_BY;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.UPDATE_BY;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.UPDATE_AT;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field8() {
-        return DocumentDescription.DOCUMENT_DESCRIPTION.CREATE_AT;
+        return DocumentDescriptionTable.DOCUMENT_DESCRIPTION.CREATE_AT;
     }
 
     @Override
@@ -348,14 +348,14 @@ public class DocumentDescriptionRecord extends UpdatableRecordImpl<DocumentDescr
      * Create a detached DocumentDescriptionRecord
      */
     public DocumentDescriptionRecord() {
-        super(DocumentDescription.DOCUMENT_DESCRIPTION);
+        super(DocumentDescriptionTable.DOCUMENT_DESCRIPTION);
     }
 
     /**
      * Create a detached, initialised DocumentDescriptionRecord
      */
     public DocumentDescriptionRecord(Integer id, String content, Integer projectId, String tableName, String columnName, Integer updateBy, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(DocumentDescription.DOCUMENT_DESCRIPTION);
+        super(DocumentDescriptionTable.DOCUMENT_DESCRIPTION);
 
         setId(id);
         setContent(content);
@@ -370,8 +370,8 @@ public class DocumentDescriptionRecord extends UpdatableRecordImpl<DocumentDescr
     /**
      * Create a detached, initialised DocumentDescriptionRecord
      */
-    public DocumentDescriptionRecord(DocumentDescriptionPojo value) {
-        super(DocumentDescription.DOCUMENT_DESCRIPTION);
+    public DocumentDescriptionRecord(DocumentDescription value) {
+        super(DocumentDescriptionTable.DOCUMENT_DESCRIPTION);
 
         if (value != null) {
             setId(value.getId());

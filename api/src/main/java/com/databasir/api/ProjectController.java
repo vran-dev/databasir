@@ -87,7 +87,7 @@ public class ProjectController {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = user.getUserPojo().getId();
+        Integer userId = user.getUser().getId();
         return JsonData.ok(projectService.list(userId, page, condition));
     }
 

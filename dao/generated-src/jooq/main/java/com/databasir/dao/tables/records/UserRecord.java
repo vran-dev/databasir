@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.User;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.UserTable;
+import com.databasir.dao.tables.pojos.User;
 
 import java.time.LocalDateTime;
 
@@ -203,57 +203,57 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
 
     @Override
     public Field<Integer> field1() {
-        return User.USER.ID;
+        return UserTable.USER.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return User.USER.EMAIL;
+        return UserTable.USER.EMAIL;
     }
 
     @Override
     public Field<String> field3() {
-        return User.USER.USERNAME;
+        return UserTable.USER.USERNAME;
     }
 
     @Override
     public Field<String> field4() {
-        return User.USER.PASSWORD;
+        return UserTable.USER.PASSWORD;
     }
 
     @Override
     public Field<String> field5() {
-        return User.USER.NICKNAME;
+        return UserTable.USER.NICKNAME;
     }
 
     @Override
     public Field<String> field6() {
-        return User.USER.AVATAR;
+        return UserTable.USER.AVATAR;
     }
 
     @Override
     public Field<Boolean> field7() {
-        return User.USER.ENABLED;
+        return UserTable.USER.ENABLED;
     }
 
     @Override
     public Field<Boolean> field8() {
-        return User.USER.DELETED;
+        return UserTable.USER.DELETED;
     }
 
     @Override
     public Field<Integer> field9() {
-        return User.USER.DELETED_TOKEN;
+        return UserTable.USER.DELETED_TOKEN;
     }
 
     @Override
     public Field<LocalDateTime> field10() {
-        return User.USER.UPDATE_AT;
+        return UserTable.USER.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field11() {
-        return User.USER.CREATE_AT;
+        return UserTable.USER.CREATE_AT;
     }
 
     @Override
@@ -456,14 +456,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
      * Create a detached UserRecord
      */
     public UserRecord() {
-        super(User.USER);
+        super(UserTable.USER);
     }
 
     /**
      * Create a detached, initialised UserRecord
      */
     public UserRecord(Integer id, String email, String username, String password, String nickname, String avatar, Boolean enabled, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(User.USER);
+        super(UserTable.USER);
 
         setId(id);
         setEmail(email);
@@ -481,8 +481,8 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Create a detached, initialised UserRecord
      */
-    public UserRecord(UserPojo value) {
-        super(User.USER);
+    public UserRecord(User value) {
+        super(UserTable.USER);
 
         if (value != null) {
             setId(value.getId());

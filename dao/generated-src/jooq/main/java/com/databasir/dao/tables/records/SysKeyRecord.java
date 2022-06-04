@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.SysKey;
-import com.databasir.dao.tables.pojos.SysKeyPojo;
+import com.databasir.dao.tables.SysKeyTable;
+import com.databasir.dao.tables.pojos.SysKey;
 
 import java.time.LocalDateTime;
 
@@ -133,32 +133,32 @@ public class SysKeyRecord extends UpdatableRecordImpl<SysKeyRecord> implements R
 
     @Override
     public Field<Integer> field1() {
-        return SysKey.SYS_KEY.ID;
+        return SysKeyTable.SYS_KEY.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return SysKey.SYS_KEY.RSA_PUBLIC_KEY;
+        return SysKeyTable.SYS_KEY.RSA_PUBLIC_KEY;
     }
 
     @Override
     public Field<String> field3() {
-        return SysKey.SYS_KEY.RSA_PRIVATE_KEY;
+        return SysKeyTable.SYS_KEY.RSA_PRIVATE_KEY;
     }
 
     @Override
     public Field<String> field4() {
-        return SysKey.SYS_KEY.AES_KEY;
+        return SysKeyTable.SYS_KEY.AES_KEY;
     }
 
     @Override
     public Field<LocalDateTime> field5() {
-        return SysKey.SYS_KEY.UPDATE_AT;
+        return SysKeyTable.SYS_KEY.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return SysKey.SYS_KEY.CREATE_AT;
+        return SysKeyTable.SYS_KEY.CREATE_AT;
     }
 
     @Override
@@ -276,14 +276,14 @@ public class SysKeyRecord extends UpdatableRecordImpl<SysKeyRecord> implements R
      * Create a detached SysKeyRecord
      */
     public SysKeyRecord() {
-        super(SysKey.SYS_KEY);
+        super(SysKeyTable.SYS_KEY);
     }
 
     /**
      * Create a detached, initialised SysKeyRecord
      */
     public SysKeyRecord(Integer id, String rsaPublicKey, String rsaPrivateKey, String aesKey, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(SysKey.SYS_KEY);
+        super(SysKeyTable.SYS_KEY);
 
         setId(id);
         setRsaPublicKey(rsaPublicKey);
@@ -296,8 +296,8 @@ public class SysKeyRecord extends UpdatableRecordImpl<SysKeyRecord> implements R
     /**
      * Create a detached, initialised SysKeyRecord
      */
-    public SysKeyRecord(SysKeyPojo value) {
-        super(SysKey.SYS_KEY);
+    public SysKeyRecord(SysKey value) {
+        super(SysKeyTable.SYS_KEY);
 
         if (value != null) {
             setId(value.getId());

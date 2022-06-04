@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.LoginPojo;
+import com.databasir.dao.tables.pojos.Login;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.LOGIN;
 
 @Repository
-public class LoginDao extends BaseDao<LoginPojo> {
+public class LoginDao extends BaseDao<Login> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public LoginDao() {
-        super(LOGIN, LoginPojo.class);
+        super(LOGIN, Login.class);
     }
 
     public void deleteByUserId(Integer userId) {
@@ -28,23 +28,23 @@ public class LoginDao extends BaseDao<LoginPojo> {
                 .execute();
     }
 
-    public Optional<LoginPojo> selectByUserId(Integer userId) {
+    public Optional<Login> selectByUserId(Integer userId) {
         return getDslContext()
                 .select(LOGIN.fields()).from(LOGIN).where(LOGIN.USER_ID.eq(userId))
-                .fetchOptionalInto(LoginPojo.class);
+                .fetchOptionalInto(Login.class);
     }
 
-    public Optional<LoginPojo> selectByRefreshToken(String refreshToken) {
+    public Optional<Login> selectByRefreshToken(String refreshToken) {
         return getDslContext()
                 .select(LOGIN.fields()).from(LOGIN).where(LOGIN.REFRESH_TOKEN.eq(refreshToken))
-                .fetchOptionalInto(LoginPojo.class);
+                .fetchOptionalInto(Login.class);
     }
 
-    public Optional<LoginPojo> selectByAccessToken(String accessToken) {
+    public Optional<Login> selectByAccessToken(String accessToken) {
         return getDslContext()
                 .selectFrom(LOGIN).where(LOGIN.ACCESS_TOKEN.eq(accessToken)
                         .and(LOGIN.ACCESS_TOKEN_EXPIRE_AT.ge(LocalDateTime.now())))
-                .fetchOptionalInto(LoginPojo.class);
+                .fetchOptionalInto(Login.class);
     }
 
     public void updateAccessToken(String accessToken, LocalDateTime accessTokenExpireAt, Integer userId) {
@@ -56,19 +56,19 @@ public class LoginDao extends BaseDao<LoginPojo> {
                 .execute();
     }
 
-    public void insertOnDuplicateKeyUpdate(LoginPojo loginPojo) {
+    public void insertOnDuplicateKeyUpdate(Login login) {
         getDslContext()
                 .insertInto(LOGIN)
-                .set(LOGIN.USER_ID, loginPojo.getUserId())
-                .set(LOGIN.ACCESS_TOKEN, loginPojo.getAccessToken())
-                .set(LOGIN.ACCESS_TOKEN_EXPIRE_AT, loginPojo.getAccessTokenExpireAt())
-                .set(LOGIN.REFRESH_TOKEN, loginPojo.getRefreshToken())
-                .set(LOGIN.REFRESH_TOKEN_EXPIRE_AT, loginPojo.getRefreshTokenExpireAt())
+                .set(LOGIN.USER_ID, login.getUserId())
+                .set(LOGIN.ACCESS_TOKEN, login.getAccessToken())
+                .set(LOGIN.ACCESS_TOKEN_EXPIRE_AT, login.getAccessTokenExpireAt())
+                .set(LOGIN.REFRESH_TOKEN, login.getRefreshToken())
+                .set(LOGIN.REFRESH_TOKEN_EXPIRE_AT, login.getRefreshTokenExpireAt())
                 .onDuplicateKeyUpdate()
-                .set(LOGIN.ACCESS_TOKEN, loginPojo.getAccessToken())
-                .set(LOGIN.ACCESS_TOKEN_EXPIRE_AT, loginPojo.getAccessTokenExpireAt())
-                .set(LOGIN.REFRESH_TOKEN, loginPojo.getRefreshToken())
-                .set(LOGIN.REFRESH_TOKEN_EXPIRE_AT, loginPojo.getRefreshTokenExpireAt())
+                .set(LOGIN.ACCESS_TOKEN, login.getAccessToken())
+                .set(LOGIN.ACCESS_TOKEN_EXPIRE_AT, login.getAccessTokenExpireAt())
+                .set(LOGIN.REFRESH_TOKEN, login.getRefreshToken())
+                .set(LOGIN.REFRESH_TOKEN_EXPIRE_AT, login.getRefreshTokenExpireAt())
                 .execute();
     }
 }

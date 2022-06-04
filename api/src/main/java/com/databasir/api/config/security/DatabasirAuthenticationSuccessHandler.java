@@ -38,13 +38,13 @@ public class DatabasirAuthenticationSuccessHandler implements AuthenticationSucc
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        loginService.generate(user.getUserPojo().getId());
-        UserLoginResponse data = loginService.getUserLoginData(user.getUserPojo().getId())
+        loginService.generate(user.getUser().getId());
+        UserLoginResponse data = loginService.getUserLoginData(user.getUser().getId())
                 .orElseThrow(() -> {
-                    operationLogService.saveLoginLog(user.getUserPojo(), false, null);
+                    operationLogService.saveLoginLog(user.getUser(), false, null);
                     return new CredentialsExpiredException("请重新登陆");
                 });
-        operationLogService.saveLoginLog(user.getUserPojo(), true, null);
+        operationLogService.saveLoginLog(user.getUser(), true, null);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
     }
 }

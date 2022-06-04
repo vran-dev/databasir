@@ -1,7 +1,7 @@
 package com.databasir.core.domain.user.service;
 
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.user.converter.UserPojoConverter;
+import com.databasir.core.domain.user.converter.UserConverter;
 import com.databasir.core.domain.user.converter.UserResponseConverter;
 import com.databasir.core.domain.user.data.*;
 import com.databasir.core.domain.user.event.UserCreated;
@@ -12,9 +12,9 @@ import com.databasir.dao.impl.GroupDao;
 import com.databasir.dao.impl.LoginDao;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.GroupPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.Group;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class UserService {
 
     private final LoginDao loginDao;
 
-    private final UserPojoConverter userPojoConverter;
+    private final UserConverter userConverter;
 
     private final UserResponseConverter userResponseConverter;
 
@@ -53,19 +53,19 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     public Page<UserPageResponse> list(Pageable pageable, UserPageCondition condition) {
-        Page<UserPojo> users = userDao.selectByPage(pageable, condition.toCondition());
+        Page<User> users = userDao.selectByPage(pageable, condition.toCondition());
         List<Integer> userIds = users.getContent()
                 .stream()
-                .map(UserPojo::getId)
+                .map(User::getId)
                 .collect(toList());
-        List<UserRolePojo> userRoles = userRoleDao.selectByUserIds(userIds);
+        List<UserRole> userRoles = userRoleDao.selectByUserIds(userIds);
         Map<Integer, List<Integer>> groupIdMapByUserId = userRoles
                 .stream()
                 .filter(ur -> ur.getGroupId() != null)
-                .collect(groupingBy(UserRolePojo::getUserId, mapping(UserRolePojo::getGroupId, toList())));
-        Map<Integer, List<UserRolePojo>> sysOwnerGroupByUserId = userRoles.stream()
+                .collect(groupingBy(UserRole::getUserId, mapping(UserRole::getGroupId, toList())));
+        Map<Integer, List<UserRole>> sysOwnerGroupByUserId = userRoles.stream()
                 .filter(ur -> ur.getRole().equals(SYS_OWNER))
-                .collect(groupingBy(UserRolePojo::getUserId));
+                .collect(groupingBy(UserRole::getUserId));
         return users.map(user ->
                 userResponseConverter.pageResponse(user, sysOwnerGroupByUserId.containsKey(user.getId()),
                         groupIdMapByUserId.get(user.getId())));
@@ -77,7 +77,7 @@ public class UserService {
             throw DomainErrors.USERNAME_OR_EMAIL_DUPLICATE.exception();
         });
         String hashedPassword = bCryptPasswordEncoder.encode(userCreateRequest.getPassword());
-        UserPojo pojo = userPojoConverter.of(userCreateRequest, hashedPassword);
+        User pojo = userConverter.of(userCreateRequest, hashedPassword);
         try {
             Integer id = userDao.insertAndReturnId(pojo);
             // publish event
@@ -90,36 +90,36 @@ public class UserService {
     }
 
     public UserDetailResponse get(Integer userId) {
-        UserPojo pojo = userDao.selectById(userId);
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId));
+        User pojo = userDao.selectById(userId);
+        List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(userId));
         List<Integer> groupIds = roles.stream()
-                .map(UserRolePojo::getGroupId)
+                .map(UserRole::getGroupId)
                 .filter(Objects::nonNull)
                 .collect(toList());
         Map<Integer, String> groupNameMapById = groupDao.selectInIds(groupIds)
                 .stream()
-                .collect(toMap(GroupPojo::getId, GroupPojo::getName));
+                .collect(toMap(Group::getId, Group::getName));
         return userResponseConverter.detailResponse(pojo, roles, groupNameMapById);
     }
 
     public Optional<UserDetailResponse> get(String email) {
         return userDao.selectByEmail(email)
                 .map(user -> {
-                    List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+                    List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
                     List<Integer> groupIds = roles.stream()
-                            .map(UserRolePojo::getGroupId)
+                            .map(UserRole::getGroupId)
                             .filter(Objects::nonNull)
                             .collect(toList());
                     Map<Integer, String> groupNameMapById = groupDao.selectInIds(groupIds)
                             .stream()
-                            .collect(toMap(GroupPojo::getId, GroupPojo::getName));
+                            .collect(toMap(Group::getId, Group::getName));
                     return userResponseConverter.detailResponse(user, roles, groupNameMapById);
                 });
     }
 
     @Transactional
     public String renewPassword(Integer renewByUserId, Integer userId) {
-        UserPojo pojo = userDao.selectById(userId);
+        User pojo = userDao.selectById(userId);
         String randomPassword = UUID.randomUUID().toString()
                 .replace("-", "")
                 .substring(0, 8);
@@ -151,7 +151,7 @@ public class UserService {
 
     public void addSysOwnerTo(Integer userId) {
         if (!userRoleDao.hasRole(userId, SYS_OWNER)) {
-            UserRolePojo role = new UserRolePojo();
+            UserRole role = new UserRole();
             role.setUserId(userId);
             role.setRole(SYS_OWNER);
             userRoleDao.insertAndReturnId(role);
@@ -162,8 +162,8 @@ public class UserService {
         if (!Objects.equals(request.getNewPassword(), request.getConfirmNewPassword())) {
             throw DomainErrors.UPDATE_PASSWORD_CONFIRM_FAILED.exception();
         }
-        UserPojo userPojo = userDao.selectById(userId);
-        if (!bCryptPasswordEncoder.matches(request.getOriginPassword(), userPojo.getPassword())) {
+        User user = userDao.selectById(userId);
+        if (!bCryptPasswordEncoder.matches(request.getOriginPassword(), user.getPassword())) {
             throw DomainErrors.ORIGIN_PASSWORD_NOT_CORRECT.exception();
         }
         String newHashedPassword = bCryptPasswordEncoder.encode(request.getNewPassword());
@@ -172,9 +172,9 @@ public class UserService {
     }
 
     public void updateNickname(Integer userId, UserNicknameUpdateRequest request) {
-        UserPojo userPojo = userDao.selectById(userId);
-        userPojo.setNickname(request.getNickname());
-        userDao.updateById(userPojo);
+        User user = userDao.selectById(userId);
+        user.setNickname(request.getNickname());
+        userDao.updateById(user);
     }
 
     @Transactional

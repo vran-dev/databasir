@@ -5,9 +5,9 @@ import com.databasir.core.domain.search.data.SearchResponse;
 import com.databasir.dao.impl.DocumentFullTextDao;
 import com.databasir.dao.impl.GroupDao;
 import com.databasir.dao.impl.ProjectDao;
-import com.databasir.dao.tables.pojos.DocumentFullTextPojo;
-import com.databasir.dao.tables.pojos.GroupPojo;
-import com.databasir.dao.tables.pojos.ProjectPojo;
+import com.databasir.dao.tables.pojos.DocumentFullText;
+import com.databasir.dao.tables.pojos.Group;
+import com.databasir.dao.tables.pojos.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +31,8 @@ public class SearchService {
     private final ProjectDao projectDao;
 
     public SearchResponse search(Pageable pageable, String query) {
-        Page<DocumentFullTextPojo> columnPageData = documentFullTextDao.selectColumnPage(pageable, query);
-        Page<DocumentFullTextPojo> tablePageData = documentFullTextDao.selectTablePage(pageable, query);
+        Page<DocumentFullText> columnPageData = documentFullTextDao.selectColumnPage(pageable, query);
+        Page<DocumentFullText> tablePageData = documentFullTextDao.selectTablePage(pageable, query);
 
         // table 和 column 的项目名、组名等信息需要从关联表取
         Set<Integer> projectIds = new HashSet<>();
@@ -40,11 +40,11 @@ public class SearchService {
                 .stream().map(o -> o.getProjectId()).collect(Collectors.toList()));
         projectIds.addAll(tablePageData.getContent()
                 .stream().map(o -> o.getProjectId()).collect(Collectors.toList()));
-        Map<Integer, ProjectPojo> projectMapById = projectDao.selectInIds(projectIds)
+        Map<Integer, Project> projectMapById = projectDao.selectInIds(projectIds)
                 .stream()
                 .collect(Collectors.toMap(o -> o.getId(), o -> o));
 
-        Page<DocumentFullTextPojo> projectPageData = documentFullTextDao.selectProjectPage(pageable, query);
+        Page<DocumentFullText> projectPageData = documentFullTextDao.selectProjectPage(pageable, query);
         Set<Integer> groupIds = new HashSet<>();
         groupIds.addAll(columnPageData.getContent()
                 .stream().map(o -> o.getGroupId()).collect(Collectors.toList()));
@@ -52,7 +52,7 @@ public class SearchService {
                 .stream().map(o -> o.getGroupId()).collect(Collectors.toList()));
         groupIds.addAll(projectPageData.getContent()
                 .stream().map(o -> o.getGroupId()).collect(Collectors.toList()));
-        Map<Integer, GroupPojo> groupMapById = groupDao.selectInIds(groupIds)
+        Map<Integer, Group> groupMapById = groupDao.selectInIds(groupIds)
                 .stream()
                 .collect(Collectors.toMap(o -> o.getId(), o -> o));
 

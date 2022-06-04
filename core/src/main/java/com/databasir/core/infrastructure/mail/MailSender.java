@@ -1,7 +1,7 @@
 package com.databasir.core.infrastructure.mail;
 
 import com.databasir.common.SystemException;
-import com.databasir.dao.tables.pojos.SysMailPojo;
+import com.databasir.dao.tables.pojos.SysMail;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,14 +16,14 @@ import java.util.Collections;
 @Component
 public class MailSender {
 
-    public void sendHtml(SysMailPojo mail,
+    public void sendHtml(SysMail mail,
                          String to,
                          String subject,
                          String content) {
         this.batchSendHtml(mail, Collections.singleton(to), subject, content);
     }
 
-    public void batchSendHtml(SysMailPojo mail,
+    public void batchSendHtml(SysMail mail,
                               Collection<String> to,
                               String subject,
                               String content) {
@@ -41,7 +41,7 @@ public class MailSender {
         }
     }
 
-    private JavaMailSender initJavaMailSender(SysMailPojo properties) {
+    private JavaMailSender initJavaMailSender(SysMail properties) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setHost(properties.getSmtpHost());
         if (properties.getSmtpPort() != null) {

@@ -3,7 +3,7 @@ package com.databasir.core.domain.description.service;
 import com.databasir.core.BaseTest;
 import com.databasir.core.domain.description.data.DocumentDescriptionSaveRequest;
 import com.databasir.dao.impl.DocumentDescriptionDao;
-import com.databasir.dao.tables.pojos.DocumentDescriptionPojo;
+import com.databasir.dao.tables.pojos.DocumentDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class DocumentDescriptionServiceTest extends BaseTest {
         documentDescriptionService.save(groupId, projectId, userId, updateRequest);
         var tableData = documentDescriptionDao.selectTableDescriptionByProjectId(projectId);
         Assertions.assertEquals(0, tableData.size());
-        List<DocumentDescriptionPojo> descriptionData = documentDescriptionDao.selectByProjectId(projectId);
+        List<DocumentDescription> descriptionData = documentDescriptionDao.selectByProjectId(projectId);
         Assertions.assertEquals(1, descriptionData.size());
     }
 }

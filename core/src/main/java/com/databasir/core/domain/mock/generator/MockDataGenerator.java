@@ -8,8 +8,8 @@ import com.databasir.dao.impl.MockDataRuleDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.TableColumnDocumentDao;
 import com.databasir.dao.impl.TableDocumentDao;
-import com.databasir.dao.tables.pojos.MockDataRulePojo;
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
+import com.databasir.dao.tables.pojos.MockDataRule;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -63,7 +63,7 @@ public class MockDataGenerator {
             context.addTableMockRules(tableName, columnRules);
         }
 
-        for (TableColumnDocumentPojo column : context.getTableColumnMap().get(tableName).values()) {
+        for (TableColumnDocument column : context.getTableColumnMap().get(tableName).values()) {
             if (context.containsColumnMockData(tableName, column.getName())
                     || context.isMockInProgress(tableName, column.getName())) {
                 continue;
@@ -76,11 +76,11 @@ public class MockDataGenerator {
         if (context.containsColumnMockData(tableName, columnName)) {
             return;
         }
-        TableColumnDocumentPojo column = context.getTableColumn(tableName, columnName);
-        Optional<MockDataRulePojo> ruleOption = context.getMockRule(tableName, columnName);
+        TableColumnDocument column = context.getTableColumn(tableName, columnName);
+        Optional<MockDataRule> ruleOption = context.getMockRule(tableName, columnName);
         String rawData;
         if (ruleOption.isPresent()) {
-            MockDataRulePojo rule = ruleOption.get();
+            MockDataRule rule = ruleOption.get();
             if (rule.getMockDataType() == MockDataType.REF) {
                 context.addMockInProgress(tableName, columnName);
                 context.saveReference(
@@ -103,7 +103,7 @@ public class MockDataGenerator {
         context.addColumnMockData(tableName, toData(rawData, column));
     }
 
-    private String createByFactory(TableColumnDocumentPojo column, MockDataRulePojo rule) {
+    private String createByFactory(TableColumnDocument column, MockDataRule rule) {
         MockDataType mockType = rule == null ? MockDataType.AUTO : rule.getMockDataType();
         MockColumnRule colRule = MockColumnRule.builder()
                 .dataType(column.getDataType())
@@ -119,7 +119,7 @@ public class MockDataGenerator {
                 .orElseThrow();
     }
 
-    private ColumnMockData toData(String data, TableColumnDocumentPojo column) {
+    private ColumnMockData toData(String data, TableColumnDocument column) {
         return ColumnMockData.builder()
                 .columnName(column.getName())
                 .columnType(column.getType())

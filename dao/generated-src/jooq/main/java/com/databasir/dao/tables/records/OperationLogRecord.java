@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.OperationLog;
-import com.databasir.dao.tables.pojos.OperationLogPojo;
+import com.databasir.dao.tables.OperationLogTable;
+import com.databasir.dao.tables.pojos.OperationLog;
 
 import java.time.LocalDateTime;
 
@@ -244,67 +244,67 @@ public class OperationLogRecord extends UpdatableRecordImpl<OperationLogRecord> 
 
     @Override
     public Field<Long> field1() {
-        return OperationLog.OPERATION_LOG.ID;
+        return OperationLogTable.OPERATION_LOG.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return OperationLog.OPERATION_LOG.OPERATOR_USER_ID;
+        return OperationLogTable.OPERATION_LOG.OPERATOR_USER_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return OperationLog.OPERATION_LOG.OPERATOR_USERNAME;
+        return OperationLogTable.OPERATION_LOG.OPERATOR_USERNAME;
     }
 
     @Override
     public Field<String> field4() {
-        return OperationLog.OPERATION_LOG.OPERATOR_NICKNAME;
+        return OperationLogTable.OPERATION_LOG.OPERATOR_NICKNAME;
     }
 
     @Override
     public Field<String> field5() {
-        return OperationLog.OPERATION_LOG.OPERATION_MODULE;
+        return OperationLogTable.OPERATION_LOG.OPERATION_MODULE;
     }
 
     @Override
     public Field<String> field6() {
-        return OperationLog.OPERATION_LOG.OPERATION_CODE;
+        return OperationLogTable.OPERATION_LOG.OPERATION_CODE;
     }
 
     @Override
     public Field<String> field7() {
-        return OperationLog.OPERATION_LOG.OPERATION_NAME;
+        return OperationLogTable.OPERATION_LOG.OPERATION_NAME;
     }
 
     @Override
     public Field<JSON> field8() {
-        return OperationLog.OPERATION_LOG.OPERATION_RESPONSE;
+        return OperationLogTable.OPERATION_LOG.OPERATION_RESPONSE;
     }
 
     @Override
     public Field<Boolean> field9() {
-        return OperationLog.OPERATION_LOG.IS_SUCCESS;
+        return OperationLogTable.OPERATION_LOG.IS_SUCCESS;
     }
 
     @Override
     public Field<Integer> field10() {
-        return OperationLog.OPERATION_LOG.INVOLVED_PROJECT_ID;
+        return OperationLogTable.OPERATION_LOG.INVOLVED_PROJECT_ID;
     }
 
     @Override
     public Field<Integer> field11() {
-        return OperationLog.OPERATION_LOG.INVOLVED_GROUP_ID;
+        return OperationLogTable.OPERATION_LOG.INVOLVED_GROUP_ID;
     }
 
     @Override
     public Field<Integer> field12() {
-        return OperationLog.OPERATION_LOG.INVOLVED_USER_ID;
+        return OperationLogTable.OPERATION_LOG.INVOLVED_USER_ID;
     }
 
     @Override
     public Field<LocalDateTime> field13() {
-        return OperationLog.OPERATION_LOG.CREATE_AT;
+        return OperationLogTable.OPERATION_LOG.CREATE_AT;
     }
 
     @Override
@@ -541,14 +541,14 @@ public class OperationLogRecord extends UpdatableRecordImpl<OperationLogRecord> 
      * Create a detached OperationLogRecord
      */
     public OperationLogRecord() {
-        super(OperationLog.OPERATION_LOG);
+        super(OperationLogTable.OPERATION_LOG);
     }
 
     /**
      * Create a detached, initialised OperationLogRecord
      */
     public OperationLogRecord(Long id, Integer operatorUserId, String operatorUsername, String operatorNickname, String operationModule, String operationCode, String operationName, JSON operationResponse, Boolean isSuccess, Integer involvedProjectId, Integer involvedGroupId, Integer involvedUserId, LocalDateTime createAt) {
-        super(OperationLog.OPERATION_LOG);
+        super(OperationLogTable.OPERATION_LOG);
 
         setId(id);
         setOperatorUserId(operatorUserId);
@@ -568,8 +568,8 @@ public class OperationLogRecord extends UpdatableRecordImpl<OperationLogRecord> 
     /**
      * Create a detached, initialised OperationLogRecord
      */
-    public OperationLogRecord(OperationLogPojo value) {
-        super(OperationLog.OPERATION_LOG);
+    public OperationLogRecord(OperationLog value) {
+        super(OperationLogTable.OPERATION_LOG);
 
         if (value != null) {
             setId(value.getId());

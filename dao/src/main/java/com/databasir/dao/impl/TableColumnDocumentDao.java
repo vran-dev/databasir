@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +13,24 @@ import java.util.List;
 import static com.databasir.dao.Tables.TABLE_COLUMN_DOCUMENT;
 
 @Repository
-public class TableColumnDocumentDao extends BaseDao<TableColumnDocumentPojo> {
+public class TableColumnDocumentDao extends BaseDao<TableColumnDocument> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public TableColumnDocumentDao() {
-        super(TABLE_COLUMN_DOCUMENT, TableColumnDocumentPojo.class);
+        super(TABLE_COLUMN_DOCUMENT, TableColumnDocument.class);
     }
 
-    public List<TableColumnDocumentPojo> selectByDatabaseDocumentId(Integer schemaDocumentId) {
+    public List<TableColumnDocument> selectByDatabaseDocumentId(Integer schemaDocumentId) {
         return getDslContext()
                 .select(TABLE_COLUMN_DOCUMENT.fields()).from(TABLE_COLUMN_DOCUMENT)
                 .where(TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
-                .fetchInto(TableColumnDocumentPojo.class);
+                .fetchInto(TableColumnDocument.class);
     }
 
-    public List<TableColumnDocumentPojo> selectByDatabaseDocumentIdAndTableIdIn(Integer schemaDocumentId,
+    public List<TableColumnDocument> selectByDatabaseDocumentIdAndTableIdIn(Integer schemaDocumentId,
                                                                                 Collection<Integer> tableIdIn) {
         if (tableIdIn == null || tableIdIn.isEmpty()) {
             return Collections.emptyList();
@@ -39,14 +39,14 @@ public class TableColumnDocumentDao extends BaseDao<TableColumnDocumentPojo> {
                 .select(TABLE_COLUMN_DOCUMENT.fields()).from(TABLE_COLUMN_DOCUMENT)
                 .where(TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId)
                         .and(TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID.in(tableIdIn)))
-                .fetchInto(TableColumnDocumentPojo.class);
+                .fetchInto(TableColumnDocument.class);
     }
 
-    public List<TableColumnDocumentPojo> selectByTableDocumentId(Integer tableDocumentId) {
+    public List<TableColumnDocument> selectByTableDocumentId(Integer tableDocumentId) {
         return getDslContext()
                 .selectFrom(TABLE_COLUMN_DOCUMENT)
                 .where(TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID.eq(tableDocumentId))
-                .fetchInto(TableColumnDocumentPojo.class);
+                .fetchInto(TableColumnDocument.class);
     }
 
     public boolean exists(Integer tableDocumentId, String columnName) {

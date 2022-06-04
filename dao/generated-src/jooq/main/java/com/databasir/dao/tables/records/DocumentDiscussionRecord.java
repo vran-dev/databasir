@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DocumentDiscussion;
-import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
+import com.databasir.dao.tables.DocumentDiscussionTable;
+import com.databasir.dao.tables.pojos.DocumentDiscussion;
 
 import java.time.LocalDateTime;
 
@@ -147,37 +147,37 @@ public class DocumentDiscussionRecord extends UpdatableRecordImpl<DocumentDiscus
 
     @Override
     public Field<Integer> field1() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.ID;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.CONTENT;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.CONTENT;
     }
 
     @Override
     public Field<Integer> field3() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.USER_ID;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.USER_ID;
     }
 
     @Override
     public Field<Integer> field4() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.PROJECT_ID;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.PROJECT_ID;
     }
 
     @Override
     public Field<String> field5() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.TABLE_NAME;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.TABLE_NAME;
     }
 
     @Override
     public Field<String> field6() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.COLUMN_NAME;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.COLUMN_NAME;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return DocumentDiscussion.DOCUMENT_DISCUSSION.CREATE_AT;
+        return DocumentDiscussionTable.DOCUMENT_DISCUSSION.CREATE_AT;
     }
 
     @Override
@@ -312,14 +312,14 @@ public class DocumentDiscussionRecord extends UpdatableRecordImpl<DocumentDiscus
      * Create a detached DocumentDiscussionRecord
      */
     public DocumentDiscussionRecord() {
-        super(DocumentDiscussion.DOCUMENT_DISCUSSION);
+        super(DocumentDiscussionTable.DOCUMENT_DISCUSSION);
     }
 
     /**
      * Create a detached, initialised DocumentDiscussionRecord
      */
     public DocumentDiscussionRecord(Integer id, String content, Integer userId, Integer projectId, String tableName, String columnName, LocalDateTime createAt) {
-        super(DocumentDiscussion.DOCUMENT_DISCUSSION);
+        super(DocumentDiscussionTable.DOCUMENT_DISCUSSION);
 
         setId(id);
         setContent(content);
@@ -333,8 +333,8 @@ public class DocumentDiscussionRecord extends UpdatableRecordImpl<DocumentDiscus
     /**
      * Create a detached, initialised DocumentDiscussionRecord
      */
-    public DocumentDiscussionRecord(DocumentDiscussionPojo value) {
-        super(DocumentDiscussion.DOCUMENT_DISCUSSION);
+    public DocumentDiscussionRecord(DocumentDiscussion value) {
+        super(DocumentDiscussionTable.DOCUMENT_DISCUSSION);
 
         if (value != null) {
             setId(value.getId());

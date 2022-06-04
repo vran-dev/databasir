@@ -4,7 +4,7 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.domain.system.data.SystemEmailResponse;
 import com.databasir.core.domain.system.data.SystemEmailUpdateRequest;
 import com.databasir.dao.impl.SysMailDao;
-import com.databasir.dao.tables.pojos.SysMailPojo;
+import com.databasir.dao.tables.pojos.SysMail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -41,26 +41,26 @@ public class SystemService {
     }
 
     public void updateEmailSetting(SystemEmailUpdateRequest request) {
-        SysMailPojo sysMailPojo = new SysMailPojo();
-        sysMailPojo.setSmtpHost(request.getSmtpHost());
-        sysMailPojo.setSmtpPort(request.getSmtpPort());
-        sysMailPojo.setUsername(request.getUsername());
-        sysMailPojo.setUseSsl(request.getUseSSL());
+        SysMail sysMail = new SysMail();
+        sysMail.setSmtpHost(request.getSmtpHost());
+        sysMail.setSmtpPort(request.getSmtpPort());
+        sysMail.setUsername(request.getUsername());
+        sysMail.setUseSsl(request.getUseSSL());
 
-        Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMailPojo::getId);
-        idOpt.ifPresent(sysMailPojo::setId);
+        Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMail::getId);
+        idOpt.ifPresent(sysMail::setId);
         if (request.getPassword() != null) {
             // TODO encrypt password ?
-            sysMailPojo.setPassword(request.getPassword());
+            sysMail.setPassword(request.getPassword());
         }
 
         if (idOpt.isPresent()) {
             if (!StringUtils.hasText(request.getPassword())) {
                 throw DomainErrors.CONNECT_DATABASE_FAILED.exception();
             }
-            sysMailDao.updateById(sysMailPojo);
+            sysMailDao.updateById(sysMail);
         } else {
-            sysMailDao.insertAndReturnId(sysMailPojo);
+            sysMailDao.insertAndReturnId(sysMail);
         }
     }
 }

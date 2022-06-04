@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DatabaseDocument;
-import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
+import com.databasir.dao.tables.DatabaseDocumentTable;
+import com.databasir.dao.tables.pojos.DatabaseDocument;
 
 import java.time.LocalDateTime;
 
@@ -189,52 +189,52 @@ public class DatabaseDocumentRecord extends UpdatableRecordImpl<DatabaseDocument
 
     @Override
     public Field<Integer> field1() {
-        return DatabaseDocument.DATABASE_DOCUMENT.ID;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return DatabaseDocument.DATABASE_DOCUMENT.PROJECT_ID;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.PROJECT_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return DatabaseDocument.DATABASE_DOCUMENT.DATABASE_NAME;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.DATABASE_NAME;
     }
 
     @Override
     public Field<String> field4() {
-        return DatabaseDocument.DATABASE_DOCUMENT.SCHEMA_NAME;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.SCHEMA_NAME;
     }
 
     @Override
     public Field<String> field5() {
-        return DatabaseDocument.DATABASE_DOCUMENT.PRODUCT_NAME;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.PRODUCT_NAME;
     }
 
     @Override
     public Field<String> field6() {
-        return DatabaseDocument.DATABASE_DOCUMENT.PRODUCT_VERSION;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.PRODUCT_VERSION;
     }
 
     @Override
     public Field<Long> field7() {
-        return DatabaseDocument.DATABASE_DOCUMENT.VERSION;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.VERSION;
     }
 
     @Override
     public Field<Boolean> field8() {
-        return DatabaseDocument.DATABASE_DOCUMENT.IS_ARCHIVE;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.IS_ARCHIVE;
     }
 
     @Override
     public Field<LocalDateTime> field9() {
-        return DatabaseDocument.DATABASE_DOCUMENT.UPDATE_AT;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field10() {
-        return DatabaseDocument.DATABASE_DOCUMENT.CREATE_AT;
+        return DatabaseDocumentTable.DATABASE_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -420,14 +420,14 @@ public class DatabaseDocumentRecord extends UpdatableRecordImpl<DatabaseDocument
      * Create a detached DatabaseDocumentRecord
      */
     public DatabaseDocumentRecord() {
-        super(DatabaseDocument.DATABASE_DOCUMENT);
+        super(DatabaseDocumentTable.DATABASE_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised DatabaseDocumentRecord
      */
     public DatabaseDocumentRecord(Integer id, Integer projectId, String databaseName, String schemaName, String productName, String productVersion, Long version, Boolean isArchive, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(DatabaseDocument.DATABASE_DOCUMENT);
+        super(DatabaseDocumentTable.DATABASE_DOCUMENT);
 
         setId(id);
         setProjectId(projectId);
@@ -444,8 +444,8 @@ public class DatabaseDocumentRecord extends UpdatableRecordImpl<DatabaseDocument
     /**
      * Create a detached, initialised DatabaseDocumentRecord
      */
-    public DatabaseDocumentRecord(DatabaseDocumentPojo value) {
-        super(DatabaseDocument.DATABASE_DOCUMENT);
+    public DatabaseDocumentRecord(DatabaseDocument value) {
+        super(DatabaseDocumentTable.DATABASE_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

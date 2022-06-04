@@ -1,6 +1,6 @@
 package com.databasir.core.domain.app.handler;
 
-import com.databasir.dao.tables.pojos.OauthAppPojo;
+import com.databasir.dao.tables.pojos.OauthApp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class OAuthProcessContext {
 
     private String registrationId;
 
-    private OauthAppPojo app;
+    private OauthApp app;
 
     @Builder.Default
     private Map<String, String[]> parameters = new HashMap<>();

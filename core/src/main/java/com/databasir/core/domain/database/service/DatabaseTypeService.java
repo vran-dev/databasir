@@ -1,7 +1,7 @@
 package com.databasir.core.domain.database.service;
 
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.database.converter.DatabaseTypePojoConverter;
+import com.databasir.core.domain.database.converter.DatabaseTypeConverter;
 import com.databasir.core.domain.database.data.*;
 import com.databasir.core.domain.database.validator.DatabaseTypeUpdateValidator;
 import com.databasir.core.infrastructure.connection.DatabaseTypes;
@@ -9,7 +9,7 @@ import com.databasir.core.infrastructure.driver.DriverResources;
 import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
 import com.databasir.dao.impl.ProjectDao;
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.pojos.DatabaseType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +40,7 @@ public class DatabaseTypeService {
 
     private final ProjectDao projectDao;
 
-    private final DatabaseTypePojoConverter databaseTypePojoConverter;
+    private final DatabaseTypeConverter databaseTypeConverter;
 
     private final DatabaseTypeUpdateValidator databaseTypeUpdateValidator;
 
@@ -61,7 +61,7 @@ public class DatabaseTypeService {
         DriverResult result = loadAndValidate(request.getJdbcDriverFileUrl(),
                 request.getJdbcDriverFilePath(), request.getJdbcDriverClassName());
         String targetPath = driverResources.copyToStandardDirectory(result.getDriverFile(), databaseType);
-        DatabaseTypePojo pojo = databaseTypePojoConverter.of(request, targetPath);
+        DatabaseType pojo = databaseTypeConverter.of(request, targetPath);
         // TODO workaround
         pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
         try {
@@ -77,7 +77,7 @@ public class DatabaseTypeService {
         databaseTypeDao.selectOptionalById(request.getId()).ifPresent(data -> {
             databaseTypeUpdateValidator.validDatabaseTypeIfNecessary(request, data);
             String databaseType = request.getDatabaseType();
-            DatabaseTypePojo pojo;
+            DatabaseType pojo;
             if (databaseTypeUpdateValidator.shouldReloadDriver(request, data)) {
                 // 名称修改，下载地址修改需要删除原有的 driver 并重新下载验证
                 driverResources.deleteByDatabaseType(data.getDatabaseType());
@@ -85,10 +85,10 @@ public class DatabaseTypeService {
                 DriverResult result = loadAndValidate(request.getJdbcDriverFileUrl(),
                         request.getJdbcDriverFilePath(), request.getJdbcDriverClassName());
                 String targetPath = driverResources.copyToStandardDirectory(result.getDriverFile(), databaseType);
-                pojo = databaseTypePojoConverter.of(request, targetPath);
+                pojo = databaseTypeConverter.of(request, targetPath);
                 pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
             } else {
-                pojo = databaseTypePojoConverter.of(request);
+                pojo = databaseTypeConverter.of(request);
                 pojo.setJdbcDriverFileUrl(StringUtils.defaultIfBlank(request.getJdbcDriverFileUrl(), ""));
             }
 
@@ -123,13 +123,13 @@ public class DatabaseTypeService {
 
     public Page<DatabaseTypePageResponse> findByPage(Pageable page,
                                                      DatabaseTypePageCondition condition) {
-        Page<DatabaseTypePojo> pageData = databaseTypeDao.selectByPage(page, condition.toCondition());
-        List<String> databaseTypes = pageData.map(DatabaseTypePojo::getDatabaseType).toList();
+        Page<DatabaseType> pageData = databaseTypeDao.selectByPage(page, condition.toCondition());
+        List<String> databaseTypes = pageData.map(DatabaseType::getDatabaseType).toList();
         Map<String, Integer> projectCountMapByDatabaseType = projectDao.countByDatabaseTypes(databaseTypes);
         return pageData
                 .map(data -> {
                     Integer count = projectCountMapByDatabaseType.getOrDefault(data.getDatabaseType(), 0);
-                    return databaseTypePojoConverter.toPageResponse(data, count);
+                    return databaseTypeConverter.toPageResponse(data, count);
                 });
     }
 
@@ -150,7 +150,7 @@ public class DatabaseTypeService {
 
     public Optional<DatabaseTypeDetailResponse> selectOne(Integer id) {
         return databaseTypeDao.selectOptionalById(id)
-                .map(databaseTypePojoConverter::toDetailResponse);
+                .map(databaseTypeConverter::toDetailResponse);
     }
 
     public String resolveDriverClassName(DriverClassNameResolveRequest request) {

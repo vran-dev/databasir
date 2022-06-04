@@ -39,7 +39,7 @@ public class DocumentDescriptionController {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = principal.getUserPojo().getId();
+        Integer userId = principal.getUser().getId();
         documentDescriptionService.save(groupId, projectId, userId, request);
         return JsonData.ok();
     }

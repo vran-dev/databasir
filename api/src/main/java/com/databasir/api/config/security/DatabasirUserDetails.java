@@ -1,7 +1,7 @@
 package com.databasir.api.config.security;
 
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class DatabasirUserDetails implements UserDetails {
 
     @Getter
-    private final UserPojo userPojo;
+    private final User user;
 
     @Getter
-    private final List<UserRolePojo> roles;
+    private final List<UserRole> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -36,12 +36,12 @@ public class DatabasirUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userPojo.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userPojo.getEmail();
+        return user.getEmail();
     }
 
     @Override
@@ -61,6 +61,6 @@ public class DatabasirUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return userPojo.getEnabled();
+        return user.getEnabled();
     }
 }

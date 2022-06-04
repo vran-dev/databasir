@@ -5,7 +5,7 @@ import com.databasir.core.domain.database.data.DatabaseTypeCreateRequest;
 import com.databasir.core.domain.database.data.DatabaseTypeUpdateRequest;
 import com.databasir.core.domain.database.data.DriverClassNameResolveRequest;
 import com.databasir.dao.impl.DatabaseTypeDao;
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.pojos.DatabaseType;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class DatabaseTypeUpdateValidator {
         }
     }
 
-    public void validDatabaseTypeIfNecessary(DatabaseTypeUpdateRequest request, DatabaseTypePojo origin) {
+    public void validDatabaseTypeIfNecessary(DatabaseTypeUpdateRequest request, DatabaseType origin) {
         if (!Objects.equals(request.getDatabaseType(), origin.getDatabaseType())) {
             if (databaseTypeDao.existsByDatabaseType(request.getDatabaseType())) {
                 throw DomainErrors.DATABASE_TYPE_NAME_DUPLICATE.exception();
@@ -44,7 +44,7 @@ public class DatabaseTypeUpdateValidator {
         }
     }
 
-    public boolean shouldReloadDriver(DatabaseTypeUpdateRequest request, DatabaseTypePojo origin) {
+    public boolean shouldReloadDriver(DatabaseTypeUpdateRequest request, DatabaseType origin) {
         if (!Objects.equals(request.getDatabaseType(), origin.getDatabaseType())) {
             return true;
         }

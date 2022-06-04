@@ -6,7 +6,7 @@ import com.databasir.core.domain.log.annotation.AuditLog;
 import com.databasir.core.domain.log.data.OperationLogRequest;
 import com.databasir.core.domain.log.service.OperationLogService;
 import com.databasir.dao.impl.ProjectDao;
-import com.databasir.dao.tables.pojos.ProjectPojo;
+import com.databasir.dao.tables.pojos.Project;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -75,12 +75,12 @@ public class OperationLogAspect {
                 && operation.retrieveInvolvedGroupId()
                 && involvedProjectId != null) {
             involvedGroupId = projectDao.selectOptionalById(involvedProjectId)
-                    .map(ProjectPojo::getGroupId)
+                    .map(Project::getGroupId)
                     .orElse(null);
         }
         int userId = userId();
-        String username = principal.getUserPojo().getUsername();
-        String nickname = principal.getUserPojo().getNickname();
+        String username = principal.getUser().getUsername();
+        String nickname = principal.getUser().getNickname();
         if (userId == AuditLog.Types.SYSTEM_USER_ID) {
             username = "system";
             nickname = "system";
@@ -105,7 +105,7 @@ public class OperationLogAspect {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return principal.getUserPojo().getId();
+        return principal.getUser().getId();
     }
 
     private <T> Optional<T> getValueBySPEL(Method method,

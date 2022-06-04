@@ -1,8 +1,8 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.exception.DataNotExistsException;
-import com.databasir.dao.tables.ProjectSyncRule;
-import com.databasir.dao.tables.pojos.ProjectSyncRulePojo;
+import com.databasir.dao.tables.ProjectSyncRuleTable;
+import com.databasir.dao.tables.pojos.ProjectSyncRule;
 import com.databasir.dao.tables.records.ProjectSyncRuleRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
@@ -16,35 +16,35 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.PROJECT_SYNC_RULE;
 
 @Repository
-public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
+public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRule> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public ProjectSyncRuleDao() {
-        super(PROJECT_SYNC_RULE, ProjectSyncRulePojo.class);
+        super(PROJECT_SYNC_RULE, ProjectSyncRule.class);
     }
 
-    public Optional<ProjectSyncRulePojo> selectOptionalByProjectId(Integer projectId) {
+    public Optional<ProjectSyncRule> selectOptionalByProjectId(Integer projectId) {
         return getDslContext()
                 .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE)
                 .where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
-                .fetchOptionalInto(ProjectSyncRulePojo.class);
+                .fetchOptionalInto(ProjectSyncRule.class);
     }
 
-    public ProjectSyncRulePojo selectByProjectId(Integer projectId) {
+    public ProjectSyncRule selectByProjectId(Integer projectId) {
         return getDslContext()
                 .select(PROJECT_SYNC_RULE.fields()).from(PROJECT_SYNC_RULE)
                 .where(PROJECT_SYNC_RULE.PROJECT_ID.eq(projectId))
-                .fetchOptionalInto(ProjectSyncRulePojo.class)
+                .fetchOptionalInto(ProjectSyncRule.class)
                 .orElseThrow(() -> new DataNotExistsException("data not exists in "
                         + table().getName()
                         + " with projectId = " + projectId));
     }
 
-    public int updateByProjectId(ProjectSyncRulePojo rule) {
-        ProjectSyncRule table = PROJECT_SYNC_RULE;
+    public int updateByProjectId(ProjectSyncRule rule) {
+        ProjectSyncRuleTable table = PROJECT_SYNC_RULE;
         ProjectSyncRuleRecord record = getDslContext().newRecord(table, rule);
         record.changed(table.ID, false);
         record.changed(table.PROJECT_ID, false);
@@ -59,16 +59,16 @@ public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
                 .execute();
     }
 
-    public List<ProjectSyncRulePojo> selectInProjectIds(List<Integer> projectIds) {
+    public List<ProjectSyncRule> selectInProjectIds(List<Integer> projectIds) {
         if (projectIds == null || projectIds.isEmpty()) {
             return Collections.emptyList();
         }
         return getDslContext()
                 .selectFrom(PROJECT_SYNC_RULE).where(PROJECT_SYNC_RULE.PROJECT_ID.in(projectIds))
-                .fetchInto(ProjectSyncRulePojo.class);
+                .fetchInto(ProjectSyncRule.class);
     }
 
-    public List<ProjectSyncRulePojo> selectByIsAutoSyncAndProjectIds(boolean isAutoSync, List<Integer> projectIds) {
+    public List<ProjectSyncRule> selectByIsAutoSyncAndProjectIds(boolean isAutoSync, List<Integer> projectIds) {
         if (projectIds == null || projectIds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -77,21 +77,21 @@ public class ProjectSyncRuleDao extends BaseDao<ProjectSyncRulePojo> {
                         PROJECT_SYNC_RULE.IS_AUTO_SYNC.eq(isAutoSync)
                                 .and(PROJECT_SYNC_RULE.PROJECT_ID.in(projectIds))
                 )
-                .fetchInto(ProjectSyncRulePojo.class);
+                .fetchInto(ProjectSyncRule.class);
     }
 
-    public List<ProjectSyncRulePojo> selectByIsAutoSyncAndNotInProjectIds(boolean isAutoSync,
+    public List<ProjectSyncRule> selectByIsAutoSyncAndNotInProjectIds(boolean isAutoSync,
                                                                           List<Integer> projectIds) {
         if (projectIds == null || projectIds.isEmpty()) {
             return getDslContext()
                     .selectFrom(PROJECT_SYNC_RULE)
                     .where(PROJECT_SYNC_RULE.IS_AUTO_SYNC.eq(isAutoSync)
                             .and(PROJECT_SYNC_RULE.PROJECT_ID.notIn(projectIds)))
-                    .fetchInto(ProjectSyncRulePojo.class);
+                    .fetchInto(ProjectSyncRule.class);
         } else {
             return getDslContext()
                     .selectFrom(PROJECT_SYNC_RULE).where(PROJECT_SYNC_RULE.IS_AUTO_SYNC.eq(isAutoSync))
-                    .fetchInto(ProjectSyncRulePojo.class);
+                    .fetchInto(ProjectSyncRule.class);
         }
     }
 

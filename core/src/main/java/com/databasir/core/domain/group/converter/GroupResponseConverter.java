@@ -3,8 +3,8 @@ package com.databasir.core.domain.group.converter;
 import com.databasir.core.domain.group.data.GroupMemberPageResponse;
 import com.databasir.core.domain.group.data.GroupPageResponse;
 import com.databasir.core.domain.group.data.GroupResponse;
-import com.databasir.dao.tables.pojos.GroupPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.Group;
+import com.databasir.dao.tables.pojos.User;
 import com.databasir.dao.value.GroupMemberDetailPojo;
 import org.mapstruct.Mapper;
 
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface GroupResponseConverter {
 
-    default List<GroupPageResponse> toResponse(List<GroupPojo> pojos,
+    default List<GroupPageResponse> toResponse(List<Group> pojos,
                                                Map<Integer, List<String>> groupOwnerGroupByGroupId,
                                                Map<Integer, Integer> projectCountMapByGroupId) {
         return pojos.stream()
@@ -29,11 +29,11 @@ public interface GroupResponseConverter {
                 .collect(Collectors.toList());
     }
 
-    GroupPageResponse toResponse(GroupPojo groupPojo,
+    GroupPageResponse toResponse(Group group,
                                  List<String> groupOwnerNames,
                                  Integer projectCount);
 
-    GroupResponse toResponse(GroupPojo groupPojo, List<UserPojo> groupOwners);
+    GroupResponse toResponse(Group group, List<User> groupOwners);
 
     GroupMemberPageResponse toResponse(GroupMemberDetailPojo data);
 }

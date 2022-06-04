@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.Login;
-import com.databasir.dao.tables.pojos.LoginPojo;
+import com.databasir.dao.tables.LoginTable;
+import com.databasir.dao.tables.pojos.Login;
 
 import java.time.LocalDateTime;
 
@@ -161,42 +161,42 @@ public class LoginRecord extends UpdatableRecordImpl<LoginRecord> implements Rec
 
     @Override
     public Field<Integer> field1() {
-        return Login.LOGIN.ID;
+        return LoginTable.LOGIN.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return Login.LOGIN.USER_ID;
+        return LoginTable.LOGIN.USER_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return Login.LOGIN.ACCESS_TOKEN;
+        return LoginTable.LOGIN.ACCESS_TOKEN;
     }
 
     @Override
     public Field<String> field4() {
-        return Login.LOGIN.REFRESH_TOKEN;
+        return LoginTable.LOGIN.REFRESH_TOKEN;
     }
 
     @Override
     public Field<LocalDateTime> field5() {
-        return Login.LOGIN.ACCESS_TOKEN_EXPIRE_AT;
+        return LoginTable.LOGIN.ACCESS_TOKEN_EXPIRE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return Login.LOGIN.REFRESH_TOKEN_EXPIRE_AT;
+        return LoginTable.LOGIN.REFRESH_TOKEN_EXPIRE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return Login.LOGIN.UPDATE_AT;
+        return LoginTable.LOGIN.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field8() {
-        return Login.LOGIN.CREATE_AT;
+        return LoginTable.LOGIN.CREATE_AT;
     }
 
     @Override
@@ -348,14 +348,14 @@ public class LoginRecord extends UpdatableRecordImpl<LoginRecord> implements Rec
      * Create a detached LoginRecord
      */
     public LoginRecord() {
-        super(Login.LOGIN);
+        super(LoginTable.LOGIN);
     }
 
     /**
      * Create a detached, initialised LoginRecord
      */
     public LoginRecord(Integer id, Integer userId, String accessToken, String refreshToken, LocalDateTime accessTokenExpireAt, LocalDateTime refreshTokenExpireAt, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(Login.LOGIN);
+        super(LoginTable.LOGIN);
 
         setId(id);
         setUserId(userId);
@@ -370,8 +370,8 @@ public class LoginRecord extends UpdatableRecordImpl<LoginRecord> implements Rec
     /**
      * Create a detached, initialised LoginRecord
      */
-    public LoginRecord(LoginPojo value) {
-        super(Login.LOGIN);
+    public LoginRecord(Login value) {
+        super(LoginTable.LOGIN);
 
         if (value != null) {
             setId(value.getId());

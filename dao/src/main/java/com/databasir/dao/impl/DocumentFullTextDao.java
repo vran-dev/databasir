@@ -1,7 +1,7 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.Indexes;
-import com.databasir.dao.tables.pojos.DocumentFullTextPojo;
+import com.databasir.dao.tables.pojos.DocumentFullText;
 import com.databasir.dao.value.FullTextProjectInfoUpdatePojo;
 import lombok.Getter;
 import org.jooq.DSLContext;
@@ -19,7 +19,7 @@ import java.util.Objects;
 import static com.databasir.dao.Tables.DOCUMENT_FULL_TEXT;
 
 @Repository
-public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
+public class DocumentFullTextDao extends BaseDao<DocumentFullText> {
 
     public static final String[] EMPTY = new String[0];
 
@@ -28,10 +28,10 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
     private DSLContext dslContext;
 
     public DocumentFullTextDao() {
-        super(DOCUMENT_FULL_TEXT, DocumentFullTextPojo.class);
+        super(DOCUMENT_FULL_TEXT, DocumentFullText.class);
     }
 
-    public Page<DocumentFullTextPojo> selectColumnPage(Pageable pageable, String keyword) {
+    public Page<DocumentFullText> selectColumnPage(Pageable pageable, String keyword) {
         String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_COLUMN.getFields()
                 .stream()
                 .map(f -> f.getName())
@@ -48,15 +48,15 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                 .where(DOCUMENT_FULL_TEXT.TABLE_COLUMN_DOCUMENT_ID.isNotNull().and(fullTextMatchSqlSegment))
                 .fetchOne(0, int.class);
         // content
-        List<DocumentFullTextPojo> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
+        List<DocumentFullText> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
                 .from(DOCUMENT_FULL_TEXT)
                 .where(DOCUMENT_FULL_TEXT.TABLE_COLUMN_DOCUMENT_ID.isNotNull().and(fullTextMatchSqlSegment))
                 .limit(pageable.getOffset(), pageable.getPageSize())
-                .fetchInto(DocumentFullTextPojo.class);
+                .fetchInto(DocumentFullText.class);
         return new PageImpl<>(content, pageable, total.longValue());
     }
 
-    public Page<DocumentFullTextPojo> selectTablePage(Pageable pageable, String keyword) {
+    public Page<DocumentFullText> selectTablePage(Pageable pageable, String keyword) {
         String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_TABLE.getFields()
                 .stream()
                 .map(f -> f.getName())
@@ -91,18 +91,18 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                         .and(fullTextMatchSqlSegment))
                 .fetchOne(0, int.class);
         // content
-        List<DocumentFullTextPojo> content = dslContext.select(groupColumns)
+        List<DocumentFullText> content = dslContext.select(groupColumns)
                 .from(DOCUMENT_FULL_TEXT)
                 .where(DOCUMENT_FULL_TEXT.PROJECT_ID.isNotNull()
                         .and(DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID.isNotNull())
                         .and(fullTextMatchSqlSegment))
                 .groupBy(groupColumns)
                 .limit(pageable.getOffset(), pageable.getPageSize())
-                .fetchInto(DocumentFullTextPojo.class);
+                .fetchInto(DocumentFullText.class);
         return new PageImpl<>(content, pageable, total.longValue());
     }
 
-    public Page<DocumentFullTextPojo> selectProjectPage(Pageable pageable, String keyword) {
+    public Page<DocumentFullText> selectProjectPage(Pageable pageable, String keyword) {
         String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_PROJECT.getFields()
                 .stream()
                 .map(f -> f.getName())
@@ -121,17 +121,17 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                         .and(fullTextMatchSqlSegment))
                 .fetchOne(0, int.class);
         // content
-        List<DocumentFullTextPojo> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
+        List<DocumentFullText> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
                 .from(DOCUMENT_FULL_TEXT)
                 .where(DOCUMENT_FULL_TEXT.PROJECT_ID.isNotNull()
                         .and(DOCUMENT_FULL_TEXT.TABLE_DOCUMENT_ID.isNull())
                         .and(fullTextMatchSqlSegment))
                 .limit(pageable.getOffset(), pageable.getPageSize())
-                .fetchInto(DocumentFullTextPojo.class);
+                .fetchInto(DocumentFullText.class);
         return new PageImpl<>(content, pageable, total.longValue());
     }
 
-    public Page<DocumentFullTextPojo> selectGroupPage(Pageable pageable, String keyword) {
+    public Page<DocumentFullText> selectGroupPage(Pageable pageable, String keyword) {
         String[] matchCols = Indexes.DOCUMENT_FULL_TEXT_FIDX_GROUP.getFields()
                 .stream()
                 .map(f -> f.getName())
@@ -150,13 +150,13 @@ public class DocumentFullTextDao extends BaseDao<DocumentFullTextPojo> {
                         .and(fullTextMatchSqlSegment))
                 .fetchOne(0, int.class);
         // content
-        List<DocumentFullTextPojo> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
+        List<DocumentFullText> content = dslContext.select(DOCUMENT_FULL_TEXT.fields())
                 .from(DOCUMENT_FULL_TEXT)
                 .where(DOCUMENT_FULL_TEXT.GROUP_ID.isNotNull()
                         .and(DOCUMENT_FULL_TEXT.PROJECT_ID.isNull())
                         .and(fullTextMatchSqlSegment))
                 .limit(pageable.getOffset(), pageable.getPageSize())
-                .fetchInto(DocumentFullTextPojo.class);
+                .fetchInto(DocumentFullText.class);
         return new PageImpl<>(content, pageable, total.longValue());
     }
 

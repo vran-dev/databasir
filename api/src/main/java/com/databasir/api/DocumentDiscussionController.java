@@ -68,7 +68,7 @@ public class DocumentDiscussionController {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = principal.getUserPojo().getId();
+        Integer userId = principal.getUser().getId();
         documentDiscussionService.create(groupId, projectId, userId, request);
         return JsonData.ok();
     }
