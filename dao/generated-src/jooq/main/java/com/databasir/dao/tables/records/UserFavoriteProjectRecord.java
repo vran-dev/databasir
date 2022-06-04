@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.UserFavoriteProject;
-import com.databasir.dao.tables.pojos.UserFavoriteProjectPojo;
+import com.databasir.dao.tables.UserFavoriteProjectTable;
+import com.databasir.dao.tables.pojos.UserFavoriteProject;
 
 import java.time.LocalDateTime;
 
@@ -105,22 +105,22 @@ public class UserFavoriteProjectRecord extends UpdatableRecordImpl<UserFavoriteP
 
     @Override
     public Field<Integer> field1() {
-        return UserFavoriteProject.USER_FAVORITE_PROJECT.ID;
+        return UserFavoriteProjectTable.USER_FAVORITE_PROJECT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return UserFavoriteProject.USER_FAVORITE_PROJECT.USER_ID;
+        return UserFavoriteProjectTable.USER_FAVORITE_PROJECT.USER_ID;
     }
 
     @Override
     public Field<Integer> field3() {
-        return UserFavoriteProject.USER_FAVORITE_PROJECT.PROJECT_ID;
+        return UserFavoriteProjectTable.USER_FAVORITE_PROJECT.PROJECT_ID;
     }
 
     @Override
     public Field<LocalDateTime> field4() {
-        return UserFavoriteProject.USER_FAVORITE_PROJECT.CREATE_AT;
+        return UserFavoriteProjectTable.USER_FAVORITE_PROJECT.CREATE_AT;
     }
 
     @Override
@@ -204,14 +204,14 @@ public class UserFavoriteProjectRecord extends UpdatableRecordImpl<UserFavoriteP
      * Create a detached UserFavoriteProjectRecord
      */
     public UserFavoriteProjectRecord() {
-        super(UserFavoriteProject.USER_FAVORITE_PROJECT);
+        super(UserFavoriteProjectTable.USER_FAVORITE_PROJECT);
     }
 
     /**
      * Create a detached, initialised UserFavoriteProjectRecord
      */
     public UserFavoriteProjectRecord(Integer id, Integer userId, Integer projectId, LocalDateTime createAt) {
-        super(UserFavoriteProject.USER_FAVORITE_PROJECT);
+        super(UserFavoriteProjectTable.USER_FAVORITE_PROJECT);
 
         setId(id);
         setUserId(userId);
@@ -222,8 +222,8 @@ public class UserFavoriteProjectRecord extends UpdatableRecordImpl<UserFavoriteP
     /**
      * Create a detached, initialised UserFavoriteProjectRecord
      */
-    public UserFavoriteProjectRecord(UserFavoriteProjectPojo value) {
-        super(UserFavoriteProject.USER_FAVORITE_PROJECT);
+    public UserFavoriteProjectRecord(UserFavoriteProject value) {
+        super(UserFavoriteProjectTable.USER_FAVORITE_PROJECT);
 
         if (value != null) {
             setId(value.getId());

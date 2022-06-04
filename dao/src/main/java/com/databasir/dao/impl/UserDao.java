@@ -1,7 +1,7 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.Databasir;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.User;
 import com.databasir.dao.value.GroupMemberDetailPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -22,14 +22,14 @@ import static com.databasir.dao.Tables.USER;
 import static com.databasir.dao.Tables.USER_ROLE;
 
 @Repository
-public class UserDao extends BaseDao<UserPojo> {
+public class UserDao extends BaseDao<User> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public UserDao() {
-        super(USER, UserPojo.class);
+        super(USER, User.class);
     }
 
     @Override
@@ -73,17 +73,17 @@ public class UserDao extends BaseDao<UserPojo> {
                 .execute();
     }
 
-    public List<UserPojo> selectUserIdIn(Collection<Integer> userIds) {
+    public List<User> selectUserIdIn(Collection<Integer> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return Collections.emptyList();
         }
         return dslContext
                 .select(USER.fields()).from(USER)
                 .where(USER.ID.in(userIds).and(USER.DELETED.eq(false)))
-                .fetchInto(UserPojo.class);
+                .fetchInto(User.class);
     }
 
-    public List<UserPojo> selectLimitUsersByRoleAndGroup(Integer groupId,
+    public List<User> selectLimitUsersByRoleAndGroup(Integer groupId,
                                                          String role,
                                                          Integer size) {
         return dslContext
@@ -93,30 +93,30 @@ public class UserDao extends BaseDao<UserPojo> {
                         .and(USER_ROLE.GROUP_ID.eq(groupId).and(USER_ROLE.ROLE.eq(role))))
                 .orderBy(USER_ROLE.ID.desc())
                 .limit(size)
-                .fetchInto(UserPojo.class);
+                .fetchInto(User.class);
     }
 
-    public Optional<UserPojo> selectByEmail(String email) {
+    public Optional<User> selectByEmail(String email) {
         return dslContext
                 .select(USER.fields()).from(USER)
                 .where(USER.EMAIL.eq(email).and(USER.DELETED.eq(false)))
-                .fetchOptionalInto(UserPojo.class);
+                .fetchOptionalInto(User.class);
     }
 
-    public Optional<UserPojo> selectByEmailOrUsername(String emailOrUsername) {
+    public Optional<User> selectByEmailOrUsername(String emailOrUsername) {
         return dslContext
                 .select(USER.fields()).from(USER)
                 .where(USER.DELETED.eq(false)
                         .and(USER.EMAIL.eq(emailOrUsername).or(USER.USERNAME.eq(emailOrUsername))))
-                .fetchOptionalInto(UserPojo.class);
+                .fetchOptionalInto(User.class);
     }
 
-    public List<UserPojo> selectEnabledGroupMembers(Integer groupId) {
+    public List<User> selectEnabledGroupMembers(Integer groupId) {
         return dslContext.select(USER.fields()).from(USER)
                 .innerJoin(USER_ROLE).on(USER.ID.eq(USER_ROLE.USER_ID))
                 .where(USER.DELETED.eq(false)
                         .and(USER_ROLE.GROUP_ID.eq(groupId).and(USER.ENABLED.eq(true))))
-                .fetchInto(UserPojo.class);
+                .fetchInto(User.class);
     }
 
     public Page<GroupMemberDetailPojo> selectGroupMembers(Integer groupId, Pageable request, Condition condition) {

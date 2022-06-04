@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DatabaseType;
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.DatabaseTypeTable;
+import com.databasir.dao.tables.pojos.DatabaseType;
 
 import java.time.LocalDateTime;
 
@@ -233,67 +233,67 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
 
     @Override
     public Field<Integer> field1() {
-        return DatabaseType.DATABASE_TYPE.ID;
+        return DatabaseTypeTable.DATABASE_TYPE.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return DatabaseType.DATABASE_TYPE.DATABASE_TYPE_;
+        return DatabaseTypeTable.DATABASE_TYPE.DATABASE_TYPE_;
     }
 
     @Override
     public Field<String> field3() {
-        return DatabaseType.DATABASE_TYPE.ICON;
+        return DatabaseTypeTable.DATABASE_TYPE.ICON;
     }
 
     @Override
     public Field<String> field4() {
-        return DatabaseType.DATABASE_TYPE.DESCRIPTION;
+        return DatabaseTypeTable.DATABASE_TYPE.DESCRIPTION;
     }
 
     @Override
     public Field<String> field5() {
-        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_FILE_URL;
+        return DatabaseTypeTable.DATABASE_TYPE.JDBC_DRIVER_FILE_URL;
     }
 
     @Override
     public Field<String> field6() {
-        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_FILE_PATH;
+        return DatabaseTypeTable.DATABASE_TYPE.JDBC_DRIVER_FILE_PATH;
     }
 
     @Override
     public Field<String> field7() {
-        return DatabaseType.DATABASE_TYPE.JDBC_DRIVER_CLASS_NAME;
+        return DatabaseTypeTable.DATABASE_TYPE.JDBC_DRIVER_CLASS_NAME;
     }
 
     @Override
     public Field<String> field8() {
-        return DatabaseType.DATABASE_TYPE.JDBC_PROTOCOL;
+        return DatabaseTypeTable.DATABASE_TYPE.JDBC_PROTOCOL;
     }
 
     @Override
     public Field<String> field9() {
-        return DatabaseType.DATABASE_TYPE.URL_PATTERN;
+        return DatabaseTypeTable.DATABASE_TYPE.URL_PATTERN;
     }
 
     @Override
     public Field<Boolean> field10() {
-        return DatabaseType.DATABASE_TYPE.DELETED;
+        return DatabaseTypeTable.DATABASE_TYPE.DELETED;
     }
 
     @Override
     public Field<Integer> field11() {
-        return DatabaseType.DATABASE_TYPE.DELETED_TOKEN;
+        return DatabaseTypeTable.DATABASE_TYPE.DELETED_TOKEN;
     }
 
     @Override
     public Field<LocalDateTime> field12() {
-        return DatabaseType.DATABASE_TYPE.UPDATE_AT;
+        return DatabaseTypeTable.DATABASE_TYPE.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field13() {
-        return DatabaseType.DATABASE_TYPE.CREATE_AT;
+        return DatabaseTypeTable.DATABASE_TYPE.CREATE_AT;
     }
 
     @Override
@@ -530,14 +530,14 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
      * Create a detached DatabaseTypeRecord
      */
     public DatabaseTypeRecord() {
-        super(DatabaseType.DATABASE_TYPE);
+        super(DatabaseTypeTable.DATABASE_TYPE);
     }
 
     /**
      * Create a detached, initialised DatabaseTypeRecord
      */
     public DatabaseTypeRecord(Integer id, String databaseType, String icon, String description, String jdbcDriverFileUrl, String jdbcDriverFilePath, String jdbcDriverClassName, String jdbcProtocol, String urlPattern, Boolean deleted, Integer deletedToken, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(DatabaseType.DATABASE_TYPE);
+        super(DatabaseTypeTable.DATABASE_TYPE);
 
         setId(id);
         setDatabaseType(databaseType);
@@ -557,8 +557,8 @@ public class DatabaseTypeRecord extends UpdatableRecordImpl<DatabaseTypeRecord> 
     /**
      * Create a detached, initialised DatabaseTypeRecord
      */
-    public DatabaseTypeRecord(DatabaseTypePojo value) {
-        super(DatabaseType.DATABASE_TYPE);
+    public DatabaseTypeRecord(DatabaseType value) {
+        super(DatabaseTypeTable.DATABASE_TYPE);
 
         if (value != null) {
             setId(value.getId());

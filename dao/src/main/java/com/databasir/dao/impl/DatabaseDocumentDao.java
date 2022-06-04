@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
+import com.databasir.dao.tables.pojos.DatabaseDocument;
 import com.databasir.dao.tables.records.DatabaseDocumentRecord;
 import com.databasir.dao.value.DatabaseDocumentVersionPojo;
 import lombok.Getter;
@@ -18,29 +18,29 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.DATABASE_DOCUMENT;
 
 @Repository
-public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
+public class DatabaseDocumentDao extends BaseDao<DatabaseDocument> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DatabaseDocumentDao() {
-        super(DATABASE_DOCUMENT, DatabaseDocumentPojo.class);
+        super(DATABASE_DOCUMENT, DatabaseDocument.class);
     }
 
-    public Optional<DatabaseDocumentPojo> selectOptionalByProjectId(Integer projectId) {
+    public Optional<DatabaseDocument> selectOptionalByProjectId(Integer projectId) {
         return getDslContext()
                 .select(DATABASE_DOCUMENT.fields()).from(DATABASE_DOCUMENT)
                 .where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId))
-                .fetchOptionalInto(DatabaseDocumentPojo.class);
+                .fetchOptionalInto(DatabaseDocument.class);
     }
 
-    public Optional<DatabaseDocumentPojo> selectOptionalByProjectIdAndVersion(Integer projectId,
+    public Optional<DatabaseDocument> selectOptionalByProjectIdAndVersion(Integer projectId,
                                                                               Long version) {
         return getDslContext()
                 .select(DATABASE_DOCUMENT.fields()).from(DATABASE_DOCUMENT)
                 .where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId).and(DATABASE_DOCUMENT.VERSION.eq(version)))
-                .fetchOptionalInto(DatabaseDocumentPojo.class);
+                .fetchOptionalInto(DatabaseDocument.class);
     }
 
     public Optional<Integer> selectIdByProjectIdAndVersion(Integer projectId,
@@ -51,18 +51,18 @@ public class DatabaseDocumentDao extends BaseDao<DatabaseDocumentPojo> {
                 .fetchOptionalInto(Integer.class);
     }
 
-    public void update(DatabaseDocumentPojo toPojo) {
+    public void update(DatabaseDocument toPojo) {
         DatabaseDocumentRecord record = getDslContext().newRecord(DATABASE_DOCUMENT, toPojo);
         record.changed(DATABASE_DOCUMENT.ID, false);
         record.changed(DATABASE_DOCUMENT.CREATE_AT, false);
         record.update();
     }
 
-    public Optional<DatabaseDocumentPojo> selectNotArchivedByProjectId(Integer projectId) {
+    public Optional<DatabaseDocument> selectNotArchivedByProjectId(Integer projectId) {
         return getDslContext()
                 .select(DATABASE_DOCUMENT.fields()).from(DATABASE_DOCUMENT)
                 .where(DATABASE_DOCUMENT.PROJECT_ID.eq(projectId).and(DATABASE_DOCUMENT.IS_ARCHIVE.eq(false)))
-                .fetchOptionalInto(DatabaseDocumentPojo.class);
+                .fetchOptionalInto(DatabaseDocument.class);
     }
 
     public void updateIsArchiveById(Integer id, Boolean isArchive) {

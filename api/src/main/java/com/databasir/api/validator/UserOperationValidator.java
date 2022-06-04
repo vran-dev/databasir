@@ -12,7 +12,7 @@ public class UserOperationValidator {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        if (principal.getUserPojo().getId().equals(userId)) {
+        if (principal.getUser().getId().equals(userId)) {
             throw DomainErrors.CANNOT_UPDATE_SELF_ROLE.exception();
         }
     }
@@ -21,7 +21,7 @@ public class UserOperationValidator {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return principal.getUserPojo().getId().equals(userId);
+        return principal.getUser().getId().equals(userId);
     }
 
 }

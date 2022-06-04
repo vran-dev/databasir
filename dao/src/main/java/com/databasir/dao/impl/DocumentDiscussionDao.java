@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DocumentDiscussionPojo;
+import com.databasir.dao.tables.pojos.DocumentDiscussion;
 import com.databasir.dao.value.DocumentDiscussionCountPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -15,21 +15,21 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.DOCUMENT_DISCUSSION;
 
 @Repository
-public class DocumentDiscussionDao extends BaseDao<DocumentDiscussionPojo> {
+public class DocumentDiscussionDao extends BaseDao<DocumentDiscussion> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DocumentDiscussionDao() {
-        super(DOCUMENT_DISCUSSION, DocumentDiscussionPojo.class);
+        super(DOCUMENT_DISCUSSION, DocumentDiscussion.class);
     }
 
-    public Optional<DocumentDiscussionPojo> selectByProjectIdAndId(Integer projectId, Integer id) {
+    public Optional<DocumentDiscussion> selectByProjectIdAndId(Integer projectId, Integer id) {
         return this.getDslContext()
                 .selectFrom(DOCUMENT_DISCUSSION).where(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId)
                         .and(DOCUMENT_DISCUSSION.ID.eq(id)))
-                .fetchOptionalInto(DocumentDiscussionPojo.class);
+                .fetchOptionalInto(DocumentDiscussion.class);
     }
 
     public List<DocumentDiscussionCountPojo> selectTableDiscussionCount(Integer projectId) {

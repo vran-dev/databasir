@@ -5,8 +5,8 @@ package com.databasir.dao.tables.records;
 
 
 import com.databasir.dao.enums.DocumentTemplatePropertyType;
-import com.databasir.dao.tables.DocumentTemplateProperty;
-import com.databasir.dao.tables.pojos.DocumentTemplatePropertyPojo;
+import com.databasir.dao.tables.DocumentTemplatePropertyTable;
+import com.databasir.dao.tables.pojos.DocumentTemplateProperty;
 
 import java.time.LocalDateTime;
 
@@ -136,32 +136,32 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
 
     @Override
     public Field<Integer> field1() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.ID;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.KEY;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.KEY;
     }
 
     @Override
     public Field<String> field3() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.VALUE;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.VALUE;
     }
 
     @Override
     public Field<String> field4() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.DEFAULT_VALUE;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.DEFAULT_VALUE;
     }
 
     @Override
     public Field<DocumentTemplatePropertyType> field5() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.TYPE;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.TYPE;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY.CREATE_AT;
+        return DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY.CREATE_AT;
     }
 
     @Override
@@ -279,14 +279,14 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
      * Create a detached DocumentTemplatePropertyRecord
      */
     public DocumentTemplatePropertyRecord() {
-        super(DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY);
+        super(DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY);
     }
 
     /**
      * Create a detached, initialised DocumentTemplatePropertyRecord
      */
     public DocumentTemplatePropertyRecord(Integer id, String key, String value, String defaultValue, DocumentTemplatePropertyType type, LocalDateTime createAt) {
-        super(DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY);
+        super(DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY);
 
         setId(id);
         setKey(key);
@@ -299,8 +299,8 @@ public class DocumentTemplatePropertyRecord extends UpdatableRecordImpl<Document
     /**
      * Create a detached, initialised DocumentTemplatePropertyRecord
      */
-    public DocumentTemplatePropertyRecord(DocumentTemplatePropertyPojo value) {
-        super(DocumentTemplateProperty.DOCUMENT_TEMPLATE_PROPERTY);
+    public DocumentTemplatePropertyRecord(DocumentTemplateProperty value) {
+        super(DocumentTemplatePropertyTable.DOCUMENT_TEMPLATE_PROPERTY);
 
         if (value != null) {
             setId(value.getId());

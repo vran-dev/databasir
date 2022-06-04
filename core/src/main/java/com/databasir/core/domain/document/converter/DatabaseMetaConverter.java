@@ -16,25 +16,25 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = JsonConverter.class)
 public interface DatabaseMetaConverter {
 
-    default DatabaseMeta of(DatabaseDocumentPojo database,
-                            List<TableDocumentPojo> tables,
-                            List<TableColumnDocumentPojo> columns,
-                            List<TableIndexDocumentPojo> indexes,
-                            List<TableTriggerDocumentPojo> triggers,
-                            List<TableForeignKeyDocumentPojo> foreignKeys) {
-        var columnMap = groupBy(columns, TableColumnDocumentPojo::getTableDocumentId);
-        var indexMap = groupBy(indexes, TableIndexDocumentPojo::getTableDocumentId);
-        var triggerMap = groupBy(triggers, TableTriggerDocumentPojo::getTableDocumentId);
-        var fkMap = groupBy(foreignKeys, TableForeignKeyDocumentPojo::getTableDocumentId);
+    default DatabaseMeta of(DatabaseDocument database,
+                            List<TableDocument> tables,
+                            List<TableColumnDocument> columns,
+                            List<TableIndexDocument> indexes,
+                            List<TableTriggerDocument> triggers,
+                            List<TableForeignKeyDocument> foreignKeys) {
+        var columnMap = groupBy(columns, TableColumnDocument::getTableDocumentId);
+        var indexMap = groupBy(indexes, TableIndexDocument::getTableDocumentId);
+        var triggerMap = groupBy(triggers, TableTriggerDocument::getTableDocumentId);
+        var fkMap = groupBy(foreignKeys, TableForeignKeyDocument::getTableDocumentId);
         return of(database, tables, columnMap, indexMap, triggerMap, fkMap);
     }
 
-    default DatabaseMeta of(DatabaseDocumentPojo database,
-                            List<TableDocumentPojo> tables,
-                            Map<Integer, List<TableColumnDocumentPojo>> columnGroupByTableId,
-                            Map<Integer, List<TableIndexDocumentPojo>> indexGroupByTableId,
-                            Map<Integer, List<TableTriggerDocumentPojo>> triggerGroupByTableId,
-                            Map<Integer, List<TableForeignKeyDocumentPojo>> fkGroupByTableId) {
+    default DatabaseMeta of(DatabaseDocument database,
+                            List<TableDocument> tables,
+                            Map<Integer, List<TableColumnDocument>> columnGroupByTableId,
+                            Map<Integer, List<TableIndexDocument>> indexGroupByTableId,
+                            Map<Integer, List<TableTriggerDocument>> triggerGroupByTableId,
+                            Map<Integer, List<TableForeignKeyDocument>> fkGroupByTableId) {
         List<TableMeta> tableMetas = tables.stream()
                 .map(table -> {
                     Integer id = table.getId();
@@ -48,22 +48,22 @@ public interface DatabaseMetaConverter {
         return of(database, tableMetas);
     }
 
-    DatabaseMeta of(DatabaseDocumentPojo database, List<TableMeta> tables);
+    DatabaseMeta of(DatabaseDocument database, List<TableMeta> tables);
 
-    TableMeta of(TableDocumentPojo table,
-                 List<TableColumnDocumentPojo> columns,
-                 List<TableIndexDocumentPojo> indexes,
-                 List<TableTriggerDocumentPojo> triggers,
-                 List<TableForeignKeyDocumentPojo> foreignKeys);
+    TableMeta of(TableDocument table,
+                 List<TableColumnDocument> columns,
+                 List<TableIndexDocument> indexes,
+                 List<TableTriggerDocument> triggers,
+                 List<TableForeignKeyDocument> foreignKeys);
 
-    ColumnMeta of(TableColumnDocumentPojo pojo);
+    ColumnMeta of(TableColumnDocument pojo);
 
     @Mapping(target = "isUniqueKey", source = "pojo.isUnique")
     @Mapping(target = "columnNames", source = "pojo.columnNameArray")
-    IndexMeta of(TableIndexDocumentPojo pojo);
+    IndexMeta of(TableIndexDocument pojo);
 
     @Mapping(target = "createAt", source = "pojo.triggerCreateAt")
-    TriggerMeta of(TableTriggerDocumentPojo pojo);
+    TriggerMeta of(TableTriggerDocument pojo);
 
     List<TableMeta> of(List<TableDocumentResponse> table);
 

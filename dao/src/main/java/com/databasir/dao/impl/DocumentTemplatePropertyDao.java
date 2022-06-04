@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DocumentTemplatePropertyPojo;
+import com.databasir.dao.tables.pojos.DocumentTemplateProperty;
 import com.databasir.dao.tables.records.DocumentTemplatePropertyRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
@@ -15,17 +15,17 @@ import java.util.stream.Collectors;
 import static com.databasir.dao.Tables.DOCUMENT_TEMPLATE_PROPERTY;
 
 @Repository
-public class DocumentTemplatePropertyDao extends BaseDao<DocumentTemplatePropertyPojo> {
+public class DocumentTemplatePropertyDao extends BaseDao<DocumentTemplateProperty> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DocumentTemplatePropertyDao() {
-        super(DOCUMENT_TEMPLATE_PROPERTY, DocumentTemplatePropertyPojo.class);
+        super(DOCUMENT_TEMPLATE_PROPERTY, DocumentTemplateProperty.class);
     }
 
-    public void batchInsertOnDuplicateUpdateDefaultValue(Collection<DocumentTemplatePropertyPojo> data) {
+    public void batchInsertOnDuplicateUpdateDefaultValue(Collection<DocumentTemplateProperty> data) {
         if (data == null || data.isEmpty()) {
             return;
         }
@@ -39,7 +39,7 @@ public class DocumentTemplatePropertyDao extends BaseDao<DocumentTemplatePropert
         getDslContext().batch(query).execute();
     }
 
-    public void batchInsertOnDuplicateKeyUpdateValue(Collection<DocumentTemplatePropertyPojo> data) {
+    public void batchInsertOnDuplicateKeyUpdateValue(Collection<DocumentTemplateProperty> data) {
         if (data == null || data.isEmpty()) {
             return;
         }

@@ -4,7 +4,7 @@ import com.alibaba.excel.util.StringUtils;
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.core.infrastructure.driver.DriverResources;
 import com.databasir.dao.impl.DatabaseTypeDao;
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.pojos.DatabaseType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -39,7 +39,7 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
     @Override
     public Connection getConnection(Context context) throws SQLException {
         String databaseType = context.getDatabaseType();
-        DatabaseTypePojo type = databaseTypeDao.selectByDatabaseType(databaseType);
+        DatabaseType type = databaseTypeDao.selectByDatabaseType(databaseType);
 
         File driverFile = loadDriver(type);
         URLClassLoader loader = null;
@@ -85,7 +85,7 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         return driver.connect(jdbcUrl, info);
     }
 
-    private File loadDriver(DatabaseTypePojo type) {
+    private File loadDriver(DatabaseType type) {
         if (StringUtils.isNotBlank(type.getJdbcDriverFilePath())) {
             return driverResources.loadFromLocal(type.getJdbcDriverFilePath()).getDriverFile();
         }

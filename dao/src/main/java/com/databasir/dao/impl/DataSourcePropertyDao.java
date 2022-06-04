@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DataSourcePropertyPojo;
+import com.databasir.dao.tables.pojos.DataSourceProperty;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import java.util.List;
 import static com.databasir.dao.Tables.DATA_SOURCE_PROPERTY;
 
 @Repository
-public class DataSourcePropertyDao extends BaseDao<DataSourcePropertyPojo> {
+public class DataSourcePropertyDao extends BaseDao<DataSourceProperty> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DataSourcePropertyDao() {
-        super(DATA_SOURCE_PROPERTY, DataSourcePropertyPojo.class);
+        super(DATA_SOURCE_PROPERTY, DataSourceProperty.class);
     }
 
     public int deleteByDataSourceId(Integer dataSourceId) {
@@ -27,10 +27,10 @@ public class DataSourcePropertyDao extends BaseDao<DataSourcePropertyPojo> {
                 .execute();
     }
 
-    public List<DataSourcePropertyPojo> selectByDataSourceId(Integer id) {
+    public List<DataSourceProperty> selectByDataSourceId(Integer id) {
         return dslContext
                 .select(DATA_SOURCE_PROPERTY.fields()).from(DATA_SOURCE_PROPERTY)
                 .where(DATA_SOURCE_PROPERTY.DATA_SOURCE_ID.eq(id))
-                .fetchInto(DataSourcePropertyPojo.class);
+                .fetchInto(DataSourceProperty.class);
     }
 }

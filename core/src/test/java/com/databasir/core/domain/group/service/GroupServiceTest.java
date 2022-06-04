@@ -12,8 +12,8 @@ import com.databasir.dao.impl.GroupDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.ProjectSyncRuleDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.ProjectSyncRulePojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.ProjectSyncRule;
+import com.databasir.dao.tables.pojos.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -53,7 +53,7 @@ class GroupServiceTest extends BaseTest {
         Integer groupId = groupService.create(request);
         assertNotNull(groupId);
 
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(List.of(1, 2, 3))
+        List<UserRole> roles = userRoleDao.selectByUserIds(List.of(1, 2, 3))
                 .stream()
                 .filter(r -> Objects.equals(r.getGroupId(), groupId) && r.getRole().equals("GROUP_OWNER"))
                 .collect(Collectors.toList());
@@ -71,11 +71,11 @@ class GroupServiceTest extends BaseTest {
         request.setGroupOwnerUserIds(List.of(1000, 1001));
         groupService.update(request);
 
-        List<UserRolePojo> members = userRoleDao.selectList(Tables.USER_ROLE.GROUP_ID.eq(groupId));
+        List<UserRole> members = userRoleDao.selectList(Tables.USER_ROLE.GROUP_ID.eq(groupId));
         assertEquals(3, members.size());
         List<Integer> ownerUserIds = members.stream()
                 .filter(r -> r.getRole().equals("GROUP_OWNER"))
-                .map(UserRolePojo::getUserId)
+                .map(UserRole::getUserId)
                 .collect(Collectors.toList());
         assertEquals(2, ownerUserIds.size());
         assertTrue(ownerUserIds.contains(1000));
@@ -95,11 +95,11 @@ class GroupServiceTest extends BaseTest {
         assertEquals(0, projectIds.size());
 
         // should clear group members
-        List<UserRolePojo> members = userRoleDao.selectList(Tables.USER_ROLE.GROUP_ID.eq(groupId));
+        List<UserRole> members = userRoleDao.selectList(Tables.USER_ROLE.GROUP_ID.eq(groupId));
         assertEquals(0, members.size());
 
         // should clear project sync schedule
-        List<ProjectSyncRulePojo> syncRule = projectSyncRuleDao.selectInProjectIds(undeleteProjectIds);
+        List<ProjectSyncRule> syncRule = projectSyncRuleDao.selectInProjectIds(undeleteProjectIds);
         assertTrue(syncRule.stream().allMatch(r -> !r.getIsAutoSync()));
     }
 
@@ -154,7 +154,7 @@ class GroupServiceTest extends BaseTest {
 
         groupService.changeMemberRole(groupId, userId, RoleConstants.GROUP_OWNER);
         assertTrue(userRoleDao.hasRole(userId, groupId, RoleConstants.GROUP_OWNER));
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(List.of(userId));
+        List<UserRole> roles = userRoleDao.selectByUserIds(List.of(userId));
         assertEquals(1, roles.size());
     }
 }

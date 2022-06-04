@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.TableColumnDocument;
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
+import com.databasir.dao.tables.TableColumnDocumentTable;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
 
 import java.time.LocalDateTime;
 
@@ -253,72 +253,72 @@ public class TableColumnDocumentRecord extends UpdatableRecordImpl<TableColumnDo
 
     @Override
     public Field<Integer> field1() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.ID;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.TABLE_DOCUMENT_ID;
     }
 
     @Override
     public Field<Integer> field3() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.DATABASE_DOCUMENT_ID;
     }
 
     @Override
     public Field<String> field4() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.NAME;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.NAME;
     }
 
     @Override
     public Field<String> field5() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.TYPE;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.TYPE;
     }
 
     @Override
     public Field<Integer> field6() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.DATA_TYPE;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.DATA_TYPE;
     }
 
     @Override
     public Field<String> field7() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.COMMENT;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.COMMENT;
     }
 
     @Override
     public Field<String> field8() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.DEFAULT_VALUE;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.DEFAULT_VALUE;
     }
 
     @Override
     public Field<Integer> field9() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.SIZE;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.SIZE;
     }
 
     @Override
     public Field<Integer> field10() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.DECIMAL_DIGITS;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.DECIMAL_DIGITS;
     }
 
     @Override
     public Field<Boolean> field11() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.IS_PRIMARY_KEY;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.IS_PRIMARY_KEY;
     }
 
     @Override
     public Field<String> field12() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.NULLABLE;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.NULLABLE;
     }
 
     @Override
     public Field<String> field13() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.AUTO_INCREMENT;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.AUTO_INCREMENT;
     }
 
     @Override
     public Field<LocalDateTime> field14() {
-        return TableColumnDocument.TABLE_COLUMN_DOCUMENT.CREATE_AT;
+        return TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -572,14 +572,14 @@ public class TableColumnDocumentRecord extends UpdatableRecordImpl<TableColumnDo
      * Create a detached TableColumnDocumentRecord
      */
     public TableColumnDocumentRecord() {
-        super(TableColumnDocument.TABLE_COLUMN_DOCUMENT);
+        super(TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised TableColumnDocumentRecord
      */
     public TableColumnDocumentRecord(Integer id, Integer tableDocumentId, Integer databaseDocumentId, String name, String type, Integer dataType, String comment, String defaultValue, Integer size, Integer decimalDigits, Boolean isPrimaryKey, String nullable, String autoIncrement, LocalDateTime createAt) {
-        super(TableColumnDocument.TABLE_COLUMN_DOCUMENT);
+        super(TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT);
 
         setId(id);
         setTableDocumentId(tableDocumentId);
@@ -600,8 +600,8 @@ public class TableColumnDocumentRecord extends UpdatableRecordImpl<TableColumnDo
     /**
      * Create a detached, initialised TableColumnDocumentRecord
      */
-    public TableColumnDocumentRecord(TableColumnDocumentPojo value) {
-        super(TableColumnDocument.TABLE_COLUMN_DOCUMENT);
+    public TableColumnDocumentRecord(TableColumnDocument value) {
+        super(TableColumnDocumentTable.TABLE_COLUMN_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

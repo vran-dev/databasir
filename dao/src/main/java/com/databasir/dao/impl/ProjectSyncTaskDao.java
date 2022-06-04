@@ -1,7 +1,7 @@
 package com.databasir.dao.impl;
 
 import com.databasir.dao.enums.ProjectSyncTaskStatus;
-import com.databasir.dao.tables.pojos.ProjectSyncTaskPojo;
+import com.databasir.dao.tables.pojos.ProjectSyncTask;
 import com.databasir.dao.tables.records.ProjectSyncTaskRecord;
 import lombok.Getter;
 import org.jooq.DSLContext;
@@ -16,14 +16,14 @@ import java.util.List;
 import static com.databasir.dao.Tables.PROJECT_SYNC_TASK;
 
 @Repository
-public class ProjectSyncTaskDao extends BaseDao<ProjectSyncTaskPojo> {
+public class ProjectSyncTaskDao extends BaseDao<ProjectSyncTask> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public ProjectSyncTaskDao() {
-        super(PROJECT_SYNC_TASK, ProjectSyncTaskPojo.class);
+        super(PROJECT_SYNC_TASK, ProjectSyncTask.class);
     }
 
     public boolean existsByProjectId(Integer projectId, Collection<ProjectSyncTaskStatus> statusIn) {
@@ -34,13 +34,13 @@ public class ProjectSyncTaskDao extends BaseDao<ProjectSyncTaskPojo> {
                 PROJECT_SYNC_TASK.PROJECT_ID.eq(projectId).and(PROJECT_SYNC_TASK.STATUS.in(statusIn)));
     }
 
-    public List<ProjectSyncTaskPojo> listNewTasks(Integer size) {
+    public List<ProjectSyncTask> listNewTasks(Integer size) {
         return dslContext
                 .selectFrom(PROJECT_SYNC_TASK)
                 .where(PROJECT_SYNC_TASK.STATUS.eq(ProjectSyncTaskStatus.NEW))
                 .orderBy(PROJECT_SYNC_TASK.ID.asc())
                 .limit(size)
-                .fetchInto(ProjectSyncTaskPojo.class);
+                .fetchInto(ProjectSyncTask.class);
     }
 
     public int updateStatusAndResultById(Integer taskId, ProjectSyncTaskStatus status, String result) {

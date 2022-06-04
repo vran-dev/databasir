@@ -1,7 +1,7 @@
 package com.databasir.core.domain.app;
 
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.app.converter.OAuthAppPojoConverter;
+import com.databasir.core.domain.app.converter.OauthAppConverter;
 import com.databasir.core.domain.app.converter.OAuthAppResponseConverter;
 import com.databasir.core.domain.app.data.*;
 import com.databasir.core.domain.app.handler.OAuthProcessResult;
@@ -10,7 +10,7 @@ import com.databasir.core.domain.user.data.UserCreateRequest;
 import com.databasir.core.domain.user.data.UserDetailResponse;
 import com.databasir.core.domain.user.service.UserService;
 import com.databasir.dao.impl.OauthAppDao;
-import com.databasir.dao.tables.pojos.OauthAppPojo;
+import com.databasir.dao.tables.pojos.OauthApp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -35,7 +35,7 @@ public class OpenAuthAppService {
 
     private final OAuthAppResponseConverter oauthAppResponseConverter;
 
-    private final OAuthAppPojoConverter oauthAppPojoConverter;
+    private final OauthAppConverter oauthAppConverter;
 
     public UserDetailResponse oauthCallback(String registrationId, Map<String, String[]> params) {
         // process by handler
@@ -57,7 +57,7 @@ public class OpenAuthAppService {
     }
 
     public List<OAuthAppResponse> listAll() {
-        List<OauthAppPojo> apps = oauthAppDao.selectAll();
+        List<OauthApp> apps = oauthAppDao.selectAll();
         return apps.stream()
                 .map(oauthAppResponseConverter::to)
                 .collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class OpenAuthAppService {
     }
 
     public void updateById(OAuthAppUpdateRequest request) {
-        OauthAppPojo pojo = oauthAppPojoConverter.of(request);
+        OauthApp pojo = oauthAppConverter.of(request);
         try {
             oauthAppDao.updateById(pojo);
         } catch (DuplicateKeyException e) {
@@ -79,7 +79,7 @@ public class OpenAuthAppService {
     }
 
     public Integer create(OAuthAppCreateRequest request) {
-        OauthAppPojo pojo = oauthAppPojoConverter.of(request);
+        OauthApp pojo = oauthAppConverter.of(request);
         try {
             return oauthAppDao.insertAndReturnId(pojo);
         } catch (DuplicateKeyException e) {
@@ -88,10 +88,10 @@ public class OpenAuthAppService {
     }
 
     public Page<OAuthAppPageResponse> listPage(Pageable page, OAuthAppPageCondition condition) {
-        return oauthAppDao.selectByPage(page, condition.toCondition()).map(oauthAppPojoConverter::toPageResponse);
+        return oauthAppDao.selectByPage(page, condition.toCondition()).map(oauthAppConverter::toPageResponse);
     }
 
     public Optional<OAuthAppDetailResponse> getOne(Integer id) {
-        return oauthAppDao.selectOptionalById(id).map(oauthAppPojoConverter::toDetailResponse);
+        return oauthAppDao.selectOptionalById(id).map(oauthAppConverter::toDetailResponse);
     }
 }

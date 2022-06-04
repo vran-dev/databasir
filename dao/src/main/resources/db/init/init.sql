@@ -413,3 +413,24 @@ CREATE TABLE document_full_text
     FULLTEXT fidx_group (group_name, group_description) WITH PARSER ngram
 ) CHARSET utf8mb4
   COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE aggregate
+(
+    id         INT PRIMARY KEY NOT NULL,
+    name       VARCHAR(255)    NOT NULL,
+    project_id INT             NOT NULL COMMENT 'ref to project.id',
+    update_at  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    create_at  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_project_id (project_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT 'aggregate means a group of table_documents';
+
+CREATE TABLE table_document_aggregate
+(
+    id           INT PRIMARY KEY NOT NULL,
+    aggregate_id INT             NOT NULL COMMENT 'ref to aggregate.id',
+    table_name   TEXT            NOT NULL COMMENT 'ref to table_document.name',
+    create_at    TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_aggregate_id (aggregate_id)
+) CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci COMMENT '`table document` and `aggregate` relation';

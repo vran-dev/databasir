@@ -2,7 +2,7 @@ package com.databasir.job;
 
 import com.databasir.core.domain.document.service.DocumentService;
 import com.databasir.dao.impl.ProjectSyncRuleDao;
-import com.databasir.dao.tables.pojos.ProjectSyncRulePojo;
+import com.databasir.dao.tables.pojos.ProjectSyncRule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -135,7 +135,7 @@ public class ProjectSyncJobScheduler {
         }
     }
 
-    private Pair<JobDetail, Trigger> jobAndTriggers(ProjectSyncRulePojo rule) {
+    private Pair<JobDetail, Trigger> jobAndTriggers(ProjectSyncRule rule) {
         JobDataMap dataMap = new JobDataMap();
         Integer projectId = rule.getProjectId();
         Integer ruleId = rule.getId();

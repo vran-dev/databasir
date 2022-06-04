@@ -8,10 +8,10 @@ import com.databasir.dao.impl.DocumentTemplatePropertyDao;
 import com.databasir.dao.impl.SysKeyDao;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.DocumentTemplatePropertyPojo;
-import com.databasir.dao.tables.pojos.SysKeyPojo;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.DocumentTemplateProperty;
+import com.databasir.dao.tables.pojos.SysKey;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -55,10 +55,10 @@ public class SystemStartedEventSubscriber {
         List<String> ignoreFields = List.of("createAt", "discussionCount", "id",
                 "columns", "indexes", "triggers", "foreignKeys", "diffType", "original", "keySeq");
         Map<String, String> fieldChineseMap = fieldChineseMap();
-        BiFunction<Field, DocumentTemplatePropertyType, DocumentTemplatePropertyPojo> mapping = (field, type) -> {
+        BiFunction<Field, DocumentTemplatePropertyType, DocumentTemplateProperty> mapping = (field, type) -> {
             String key = field.getName();
             String def = field.getName();
-            DocumentTemplatePropertyPojo pojo = new DocumentTemplatePropertyPojo();
+            DocumentTemplateProperty pojo = new DocumentTemplateProperty();
             pojo.setType(type);
             pojo.setKey(key);
             pojo.setDefaultValue(fieldChineseMap.getOrDefault(key, def));
@@ -66,40 +66,40 @@ public class SystemStartedEventSubscriber {
         };
         // table field name;
         Field[] fields = TableDocumentResponse.class.getDeclaredFields();
-        List<DocumentTemplatePropertyPojo> tableProperties = Arrays.stream(fields)
+        List<DocumentTemplateProperty> tableProperties = Arrays.stream(fields)
                 .filter(field -> !ignoreFields.contains(field.getName()))
                 .map(field -> mapping.apply(field, DocumentTemplatePropertyType.TABLE_FIELD_NAME))
                 .collect(Collectors.toList());
 
         // column field name;
         Field[] columnFields = TableDocumentResponse.ColumnDocumentResponse.class.getDeclaredFields();
-        List<DocumentTemplatePropertyPojo> columnProperties = Arrays.stream(columnFields)
+        List<DocumentTemplateProperty> columnProperties = Arrays.stream(columnFields)
                 .filter(f -> !ignoreFields.contains(f.getName()))
                 .map(field -> mapping.apply(field, DocumentTemplatePropertyType.COLUMN_FIELD_NAME))
                 .collect(Collectors.toList());
 
         // index field name;
         Field[] indexFields = TableDocumentResponse.IndexDocumentResponse.class.getDeclaredFields();
-        List<DocumentTemplatePropertyPojo> indexProperties = Arrays.stream(indexFields)
+        List<DocumentTemplateProperty> indexProperties = Arrays.stream(indexFields)
                 .filter(f -> !ignoreFields.contains(f.getName()))
                 .map(field -> mapping.apply(field, DocumentTemplatePropertyType.INDEX_FIELD_NAME))
                 .collect(Collectors.toList());
 
         // foreign key field name;
         Field[] fkFields = TableDocumentResponse.ForeignKeyDocumentResponse.class.getDeclaredFields();
-        List<DocumentTemplatePropertyPojo> fkProperties = Arrays.stream(fkFields)
+        List<DocumentTemplateProperty> fkProperties = Arrays.stream(fkFields)
                 .filter(f -> !ignoreFields.contains(f.getName()))
                 .map(field -> mapping.apply(field, DocumentTemplatePropertyType.FOREIGN_KEY_FIELD_NAME))
                 .collect(Collectors.toList());
 
         // trigger field name;
         Field[] triggerFields = TableDocumentResponse.TriggerDocumentResponse.class.getDeclaredFields();
-        List<DocumentTemplatePropertyPojo> triggerProperties = Arrays.stream(triggerFields)
+        List<DocumentTemplateProperty> triggerProperties = Arrays.stream(triggerFields)
                 .filter(f -> !ignoreFields.contains(f.getName()))
                 .map(field -> mapping.apply(field, DocumentTemplatePropertyType.TRIGGER_FIELD_NAME))
                 .collect(Collectors.toList());
 
-        List<DocumentTemplatePropertyPojo> properties = new ArrayList<>();
+        List<DocumentTemplateProperty> properties = new ArrayList<>();
         properties.addAll(tableProperties);
         properties.addAll(columnProperties);
         properties.addAll(indexProperties);
@@ -145,7 +145,7 @@ public class SystemStartedEventSubscriber {
     private void initSysOwnerIfNecessary() {
         sysKeyDao.selectOptionTopOne()
                 .orElseGet(() -> {
-                    SysKeyPojo pojo = new SysKeyPojo();
+                    SysKey pojo = new SysKey();
                     pojo.setAesKey(Aes.randomBase64Key());
                     Rsa.RsaBase64Key key = Rsa.generateBase64Key();
                     pojo.setRsaPublicKey(key.getPublicBase64Key());
@@ -156,16 +156,16 @@ public class SystemStartedEventSubscriber {
 
         String email = "N/A";
         String username = "databasir";
-        Optional<UserPojo> userOpt = userDao.selectByEmailOrUsername(username);
+        Optional<User> userOpt = userDao.selectByEmailOrUsername(username);
         if (!userOpt.isPresent()) {
-            UserPojo admin = new UserPojo();
+            User admin = new User();
             admin.setEmail(email);
             admin.setUsername(username);
             admin.setPassword(bCryptPasswordEncoder.encode(username));
             admin.setEnabled(true);
             admin.setNickname("Databasir Admin");
             Integer userId = userDao.insertAndReturnId(admin);
-            UserRolePojo role = new UserRolePojo();
+            UserRole role = new UserRole();
             role.setUserId(userId);
             role.setRole(SYS_OWNER);
             userRoleDao.insertAndReturnId(role);

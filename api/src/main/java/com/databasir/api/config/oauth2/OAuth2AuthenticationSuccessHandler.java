@@ -36,16 +36,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         DatabasirUserDetails details = (DatabasirUserDetails) authentication.getPrincipal();
-        loginService.generate(details.getUserPojo().getId());
-        UserLoginResponse data = loginService.getUserLoginData(details.getUserPojo().getId())
+        loginService.generate(details.getUser().getId());
+        UserLoginResponse data = loginService.getUserLoginData(details.getUser().getId())
                 .orElseThrow(() -> {
-                    operationLogService.saveLoginLog(details.getUserPojo(), false, null);
+                    operationLogService.saveLoginLog(details.getUser(), false, null);
                     return new CredentialsExpiredException("请重新登陆");
                 });
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), JsonData.ok(data));
-        operationLogService.saveLoginLog(details.getUserPojo(), true, null);
+        operationLogService.saveLoginLog(details.getUser(), true, null);
     }
 
 }

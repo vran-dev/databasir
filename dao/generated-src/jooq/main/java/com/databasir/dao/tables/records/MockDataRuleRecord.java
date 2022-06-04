@@ -5,8 +5,8 @@ package com.databasir.dao.tables.records;
 
 
 import com.databasir.dao.enums.MockDataType;
-import com.databasir.dao.tables.MockDataRule;
-import com.databasir.dao.tables.pojos.MockDataRulePojo;
+import com.databasir.dao.tables.MockDataRuleTable;
+import com.databasir.dao.tables.pojos.MockDataRule;
 
 import java.time.LocalDateTime;
 
@@ -190,52 +190,52 @@ public class MockDataRuleRecord extends UpdatableRecordImpl<MockDataRuleRecord> 
 
     @Override
     public Field<Integer> field1() {
-        return MockDataRule.MOCK_DATA_RULE.ID;
+        return MockDataRuleTable.MOCK_DATA_RULE.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return MockDataRule.MOCK_DATA_RULE.PROJECT_ID;
+        return MockDataRuleTable.MOCK_DATA_RULE.PROJECT_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return MockDataRule.MOCK_DATA_RULE.TABLE_NAME;
+        return MockDataRuleTable.MOCK_DATA_RULE.TABLE_NAME;
     }
 
     @Override
     public Field<String> field4() {
-        return MockDataRule.MOCK_DATA_RULE.COLUMN_NAME;
+        return MockDataRuleTable.MOCK_DATA_RULE.COLUMN_NAME;
     }
 
     @Override
     public Field<String> field5() {
-        return MockDataRule.MOCK_DATA_RULE.DEPENDENT_TABLE_NAME;
+        return MockDataRuleTable.MOCK_DATA_RULE.DEPENDENT_TABLE_NAME;
     }
 
     @Override
     public Field<String> field6() {
-        return MockDataRule.MOCK_DATA_RULE.DEPENDENT_COLUMN_NAME;
+        return MockDataRuleTable.MOCK_DATA_RULE.DEPENDENT_COLUMN_NAME;
     }
 
     @Override
     public Field<MockDataType> field7() {
-        return MockDataRule.MOCK_DATA_RULE.MOCK_DATA_TYPE;
+        return MockDataRuleTable.MOCK_DATA_RULE.MOCK_DATA_TYPE;
     }
 
     @Override
     public Field<String> field8() {
-        return MockDataRule.MOCK_DATA_RULE.MOCK_DATA_SCRIPT;
+        return MockDataRuleTable.MOCK_DATA_RULE.MOCK_DATA_SCRIPT;
     }
 
     @Override
     public Field<LocalDateTime> field9() {
-        return MockDataRule.MOCK_DATA_RULE.UPDATE_AT;
+        return MockDataRuleTable.MOCK_DATA_RULE.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field10() {
-        return MockDataRule.MOCK_DATA_RULE.CREATE_AT;
+        return MockDataRuleTable.MOCK_DATA_RULE.CREATE_AT;
     }
 
     @Override
@@ -421,14 +421,14 @@ public class MockDataRuleRecord extends UpdatableRecordImpl<MockDataRuleRecord> 
      * Create a detached MockDataRuleRecord
      */
     public MockDataRuleRecord() {
-        super(MockDataRule.MOCK_DATA_RULE);
+        super(MockDataRuleTable.MOCK_DATA_RULE);
     }
 
     /**
      * Create a detached, initialised MockDataRuleRecord
      */
     public MockDataRuleRecord(Integer id, Integer projectId, String tableName, String columnName, String dependentTableName, String dependentColumnName, MockDataType mockDataType, String mockDataScript, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(MockDataRule.MOCK_DATA_RULE);
+        super(MockDataRuleTable.MOCK_DATA_RULE);
 
         setId(id);
         setProjectId(projectId);
@@ -445,8 +445,8 @@ public class MockDataRuleRecord extends UpdatableRecordImpl<MockDataRuleRecord> 
     /**
      * Create a detached, initialised MockDataRuleRecord
      */
-    public MockDataRuleRecord(MockDataRulePojo value) {
-        super(MockDataRule.MOCK_DATA_RULE);
+    public MockDataRuleRecord(MockDataRule value) {
+        super(MockDataRuleTable.MOCK_DATA_RULE);
 
         if (value != null) {
             setId(value.getId());

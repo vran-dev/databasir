@@ -16,14 +16,14 @@ public interface DocumentPojoConverter {
     @Mapping(target = "databaseName", source = "meta.databaseName")
     @Mapping(target = "schemaName", source = "meta.schemaName")
     @Mapping(target = "isArchive", constant = "false")
-    DatabaseDocumentPojo toDatabasePojo(Integer projectId,
+    DatabaseDocument toDatabasePojo(Integer projectId,
                                         DatabaseMeta meta,
                                         Long version);
 
-    TableDocumentPojo toTablePojo(Integer databaseDocumentId,
+    TableDocument toTablePojo(Integer databaseDocumentId,
                                   com.databasir.core.meta.data.TableMeta meta);
 
-    default List<TableColumnDocumentPojo> toColumnPojo(Integer databaseDocumentId,
+    default List<TableColumnDocument> toColumnPojo(Integer databaseDocumentId,
                                                        Integer tableDocumentId,
                                                        List<ColumnMeta> metaList) {
         return metaList.stream()
@@ -31,11 +31,11 @@ public interface DocumentPojoConverter {
                 .collect(Collectors.toList());
     }
 
-    TableColumnDocumentPojo toColumnPojo(Integer databaseDocumentId,
+    TableColumnDocument toColumnPojo(Integer databaseDocumentId,
                                          Integer tableDocumentId,
                                          ColumnMeta meta);
 
-    default List<TableIndexDocumentPojo> toIndexPojo(Integer databaseDocumentId,
+    default List<TableIndexDocument> toIndexPojo(Integer databaseDocumentId,
                                                      Integer tableDocumentId,
                                                      List<IndexMeta> metaList) {
         return metaList.stream()
@@ -45,11 +45,11 @@ public interface DocumentPojoConverter {
 
     @Mapping(target = "isUnique", source = "meta.isUniqueKey")
     @Mapping(target = "columnNameArray", source = "meta.columnNames")
-    TableIndexDocumentPojo toIndexPojo(Integer databaseDocumentId,
+    TableIndexDocument toIndexPojo(Integer databaseDocumentId,
                                        Integer tableDocumentId,
                                        IndexMeta meta);
 
-    default List<TableTriggerDocumentPojo> toTriggerPojo(Integer databaseDocumentId,
+    default List<TableTriggerDocument> toTriggerPojo(Integer databaseDocumentId,
                                                          Integer tableDocumentId,
                                                          List<TriggerMeta> metaList) {
         return metaList.stream()
@@ -59,11 +59,11 @@ public interface DocumentPojoConverter {
 
     @Mapping(target = "triggerCreateAt", source = "meta.createAt")
     @Mapping(target = "createAt", ignore = true)
-    TableTriggerDocumentPojo toTriggerPojo(Integer databaseDocumentId,
+    TableTriggerDocument toTriggerPojo(Integer databaseDocumentId,
                                            Integer tableDocumentId,
                                            TriggerMeta meta);
 
-    default List<TableForeignKeyDocumentPojo> toForeignKeyPojo(Integer docId,
+    default List<TableForeignKeyDocument> toForeignKeyPojo(Integer docId,
                                                                Integer tableMetaId,
                                                                List<ForeignKeyMeta> foreignKeys) {
         return foreignKeys.stream()
@@ -73,7 +73,7 @@ public interface DocumentPojoConverter {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createAt", ignore = true)
-    TableForeignKeyDocumentPojo toForeignKeyPojo(Integer databaseDocumentId,
+    TableForeignKeyDocument toForeignKeyPojo(Integer databaseDocumentId,
                                                  Integer tableDocumentId,
                                                  ForeignKeyMeta foreignKey);
 

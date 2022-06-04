@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DataSource;
-import com.databasir.dao.tables.pojos.DataSourcePojo;
+import com.databasir.dao.tables.DataSourceTable;
+import com.databasir.dao.tables.pojos.DataSource;
 
 import java.time.LocalDateTime;
 
@@ -189,52 +189,52 @@ public class DataSourceRecord extends UpdatableRecordImpl<DataSourceRecord> impl
 
     @Override
     public Field<Integer> field1() {
-        return DataSource.DATA_SOURCE.ID;
+        return DataSourceTable.DATA_SOURCE.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return DataSource.DATA_SOURCE.PROJECT_ID;
+        return DataSourceTable.DATA_SOURCE.PROJECT_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return DataSource.DATA_SOURCE.DATABASE_NAME;
+        return DataSourceTable.DATA_SOURCE.DATABASE_NAME;
     }
 
     @Override
     public Field<String> field4() {
-        return DataSource.DATA_SOURCE.SCHEMA_NAME;
+        return DataSourceTable.DATA_SOURCE.SCHEMA_NAME;
     }
 
     @Override
     public Field<String> field5() {
-        return DataSource.DATA_SOURCE.DATABASE_TYPE;
+        return DataSourceTable.DATA_SOURCE.DATABASE_TYPE;
     }
 
     @Override
     public Field<String> field6() {
-        return DataSource.DATA_SOURCE.URL;
+        return DataSourceTable.DATA_SOURCE.URL;
     }
 
     @Override
     public Field<String> field7() {
-        return DataSource.DATA_SOURCE.USERNAME;
+        return DataSourceTable.DATA_SOURCE.USERNAME;
     }
 
     @Override
     public Field<String> field8() {
-        return DataSource.DATA_SOURCE.PASSWORD;
+        return DataSourceTable.DATA_SOURCE.PASSWORD;
     }
 
     @Override
     public Field<LocalDateTime> field9() {
-        return DataSource.DATA_SOURCE.UPDATE_AT;
+        return DataSourceTable.DATA_SOURCE.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field10() {
-        return DataSource.DATA_SOURCE.CREATE_AT;
+        return DataSourceTable.DATA_SOURCE.CREATE_AT;
     }
 
     @Override
@@ -420,14 +420,14 @@ public class DataSourceRecord extends UpdatableRecordImpl<DataSourceRecord> impl
      * Create a detached DataSourceRecord
      */
     public DataSourceRecord() {
-        super(DataSource.DATA_SOURCE);
+        super(DataSourceTable.DATA_SOURCE);
     }
 
     /**
      * Create a detached, initialised DataSourceRecord
      */
     public DataSourceRecord(Integer id, Integer projectId, String databaseName, String schemaName, String databaseType, String url, String username, String password, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(DataSource.DATA_SOURCE);
+        super(DataSourceTable.DATA_SOURCE);
 
         setId(id);
         setProjectId(projectId);
@@ -444,8 +444,8 @@ public class DataSourceRecord extends UpdatableRecordImpl<DataSourceRecord> impl
     /**
      * Create a detached, initialised DataSourceRecord
      */
-    public DataSourceRecord(DataSourcePojo value) {
-        super(DataSource.DATA_SOURCE);
+    public DataSourceRecord(DataSource value) {
+        super(DataSourceTable.DATA_SOURCE);
 
         if (value != null) {
             setId(value.getId());

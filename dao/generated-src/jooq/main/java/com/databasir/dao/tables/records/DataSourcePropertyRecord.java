@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.DataSourceProperty;
-import com.databasir.dao.tables.pojos.DataSourcePropertyPojo;
+import com.databasir.dao.tables.DataSourcePropertyTable;
+import com.databasir.dao.tables.pojos.DataSourceProperty;
 
 import java.time.LocalDateTime;
 
@@ -119,27 +119,27 @@ public class DataSourcePropertyRecord extends UpdatableRecordImpl<DataSourceProp
 
     @Override
     public Field<Integer> field1() {
-        return DataSourceProperty.DATA_SOURCE_PROPERTY.ID;
+        return DataSourcePropertyTable.DATA_SOURCE_PROPERTY.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return DataSourceProperty.DATA_SOURCE_PROPERTY.DATA_SOURCE_ID;
+        return DataSourcePropertyTable.DATA_SOURCE_PROPERTY.DATA_SOURCE_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return DataSourceProperty.DATA_SOURCE_PROPERTY.KEY;
+        return DataSourcePropertyTable.DATA_SOURCE_PROPERTY.KEY;
     }
 
     @Override
     public Field<String> field4() {
-        return DataSourceProperty.DATA_SOURCE_PROPERTY.VALUE;
+        return DataSourcePropertyTable.DATA_SOURCE_PROPERTY.VALUE;
     }
 
     @Override
     public Field<LocalDateTime> field5() {
-        return DataSourceProperty.DATA_SOURCE_PROPERTY.CREATE_AT;
+        return DataSourcePropertyTable.DATA_SOURCE_PROPERTY.CREATE_AT;
     }
 
     @Override
@@ -240,14 +240,14 @@ public class DataSourcePropertyRecord extends UpdatableRecordImpl<DataSourceProp
      * Create a detached DataSourcePropertyRecord
      */
     public DataSourcePropertyRecord() {
-        super(DataSourceProperty.DATA_SOURCE_PROPERTY);
+        super(DataSourcePropertyTable.DATA_SOURCE_PROPERTY);
     }
 
     /**
      * Create a detached, initialised DataSourcePropertyRecord
      */
     public DataSourcePropertyRecord(Integer id, Integer dataSourceId, String key, String value, LocalDateTime createAt) {
-        super(DataSourceProperty.DATA_SOURCE_PROPERTY);
+        super(DataSourcePropertyTable.DATA_SOURCE_PROPERTY);
 
         setId(id);
         setDataSourceId(dataSourceId);
@@ -259,8 +259,8 @@ public class DataSourcePropertyRecord extends UpdatableRecordImpl<DataSourceProp
     /**
      * Create a detached, initialised DataSourcePropertyRecord
      */
-    public DataSourcePropertyRecord(DataSourcePropertyPojo value) {
-        super(DataSourceProperty.DATA_SOURCE_PROPERTY);
+    public DataSourcePropertyRecord(DataSourceProperty value) {
+        super(DataSourcePropertyTable.DATA_SOURCE_PROPERTY);
 
         if (value != null) {
             setId(value.getId());

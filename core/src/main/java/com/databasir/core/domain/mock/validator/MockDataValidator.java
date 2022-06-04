@@ -4,8 +4,8 @@ import com.databasir.core.domain.DomainErrors;
 import com.databasir.dao.impl.DatabaseDocumentDao;
 import com.databasir.dao.impl.ProjectDao;
 import com.databasir.dao.impl.TableDocumentDao;
-import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
-import com.databasir.dao.tables.pojos.TableDocumentPojo;
+import com.databasir.dao.tables.pojos.DatabaseDocument;
+import com.databasir.dao.tables.pojos.TableDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +27,8 @@ public class MockDataValidator {
         }
     }
 
-    public DatabaseDocumentPojo validAndGetDatabaseDocumentPojo(Integer projectId, Long version) {
-        Optional<DatabaseDocumentPojo> databaseDoc;
+    public DatabaseDocument validAndGetDatabaseDocument(Integer projectId, Long version) {
+        Optional<DatabaseDocument> databaseDoc;
         if (version == null) {
             databaseDoc = databaseDocumentDao.selectNotArchivedByProjectId(projectId);
         } else {
@@ -40,8 +40,8 @@ public class MockDataValidator {
         return databaseDoc.get();
     }
 
-    public TableDocumentPojo validAndGetTableDocumentPojo(Integer databaseDocId, Integer tableId) {
-        Optional<TableDocumentPojo> tableOption =
+    public TableDocument validAndGetTableDocument(Integer databaseDocId, Integer tableId) {
+        Optional<TableDocument> tableOption =
                 tableDocumentDao.selectByDatabaseDocumentIdAndId(databaseDocId, tableId);
         if (tableOption.isEmpty()) {
             throw DomainErrors.DATABASE_META_NOT_FOUND.exception("表数据不存在");

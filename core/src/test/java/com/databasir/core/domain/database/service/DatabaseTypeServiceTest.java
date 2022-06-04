@@ -8,7 +8,7 @@ import com.databasir.core.domain.database.data.DatabaseTypeUpdateRequest;
 import com.databasir.core.infrastructure.driver.DriverResources;
 import com.databasir.core.infrastructure.driver.DriverResult;
 import com.databasir.dao.impl.DatabaseTypeDao;
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.pojos.DatabaseType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,7 @@ class DatabaseTypeServiceTest extends BaseTest {
         request.setUrlPattern("{{jdbc.protocol}}//{{db.url}}/{{db.schema}}");
         databaseTypeService.update(request);
 
-        DatabaseTypePojo pojo = databaseTypeDao.selectByDatabaseType("new-type");
+        DatabaseType pojo = databaseTypeDao.selectByDatabaseType("new-type");
         Assertions.assertNotNull(pojo);
         Assertions.assertEquals("integration test", pojo.getDescription());
         Assertions.assertEquals("jdbc:postgresql", pojo.getJdbcProtocol());

@@ -14,9 +14,9 @@ public interface FavoriteProjectPageResponseConverter {
     @Mapping(target = "groupId", source = "group.id")
     @Mapping(target = "groupName", source = "group.name")
     @Mapping(target = "createAt", source = "favoriteProject.createAt")
-    FavoriteProjectPageResponse to(UserFavoriteProjectPojo favoriteProject,
-                                   ProjectPojo project,
-                                   DataSourcePojo dataSource,
-                                   ProjectSyncRulePojo projectSyncRule,
-                                   GroupPojo group);
+    FavoriteProjectPageResponse to(UserFavoriteProject favoriteProject,
+                                   Project project,
+                                   DataSource dataSource,
+                                   ProjectSyncRule projectSyncRule,
+                                   Group group);
 }

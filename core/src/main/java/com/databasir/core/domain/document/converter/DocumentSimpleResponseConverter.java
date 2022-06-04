@@ -3,8 +3,8 @@ package com.databasir.core.domain.document.converter;
 import com.databasir.core.diff.data.DiffType;
 import com.databasir.core.domain.document.data.DatabaseDocumentSimpleResponse;
 import com.databasir.core.infrastructure.converter.JsonConverter;
-import com.databasir.dao.tables.pojos.DatabaseDocumentPojo;
-import com.databasir.dao.tables.pojos.TableDocumentPojo;
+import com.databasir.dao.tables.pojos.DatabaseDocument;
+import com.databasir.dao.tables.pojos.TableDocument;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -19,16 +19,16 @@ public interface DocumentSimpleResponseConverter {
     @Mapping(target = "id", source = "databaseDocument.id")
     @Mapping(target = "createAt", source = "databaseDocument.createAt")
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
-    DatabaseDocumentSimpleResponse of(DatabaseDocumentPojo databaseDocument,
+    DatabaseDocumentSimpleResponse of(DatabaseDocument databaseDocument,
                                       List<DatabaseDocumentSimpleResponse.TableData> tables,
                                       DiffType diffType,
                                       String projectName);
 
-    DatabaseDocumentSimpleResponse.TableData of(TableDocumentPojo tables,
+    DatabaseDocumentSimpleResponse.TableData of(TableDocument tables,
                                                 Integer discussionCount,
                                                 String description);
 
-    default List<DatabaseDocumentSimpleResponse.TableData> of(List<TableDocumentPojo> tables,
+    default List<DatabaseDocumentSimpleResponse.TableData> of(List<TableDocument> tables,
                                                               Map<String, Integer> discussionCountMapByTableName,
                                                               Map<String, String> descriptionMapByTableName) {
         return tables.stream()

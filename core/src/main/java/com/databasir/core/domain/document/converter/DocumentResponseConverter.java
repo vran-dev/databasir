@@ -19,31 +19,31 @@ public interface DocumentResponseConverter {
     @Mapping(target = "indexes", source = "indexes")
     @Mapping(target = "foreignKeys", source = "foreignKeys")
     @Mapping(target = "triggers", source = "triggers")
-    TableDocumentResponse of(TableDocumentPojo tableDocument,
-                             List<TableColumnDocumentPojo> columns,
-                             List<TableIndexDocumentPojo> indexes,
-                             List<TableForeignKeyDocumentPojo> foreignKeys,
-                             List<TableTriggerDocumentPojo> triggers);
+    TableDocumentResponse of(TableDocument tableDocument,
+                             List<TableColumnDocument> columns,
+                             List<TableIndexDocument> indexes,
+                             List<TableForeignKeyDocument> foreignKeys,
+                             List<TableTriggerDocument> triggers);
 
     @Mapping(target = "columns", source = "columns")
     @Mapping(target = "indexes", source = "indexes")
     @Mapping(target = "foreignKeys", source = "foreignKeys")
     @Mapping(target = "triggers", source = "triggers")
     @SuppressWarnings("checkstyle:all")
-    TableDocumentResponse of(TableDocumentPojo tableDocument,
+    TableDocumentResponse of(TableDocument tableDocument,
                              Integer discussionCount,
                              String description,
                              List<TableDocumentResponse.ColumnDocumentResponse> columns,
-                             List<TableIndexDocumentPojo> indexes,
-                             List<TableForeignKeyDocumentPojo> foreignKeys,
-                             List<TableTriggerDocumentPojo> triggers);
+                             List<TableIndexDocument> indexes,
+                             List<TableForeignKeyDocument> foreignKeys,
+                             List<TableTriggerDocument> triggers);
 
-    TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocumentPojo pojo,
+    TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocument pojo,
                                                     Integer discussionCount,
                                                     String description);
 
     default List<TableDocumentResponse.ColumnDocumentResponse> of(
-            List<TableColumnDocumentPojo> columns,
+            List<TableColumnDocument> columns,
             String tableName,
             Map<String, Integer> discussionCountMapByJoinName,
             Map<String, String> descriptionMapByJoinName) {
@@ -57,11 +57,11 @@ public interface DocumentResponseConverter {
     }
 
     @Mapping(target = "columnNames", source = "columnNameArray")
-    TableDocumentResponse.IndexDocumentResponse of(TableIndexDocumentPojo indexDocument);
+    TableDocumentResponse.IndexDocumentResponse of(TableIndexDocument indexDocument);
 
     @Mapping(target = "id", source = "databaseDocument.id")
     @Mapping(target = "createAt", source = "databaseDocument.createAt")
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
-    DatabaseDocumentResponse of(DatabaseDocumentPojo databaseDocument,
+    DatabaseDocumentResponse of(DatabaseDocument databaseDocument,
                                 List<TableDocumentResponse> tables);
 }

@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.TableTriggerDocument;
-import com.databasir.dao.tables.pojos.TableTriggerDocumentPojo;
+import com.databasir.dao.tables.TableTriggerDocumentTable;
+import com.databasir.dao.tables.pojos.TableTriggerDocument;
 
 import java.time.LocalDateTime;
 
@@ -181,47 +181,47 @@ public class TableTriggerDocumentRecord extends UpdatableRecordImpl<TableTrigger
 
     @Override
     public Field<Integer> field1() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.ID;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.NAME;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.NAME;
     }
 
     @Override
     public Field<Integer> field3() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID;
     }
 
     @Override
     public Field<Integer> field4() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID;
     }
 
     @Override
     public Field<String> field5() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.TIMING;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.TIMING;
     }
 
     @Override
     public Field<String> field6() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.MANIPULATION;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.MANIPULATION;
     }
 
     @Override
     public Field<String> field7() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.STATEMENT;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.STATEMENT;
     }
 
     @Override
     public Field<String> field8() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.TRIGGER_CREATE_AT;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.TRIGGER_CREATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field9() {
-        return TableTriggerDocument.TABLE_TRIGGER_DOCUMENT.CREATE_AT;
+        return TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -390,14 +390,14 @@ public class TableTriggerDocumentRecord extends UpdatableRecordImpl<TableTrigger
      * Create a detached TableTriggerDocumentRecord
      */
     public TableTriggerDocumentRecord() {
-        super(TableTriggerDocument.TABLE_TRIGGER_DOCUMENT);
+        super(TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised TableTriggerDocumentRecord
      */
     public TableTriggerDocumentRecord(Integer id, String name, Integer tableDocumentId, Integer databaseDocumentId, String timing, String manipulation, String statement, String triggerCreateAt, LocalDateTime createAt) {
-        super(TableTriggerDocument.TABLE_TRIGGER_DOCUMENT);
+        super(TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT);
 
         setId(id);
         setName(name);
@@ -413,8 +413,8 @@ public class TableTriggerDocumentRecord extends UpdatableRecordImpl<TableTrigger
     /**
      * Create a detached, initialised TableTriggerDocumentRecord
      */
-    public TableTriggerDocumentRecord(TableTriggerDocumentPojo value) {
-        super(TableTriggerDocument.TABLE_TRIGGER_DOCUMENT);
+    public TableTriggerDocumentRecord(TableTriggerDocument value) {
+        super(TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

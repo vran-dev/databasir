@@ -3,9 +3,9 @@ package com.databasir.core.infrastructure.connection;
 import com.databasir.common.codec.Aes;
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.dao.impl.SysKeyDao;
-import com.databasir.dao.tables.pojos.DataSourcePojo;
-import com.databasir.dao.tables.pojos.DataSourcePropertyPojo;
-import com.databasir.dao.tables.pojos.SysKeyPojo;
+import com.databasir.dao.tables.pojos.DataSource;
+import com.databasir.dao.tables.pojos.DataSourceProperty;
+import com.databasir.dao.tables.pojos.SysKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +22,9 @@ public class DatabaseConnectionService {
 
     private final SysKeyDao sysKeyDao;
 
-    public Connection create(DataSourcePojo dataSource,
-                             List<DataSourcePropertyPojo> dataSourceProperties) {
-        SysKeyPojo sysKey = sysKeyDao.selectTopOne();
+    public Connection create(DataSource dataSource,
+                             List<DataSourceProperty> dataSourceProperties) {
+        SysKey sysKey = sysKeyDao.selectTopOne();
         String username = dataSource.getUsername();
         String password = Aes.decryptFromBase64Data(dataSource.getPassword(), sysKey.getAesKey());
         String url = dataSource.getUrl();

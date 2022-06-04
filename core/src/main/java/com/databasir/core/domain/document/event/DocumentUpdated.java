@@ -20,6 +20,8 @@ public class DocumentUpdated {
 
     private Integer projectId;
 
+    private Integer databaseDocumentId;
+
     public Optional<Long> getOldVersion() {
         return Optional.ofNullable(oldVersion);
     }

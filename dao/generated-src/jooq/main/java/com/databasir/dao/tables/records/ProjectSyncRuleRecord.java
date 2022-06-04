@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.ProjectSyncRule;
-import com.databasir.dao.tables.pojos.ProjectSyncRulePojo;
+import com.databasir.dao.tables.ProjectSyncRuleTable;
+import com.databasir.dao.tables.pojos.ProjectSyncRule;
 
 import java.time.LocalDateTime;
 
@@ -166,42 +166,42 @@ public class ProjectSyncRuleRecord extends UpdatableRecordImpl<ProjectSyncRuleRe
 
     @Override
     public Field<Integer> field1() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.ID;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.PROJECT_ID;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.PROJECT_ID;
     }
 
     @Override
     public Field<JSON> field3() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.IGNORE_TABLE_NAME_REGEX_ARRAY;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.IGNORE_TABLE_NAME_REGEX_ARRAY;
     }
 
     @Override
     public Field<JSON> field4() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.IGNORE_COLUMN_NAME_REGEX_ARRAY;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.IGNORE_COLUMN_NAME_REGEX_ARRAY;
     }
 
     @Override
     public Field<Boolean> field5() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.IS_AUTO_SYNC;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.IS_AUTO_SYNC;
     }
 
     @Override
     public Field<String> field6() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.AUTO_SYNC_CRON;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.AUTO_SYNC_CRON;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.UPDATE_AT;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field8() {
-        return ProjectSyncRule.PROJECT_SYNC_RULE.CREATE_AT;
+        return ProjectSyncRuleTable.PROJECT_SYNC_RULE.CREATE_AT;
     }
 
     @Override
@@ -353,14 +353,14 @@ public class ProjectSyncRuleRecord extends UpdatableRecordImpl<ProjectSyncRuleRe
      * Create a detached ProjectSyncRuleRecord
      */
     public ProjectSyncRuleRecord() {
-        super(ProjectSyncRule.PROJECT_SYNC_RULE);
+        super(ProjectSyncRuleTable.PROJECT_SYNC_RULE);
     }
 
     /**
      * Create a detached, initialised ProjectSyncRuleRecord
      */
     public ProjectSyncRuleRecord(Integer id, Integer projectId, JSON ignoreTableNameRegexArray, JSON ignoreColumnNameRegexArray, Boolean isAutoSync, String autoSyncCron, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(ProjectSyncRule.PROJECT_SYNC_RULE);
+        super(ProjectSyncRuleTable.PROJECT_SYNC_RULE);
 
         setId(id);
         setProjectId(projectId);
@@ -375,8 +375,8 @@ public class ProjectSyncRuleRecord extends UpdatableRecordImpl<ProjectSyncRuleRe
     /**
      * Create a detached, initialised ProjectSyncRuleRecord
      */
-    public ProjectSyncRuleRecord(ProjectSyncRulePojo value) {
-        super(ProjectSyncRule.PROJECT_SYNC_RULE);
+    public ProjectSyncRuleRecord(ProjectSyncRule value) {
+        super(ProjectSyncRuleTable.PROJECT_SYNC_RULE);
 
         if (value != null) {
             setId(value.getId());

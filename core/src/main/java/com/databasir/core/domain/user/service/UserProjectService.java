@@ -36,29 +36,29 @@ public class UserProjectService {
                                                            FavoriteProjectPageCondition condition) {
         var data = userFavoriteProjectDao.selectByCondition(pageable, condition.toCondition(userId));
         // project data
-        var projectIdList = data.map(UserFavoriteProjectPojo::getProjectId).toList();
-        var projectPojos = projectDao.selectInIds(projectIdList);
-        var projectMapById = projectPojos.stream()
-                .collect(Collectors.toMap(ProjectPojo::getId, Function.identity()));
+        var projectIdList = data.map(UserFavoriteProject::getProjectId).toList();
+        var projects = projectDao.selectInIds(projectIdList);
+        var projectMapById = projects.stream()
+                .collect(Collectors.toMap(Project::getId, Function.identity()));
         // dataSource data
         var dataSourceMapByProjectId = dataSourceDao.selectInProjectIds(projectIdList)
                 .stream()
-                .collect(Collectors.toMap(DataSourcePojo::getProjectId, Function.identity()));
+                .collect(Collectors.toMap(DataSource::getProjectId, Function.identity()));
         // project sync rule data
         var projectSyncRuleMapByProjectId = projectSyncRuleDao.selectInProjectIds(projectIdList)
                 .stream()
-                .collect(Collectors.toMap(ProjectSyncRulePojo::getProjectId, Function.identity()));
+                .collect(Collectors.toMap(ProjectSyncRule::getProjectId, Function.identity()));
         // group data
-        var groupIdList = projectPojos.stream().map(ProjectPojo::getGroupId).collect(Collectors.toList());
+        var groupIdList = projects.stream().map(Project::getGroupId).collect(Collectors.toList());
         var groupMapById = groupDao.selectInIds(groupIdList)
                 .stream()
-                .collect(Collectors.toMap(GroupPojo::getId, Function.identity()));
+                .collect(Collectors.toMap(Group::getId, Function.identity()));
         // response data
         return data.map(favorite -> {
-            ProjectPojo project = projectMapById.get(favorite.getProjectId());
-            DataSourcePojo dataSource = dataSourceMapByProjectId.get(favorite.getProjectId());
-            ProjectSyncRulePojo projectSyncRule = projectSyncRuleMapByProjectId.get(favorite.getProjectId());
-            GroupPojo group = null;
+            Project project = projectMapById.get(favorite.getProjectId());
+            DataSource dataSource = dataSourceMapByProjectId.get(favorite.getProjectId());
+            ProjectSyncRule projectSyncRule = projectSyncRuleMapByProjectId.get(favorite.getProjectId());
+            Group group = null;
             if (project != null) {
                 group = groupMapById.get(project.getGroupId());
             }

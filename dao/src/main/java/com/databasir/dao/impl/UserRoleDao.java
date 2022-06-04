@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.UserRole;
 import com.databasir.dao.value.GroupMemberSimplePojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -17,14 +17,14 @@ import static com.databasir.dao.Tables.USER;
 import static com.databasir.dao.Tables.USER_ROLE;
 
 @Repository
-public class UserRoleDao extends BaseDao<UserRolePojo> {
+public class UserRoleDao extends BaseDao<UserRole> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public UserRoleDao() {
-        super(USER_ROLE, UserRolePojo.class);
+        super(USER_ROLE, UserRole.class);
     }
 
     public List<GroupMemberSimplePojo> selectOwnerNamesByGroupIdIn(List<Integer> groupIdList) {
@@ -43,7 +43,7 @@ public class UserRoleDao extends BaseDao<UserRolePojo> {
                 .execute();
     }
 
-    public Page<UserRolePojo> selectPageByGroupId(Pageable pageable, Integer groupId) {
+    public Page<UserRole> selectPageByGroupId(Pageable pageable, Integer groupId) {
         return super.selectByPage(pageable, USER_ROLE.GROUP_ID.eq(groupId));
     }
 
@@ -84,12 +84,12 @@ public class UserRoleDao extends BaseDao<UserRolePojo> {
         return dslContext.fetchExists(USER_ROLE, condition);
     }
 
-    public List<UserRolePojo> selectByUserIds(List<Integer> userIds) {
+    public List<UserRole> selectByUserIds(List<Integer> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return Collections.emptyList();
         }
         return dslContext
                 .select(USER_ROLE.fields()).from(USER_ROLE).where(USER_ROLE.USER_ID.in(userIds))
-                .fetchInto(UserRolePojo.class);
+                .fetchInto(UserRole.class);
     }
 }

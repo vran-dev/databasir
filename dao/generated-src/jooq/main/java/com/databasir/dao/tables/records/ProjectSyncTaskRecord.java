@@ -5,8 +5,8 @@ package com.databasir.dao.tables.records;
 
 
 import com.databasir.dao.enums.ProjectSyncTaskStatus;
-import com.databasir.dao.tables.ProjectSyncTask;
-import com.databasir.dao.tables.pojos.ProjectSyncTaskPojo;
+import com.databasir.dao.tables.ProjectSyncTaskTable;
+import com.databasir.dao.tables.pojos.ProjectSyncTask;
 
 import java.time.LocalDateTime;
 
@@ -164,42 +164,42 @@ public class ProjectSyncTaskRecord extends UpdatableRecordImpl<ProjectSyncTaskRe
 
     @Override
     public Field<Integer> field1() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.ID;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.PROJECT_ID;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.PROJECT_ID;
     }
 
     @Override
     public Field<Integer> field3() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.USER_ID;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.USER_ID;
     }
 
     @Override
     public Field<ProjectSyncTaskStatus> field4() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.STATUS;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.STATUS;
     }
 
     @Override
     public Field<String> field5() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.RESULT;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.RESULT;
     }
 
     @Override
     public Field<LocalDateTime> field6() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.RUN_AT;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.RUN_AT;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.UPDATE_AT;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field8() {
-        return ProjectSyncTask.PROJECT_SYNC_TASK.CREATE_AT;
+        return ProjectSyncTaskTable.PROJECT_SYNC_TASK.CREATE_AT;
     }
 
     @Override
@@ -351,14 +351,14 @@ public class ProjectSyncTaskRecord extends UpdatableRecordImpl<ProjectSyncTaskRe
      * Create a detached ProjectSyncTaskRecord
      */
     public ProjectSyncTaskRecord() {
-        super(ProjectSyncTask.PROJECT_SYNC_TASK);
+        super(ProjectSyncTaskTable.PROJECT_SYNC_TASK);
     }
 
     /**
      * Create a detached, initialised ProjectSyncTaskRecord
      */
     public ProjectSyncTaskRecord(Integer id, Integer projectId, Integer userId, ProjectSyncTaskStatus status, String result, LocalDateTime runAt, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(ProjectSyncTask.PROJECT_SYNC_TASK);
+        super(ProjectSyncTaskTable.PROJECT_SYNC_TASK);
 
         setId(id);
         setProjectId(projectId);
@@ -373,8 +373,8 @@ public class ProjectSyncTaskRecord extends UpdatableRecordImpl<ProjectSyncTaskRe
     /**
      * Create a detached, initialised ProjectSyncTaskRecord
      */
-    public ProjectSyncTaskRecord(ProjectSyncTaskPojo value) {
-        super(ProjectSyncTask.PROJECT_SYNC_TASK);
+    public ProjectSyncTaskRecord(ProjectSyncTask value) {
+        super(ProjectSyncTaskTable.PROJECT_SYNC_TASK);
 
         if (value != null) {
             setId(value.getId());

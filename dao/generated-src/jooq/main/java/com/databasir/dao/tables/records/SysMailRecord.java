@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.SysMail;
-import com.databasir.dao.tables.pojos.SysMailPojo;
+import com.databasir.dao.tables.SysMailTable;
+import com.databasir.dao.tables.pojos.SysMail;
 
 import java.time.LocalDateTime;
 
@@ -161,42 +161,42 @@ public class SysMailRecord extends UpdatableRecordImpl<SysMailRecord> implements
 
     @Override
     public Field<Integer> field1() {
-        return SysMail.SYS_MAIL.ID;
+        return SysMailTable.SYS_MAIL.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return SysMail.SYS_MAIL.USERNAME;
+        return SysMailTable.SYS_MAIL.USERNAME;
     }
 
     @Override
     public Field<String> field3() {
-        return SysMail.SYS_MAIL.PASSWORD;
+        return SysMailTable.SYS_MAIL.PASSWORD;
     }
 
     @Override
     public Field<String> field4() {
-        return SysMail.SYS_MAIL.SMTP_HOST;
+        return SysMailTable.SYS_MAIL.SMTP_HOST;
     }
 
     @Override
     public Field<Integer> field5() {
-        return SysMail.SYS_MAIL.SMTP_PORT;
+        return SysMailTable.SYS_MAIL.SMTP_PORT;
     }
 
     @Override
     public Field<Boolean> field6() {
-        return SysMail.SYS_MAIL.USE_SSL;
+        return SysMailTable.SYS_MAIL.USE_SSL;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return SysMail.SYS_MAIL.UPDATE_AT;
+        return SysMailTable.SYS_MAIL.UPDATE_AT;
     }
 
     @Override
     public Field<LocalDateTime> field8() {
-        return SysMail.SYS_MAIL.CREATE_AT;
+        return SysMailTable.SYS_MAIL.CREATE_AT;
     }
 
     @Override
@@ -348,14 +348,14 @@ public class SysMailRecord extends UpdatableRecordImpl<SysMailRecord> implements
      * Create a detached SysMailRecord
      */
     public SysMailRecord() {
-        super(SysMail.SYS_MAIL);
+        super(SysMailTable.SYS_MAIL);
     }
 
     /**
      * Create a detached, initialised SysMailRecord
      */
     public SysMailRecord(Integer id, String username, String password, String smtpHost, Integer smtpPort, Boolean useSsl, LocalDateTime updateAt, LocalDateTime createAt) {
-        super(SysMail.SYS_MAIL);
+        super(SysMailTable.SYS_MAIL);
 
         setId(id);
         setUsername(username);
@@ -370,8 +370,8 @@ public class SysMailRecord extends UpdatableRecordImpl<SysMailRecord> implements
     /**
      * Create a detached, initialised SysMailRecord
      */
-    public SysMailRecord(SysMailPojo value) {
-        super(SysMail.SYS_MAIL);
+    public SysMailRecord(SysMail value) {
+        super(SysMailTable.SYS_MAIL);
 
         if (value != null) {
             setId(value.getId());

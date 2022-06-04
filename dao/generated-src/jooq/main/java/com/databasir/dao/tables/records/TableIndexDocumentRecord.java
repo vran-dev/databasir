@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.TableIndexDocument;
-import com.databasir.dao.tables.pojos.TableIndexDocumentPojo;
+import com.databasir.dao.tables.TableIndexDocumentTable;
+import com.databasir.dao.tables.pojos.TableIndexDocument;
 
 import java.time.LocalDateTime;
 
@@ -150,37 +150,37 @@ public class TableIndexDocumentRecord extends UpdatableRecordImpl<TableIndexDocu
 
     @Override
     public Field<Integer> field1() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.ID;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.ID;
     }
 
     @Override
     public Field<Integer> field2() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.TABLE_DOCUMENT_ID;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.TABLE_DOCUMENT_ID;
     }
 
     @Override
     public Field<Integer> field3() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.DATABASE_DOCUMENT_ID;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.DATABASE_DOCUMENT_ID;
     }
 
     @Override
     public Field<String> field4() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.NAME;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.NAME;
     }
 
     @Override
     public Field<Boolean> field5() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.IS_UNIQUE;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.IS_UNIQUE;
     }
 
     @Override
     public Field<JSON> field6() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.COLUMN_NAME_ARRAY;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.COLUMN_NAME_ARRAY;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return TableIndexDocument.TABLE_INDEX_DOCUMENT.CREATE_AT;
+        return TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.CREATE_AT;
     }
 
     @Override
@@ -315,14 +315,14 @@ public class TableIndexDocumentRecord extends UpdatableRecordImpl<TableIndexDocu
      * Create a detached TableIndexDocumentRecord
      */
     public TableIndexDocumentRecord() {
-        super(TableIndexDocument.TABLE_INDEX_DOCUMENT);
+        super(TableIndexDocumentTable.TABLE_INDEX_DOCUMENT);
     }
 
     /**
      * Create a detached, initialised TableIndexDocumentRecord
      */
     public TableIndexDocumentRecord(Integer id, Integer tableDocumentId, Integer databaseDocumentId, String name, Boolean isUnique, JSON columnNameArray, LocalDateTime createAt) {
-        super(TableIndexDocument.TABLE_INDEX_DOCUMENT);
+        super(TableIndexDocumentTable.TABLE_INDEX_DOCUMENT);
 
         setId(id);
         setTableDocumentId(tableDocumentId);
@@ -336,8 +336,8 @@ public class TableIndexDocumentRecord extends UpdatableRecordImpl<TableIndexDocu
     /**
      * Create a detached, initialised TableIndexDocumentRecord
      */
-    public TableIndexDocumentRecord(TableIndexDocumentPojo value) {
-        super(TableIndexDocument.TABLE_INDEX_DOCUMENT);
+    public TableIndexDocumentRecord(TableIndexDocument value) {
+        super(TableIndexDocumentTable.TABLE_INDEX_DOCUMENT);
 
         if (value != null) {
             setId(value.getId());

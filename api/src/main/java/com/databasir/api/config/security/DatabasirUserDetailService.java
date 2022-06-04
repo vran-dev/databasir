@@ -3,8 +3,8 @@ package com.databasir.api.config.security;
 import com.databasir.core.domain.log.service.OperationLogService;
 import com.databasir.dao.impl.UserDao;
 import com.databasir.dao.impl.UserRoleDao;
-import com.databasir.dao.tables.pojos.UserPojo;
-import com.databasir.dao.tables.pojos.UserRolePojo;
+import com.databasir.dao.tables.pojos.User;
+import com.databasir.dao.tables.pojos.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,12 +28,12 @@ public class DatabasirUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserPojo user = userDao.selectByEmailOrUsername(username)
+        User user = userDao.selectByEmailOrUsername(username)
                 .orElseThrow(() -> {
                     operationLogService.saveLoginFailedLog(username, "用户名不存在");
                     return new UsernameNotFoundException("用户名或密码错误");
                 });
-        List<UserRolePojo> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
+        List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
         return new DatabasirUserDetails(user, roles);
     }
 }

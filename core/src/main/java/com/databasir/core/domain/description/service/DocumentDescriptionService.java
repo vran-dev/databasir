@@ -1,11 +1,11 @@
 package com.databasir.core.domain.description.service;
 
-import com.databasir.core.domain.description.converter.DocumentDescriptionPojoConverter;
+import com.databasir.core.domain.description.converter.DocumentDescriptionConverter;
 import com.databasir.core.domain.description.data.DocumentDescriptionSaveRequest;
 import com.databasir.core.domain.description.event.DescriptionUpdated;
 import com.databasir.core.infrastructure.event.EventPublisher;
 import com.databasir.dao.impl.DocumentDescriptionDao;
-import com.databasir.dao.tables.pojos.DocumentDescriptionPojo;
+import com.databasir.dao.tables.pojos.DocumentDescription;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ public class DocumentDescriptionService {
 
     private final DocumentDescriptionDao documentDescriptionDao;
 
-    private final DocumentDescriptionPojoConverter documentDescriptionPojoConverter;
+    private final DocumentDescriptionConverter documentDescriptionConverter;
 
     private final EventPublisher eventPublisher;
 
@@ -26,7 +26,7 @@ public class DocumentDescriptionService {
                      Integer userId,
                      DocumentDescriptionSaveRequest request) {
 
-        DocumentDescriptionPojo pojo = documentDescriptionPojoConverter.of(projectId, userId, request);
+        DocumentDescription pojo = documentDescriptionConverter.of(projectId, userId, request);
         if (!documentDescriptionDao.exists(projectId, request.getTableName(), request.getColumnName())) {
             documentDescriptionDao.insertAndReturnId(pojo);
         } else {

@@ -2,8 +2,8 @@ package com.databasir.core.domain.mock.generator;
 
 import com.databasir.core.domain.DomainErrors;
 import com.databasir.dao.exception.DataNotExistsException;
-import com.databasir.dao.tables.pojos.MockDataRulePojo;
-import com.databasir.dao.tables.pojos.TableColumnDocumentPojo;
+import com.databasir.dao.tables.pojos.MockDataRule;
+import com.databasir.dao.tables.pojos.TableColumnDocument;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -29,17 +29,17 @@ public class MockDataContext {
     private Map<String, Set<String>> toReference = new LinkedHashMap<>();
 
     @Builder.Default
-    private Map<String, Map<String, MockDataRulePojo>> ruleMap = new LinkedHashMap<>(16);
+    private Map<String, Map<String, MockDataRule>> ruleMap = new LinkedHashMap<>(16);
 
     @Builder.Default
-    private Map<String, Map<String, TableColumnDocumentPojo>> tableColumnMap = new LinkedHashMap<>(16);
+    private Map<String, Map<String, TableColumnDocument>> tableColumnMap = new LinkedHashMap<>(16);
 
     @Builder.Default
     private Map<String, Set<String>> mockInProgress = new HashMap<>();
 
-    public void addTableMockRules(String tableName, List<MockDataRulePojo> rules) {
+    public void addTableMockRules(String tableName, List<MockDataRule> rules) {
         var columnRuleMap = rules.stream()
-                .collect(Collectors.toMap(MockDataRulePojo::getColumnName, Function.identity()));
+                .collect(Collectors.toMap(MockDataRule::getColumnName, Function.identity()));
         this.ruleMap.put(tableName, columnRuleMap);
     }
 
@@ -54,16 +54,16 @@ public class MockDataContext {
         return ruleMap.get(tableName).containsKey(columnName);
     }
 
-    public Optional<MockDataRulePojo> getMockRule(String tableName, String columnName) {
+    public Optional<MockDataRule> getMockRule(String tableName, String columnName) {
         if (!ruleMap.containsKey(tableName)) {
             return Optional.empty();
         }
         return Optional.ofNullable(ruleMap.get(tableName).get(columnName));
     }
 
-    public void addTableColumns(String tableName, List<TableColumnDocumentPojo> columns) {
-        Map<String, TableColumnDocumentPojo> columnMap = new LinkedHashMap<>();
-        for (TableColumnDocumentPojo column : columns) {
+    public void addTableColumns(String tableName, List<TableColumnDocument> columns) {
+        Map<String, TableColumnDocument> columnMap = new LinkedHashMap<>();
+        for (TableColumnDocument column : columns) {
             columnMap.put(column.getName(), column);
         }
         this.tableColumnMap.put(tableName, columnMap);
@@ -80,7 +80,7 @@ public class MockDataContext {
         return tableColumnMap.get(tableName).containsKey(columnName);
     }
 
-    public TableColumnDocumentPojo getTableColumn(String tableName, String columnName) {
+    public TableColumnDocument getTableColumn(String tableName, String columnName) {
         if (!tableColumnMap.containsKey(tableName)) {
             return null;
         }

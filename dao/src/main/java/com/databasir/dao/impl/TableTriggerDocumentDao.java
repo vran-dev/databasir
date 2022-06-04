@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.TableTriggerDocumentPojo;
+import com.databasir.dao.tables.pojos.TableTriggerDocument;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +13,24 @@ import java.util.List;
 import static com.databasir.dao.Tables.TABLE_TRIGGER_DOCUMENT;
 
 @Repository
-public class TableTriggerDocumentDao extends BaseDao<TableTriggerDocumentPojo> {
+public class TableTriggerDocumentDao extends BaseDao<TableTriggerDocument> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public TableTriggerDocumentDao() {
-        super(TABLE_TRIGGER_DOCUMENT, TableTriggerDocumentPojo.class);
+        super(TABLE_TRIGGER_DOCUMENT, TableTriggerDocument.class);
     }
 
-    public List<TableTriggerDocumentPojo> selectByDatabaseDocumentId(Integer schemaDocumentId) {
+    public List<TableTriggerDocument> selectByDatabaseDocumentId(Integer schemaDocumentId) {
         return getDslContext()
                 .select(TABLE_TRIGGER_DOCUMENT.fields()).from(TABLE_TRIGGER_DOCUMENT)
                 .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(schemaDocumentId))
-                .fetchInto(TableTriggerDocumentPojo.class);
+                .fetchInto(TableTriggerDocument.class);
     }
 
-    public List<TableTriggerDocumentPojo> selectByDatabaseDocumentIdAndIdIn(Integer documentId,
+    public List<TableTriggerDocument> selectByDatabaseDocumentIdAndIdIn(Integer documentId,
                                                                             Collection<Integer> tableIdIn) {
         if (tableIdIn == null || tableIdIn.isEmpty()) {
             return Collections.emptyList();
@@ -39,6 +39,6 @@ public class TableTriggerDocumentDao extends BaseDao<TableTriggerDocumentPojo> {
                 .select(TABLE_TRIGGER_DOCUMENT.fields()).from(TABLE_TRIGGER_DOCUMENT)
                 .where(TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID.eq(documentId)
                         .and(TABLE_TRIGGER_DOCUMENT.TABLE_DOCUMENT_ID.in(tableIdIn)))
-                .fetchInto(TableTriggerDocumentPojo.class);
+                .fetchInto(TableTriggerDocument.class);
     }
 }

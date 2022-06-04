@@ -7,7 +7,7 @@ import com.databasir.core.domain.login.data.AccessTokenRefreshRequest;
 import com.databasir.core.domain.login.data.AccessTokenRefreshResponse;
 import com.databasir.core.domain.login.data.LoginKeyResponse;
 import com.databasir.dao.impl.LoginDao;
-import com.databasir.dao.tables.pojos.LoginPojo;
+import com.databasir.dao.tables.pojos.Login;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ class LoginServiceTest extends BaseTest {
         int userId = -1000;
         LoginKeyResponse token = loginService.generate(userId);
         Assertions.assertNotNull(token);
-        Optional<LoginPojo> loginOpt = loginDao.selectByUserId(userId);
+        Optional<Login> loginOpt = loginDao.selectByUserId(userId);
         Assertions.assertTrue(loginOpt.isPresent());
         Assertions.assertEquals(token.getAccessToken(), loginOpt.get().getAccessToken());
         Assertions.assertEquals(token.getRefreshToken(), loginOpt.get().getRefreshToken());

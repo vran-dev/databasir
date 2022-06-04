@@ -64,7 +64,7 @@ public class LoginController {
         DatabasirUserDetails user = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        Integer userId = user.getUserPojo().getId();
+        Integer userId = user.getUser().getId();
         return JsonData.ok(loginService.getUserLoginData(userId));
     }
 

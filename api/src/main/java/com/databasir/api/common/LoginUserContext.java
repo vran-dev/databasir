@@ -9,6 +9,6 @@ public class LoginUserContext {
         DatabasirUserDetails principal = (DatabasirUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return principal.getUserPojo().getId();
+        return principal.getUser().getId();
     }
 }

@@ -4,8 +4,8 @@
 package com.databasir.dao.tables.records;
 
 
-import com.databasir.dao.tables.Project;
-import com.databasir.dao.tables.pojos.ProjectPojo;
+import com.databasir.dao.tables.ProjectTable;
+import com.databasir.dao.tables.pojos.Project;
 
 import java.time.LocalDateTime;
 
@@ -149,37 +149,37 @@ public class ProjectRecord extends UpdatableRecordImpl<ProjectRecord> implements
 
     @Override
     public Field<Integer> field1() {
-        return Project.PROJECT.ID;
+        return ProjectTable.PROJECT.ID;
     }
 
     @Override
     public Field<String> field2() {
-        return Project.PROJECT.NAME;
+        return ProjectTable.PROJECT.NAME;
     }
 
     @Override
     public Field<String> field3() {
-        return Project.PROJECT.DESCRIPTION;
+        return ProjectTable.PROJECT.DESCRIPTION;
     }
 
     @Override
     public Field<Integer> field4() {
-        return Project.PROJECT.GROUP_ID;
+        return ProjectTable.PROJECT.GROUP_ID;
     }
 
     @Override
     public Field<Boolean> field5() {
-        return Project.PROJECT.DELETED;
+        return ProjectTable.PROJECT.DELETED;
     }
 
     @Override
     public Field<Integer> field6() {
-        return Project.PROJECT.DELETED_TOKEN;
+        return ProjectTable.PROJECT.DELETED_TOKEN;
     }
 
     @Override
     public Field<LocalDateTime> field7() {
-        return Project.PROJECT.CREATE_AT;
+        return ProjectTable.PROJECT.CREATE_AT;
     }
 
     @Override
@@ -314,14 +314,14 @@ public class ProjectRecord extends UpdatableRecordImpl<ProjectRecord> implements
      * Create a detached ProjectRecord
      */
     public ProjectRecord() {
-        super(Project.PROJECT);
+        super(ProjectTable.PROJECT);
     }
 
     /**
      * Create a detached, initialised ProjectRecord
      */
     public ProjectRecord(Integer id, String name, String description, Integer groupId, Boolean deleted, Integer deletedToken, LocalDateTime createAt) {
-        super(Project.PROJECT);
+        super(ProjectTable.PROJECT);
 
         setId(id);
         setName(name);
@@ -335,8 +335,8 @@ public class ProjectRecord extends UpdatableRecordImpl<ProjectRecord> implements
     /**
      * Create a detached, initialised ProjectRecord
      */
-    public ProjectRecord(ProjectPojo value) {
-        super(Project.PROJECT);
+    public ProjectRecord(Project value) {
+        super(ProjectTable.PROJECT);
 
         if (value != null) {
             setId(value.getId());

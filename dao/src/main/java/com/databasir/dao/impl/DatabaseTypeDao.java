@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.DatabaseTypePojo;
+import com.databasir.dao.tables.pojos.DatabaseType;
 import lombok.Getter;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import java.util.Optional;
 import static com.databasir.dao.Tables.DATABASE_TYPE;
 
 @Repository
-public class DatabaseTypeDao extends BaseDao<DatabaseTypePojo> {
+public class DatabaseTypeDao extends BaseDao<DatabaseType> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public DatabaseTypeDao() {
-        super(DATABASE_TYPE, DatabaseTypePojo.class);
+        super(DATABASE_TYPE, DatabaseType.class);
     }
 
     public boolean existsByDatabaseType(String databaseType) {
@@ -32,17 +32,17 @@ public class DatabaseTypeDao extends BaseDao<DatabaseTypePojo> {
                 .and(DATABASE_TYPE.DELETED.eq(false)));
     }
 
-    public DatabaseTypePojo selectByDatabaseType(String databaseType) {
+    public DatabaseType selectByDatabaseType(String databaseType) {
         return this.selectOne(DATABASE_TYPE.DATABASE_TYPE_.eq(databaseType)
                 .and(DATABASE_TYPE.DELETED.eq(false)));
     }
 
     @Override
-    public List<DatabaseTypePojo> selectAll() {
+    public List<DatabaseType> selectAll() {
         return this.getDslContext().selectFrom(DATABASE_TYPE)
                 .where(DATABASE_TYPE.DELETED.eq(false))
                 .orderBy(DATABASE_TYPE.ID.desc())
-                .fetchInto(DatabaseTypePojo.class);
+                .fetchInto(DatabaseType.class);
     }
 
     public int deleteById(Integer id) {
@@ -55,7 +55,7 @@ public class DatabaseTypeDao extends BaseDao<DatabaseTypePojo> {
                 .execute();
     }
 
-    public Optional<DatabaseTypePojo> selectOptionalById(Integer id) {
+    public Optional<DatabaseType> selectOptionalById(Integer id) {
         return super.selectOptionalOne(DATABASE_TYPE.DELETED.eq(false).and(DATABASE_TYPE.ID.eq(id)));
     }
 

@@ -1,6 +1,6 @@
 package com.databasir.dao.impl;
 
-import com.databasir.dao.tables.pojos.ProjectPojo;
+import com.databasir.dao.tables.pojos.Project;
 import com.databasir.dao.value.GroupProjectCountPojo;
 import lombok.Getter;
 import org.jooq.Condition;
@@ -23,14 +23,14 @@ import static com.databasir.dao.Tables.DATA_SOURCE;
 import static com.databasir.dao.Tables.PROJECT;
 
 @Repository
-public class ProjectDao extends BaseDao<ProjectPojo> {
+public class ProjectDao extends BaseDao<Project> {
 
     @Autowired
     @Getter
     private DSLContext dslContext;
 
     public ProjectDao() {
-        super(PROJECT, ProjectPojo.class);
+        super(PROJECT, Project.class);
     }
 
     public int updateDeletedById(boolean b, Integer projectId) {
@@ -41,11 +41,11 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
     }
 
     @Override
-    public <T extends Serializable> Optional<ProjectPojo> selectOptionalById(T id) {
+    public <T extends Serializable> Optional<Project> selectOptionalById(T id) {
         return getDslContext()
                 .select(PROJECT.fields()).from(PROJECT)
                 .where(identity().eq(id).and(PROJECT.DELETED.eq(false)))
-                .fetchOptionalInto(ProjectPojo.class);
+                .fetchOptionalInto(Project.class);
     }
 
     @Override
@@ -60,19 +60,19 @@ public class ProjectDao extends BaseDao<ProjectPojo> {
                         .and(PROJECT.DELETED.eq(false)));
     }
 
-    public Page<ProjectPojo> selectByCondition(Pageable request, Condition condition) {
+    public Page<Project> selectByCondition(Pageable request, Condition condition) {
         int total = getDslContext()
                 .selectCount().from(PROJECT)
                 .innerJoin(DATA_SOURCE).on(DATA_SOURCE.PROJECT_ID.eq(PROJECT.ID))
                 .where(condition)
                 .fetchOne(0, int.class);
-        List<ProjectPojo> data = getDslContext()
+        List<Project> data = getDslContext()
                 .select(PROJECT.fields()).from(PROJECT)
                 .innerJoin(DATA_SOURCE).on(DATA_SOURCE.PROJECT_ID.eq(PROJECT.ID))
                 .where(condition)
                 .orderBy(getSortFields(request.getSort()))
                 .offset(request.getOffset()).limit(request.getPageSize())
-                .fetchInto(ProjectPojo.class);
+                .fetchInto(Project.class);
         return new PageImpl<>(data, request, total);
     }
 

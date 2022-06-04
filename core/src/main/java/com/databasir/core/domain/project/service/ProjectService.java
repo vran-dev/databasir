@@ -2,8 +2,8 @@ package com.databasir.core.domain.project.service;
 
 import com.databasir.common.codec.Aes;
 import com.databasir.core.domain.DomainErrors;
-import com.databasir.core.domain.project.converter.DataSourcePojoConverter;
-import com.databasir.core.domain.project.converter.ProjectPojoConverter;
+import com.databasir.core.domain.project.converter.DataSourceConverter;
+import com.databasir.core.domain.project.converter.ProjectConverter;
 import com.databasir.core.domain.project.converter.ProjectResponseConverter;
 import com.databasir.core.domain.project.converter.ProjectSimpleTaskResponseConverter;
 import com.databasir.core.domain.project.data.*;
@@ -50,9 +50,9 @@ public class ProjectService {
 
     private final ProjectSyncTaskDao projectSyncTaskDao;
 
-    private final DataSourcePojoConverter dataSourcePojoConverter;
+    private final DataSourceConverter dataSourceConverter;
 
-    private final ProjectPojoConverter projectPojoConverter;
+    private final ProjectConverter projectConverter;
 
     private final ProjectResponseConverter projectResponseConverter;
 
@@ -75,7 +75,7 @@ public class ProjectService {
 
     @Transactional
     public Integer create(ProjectCreateRequest request) {
-        ProjectPojo project = projectPojoConverter.of(request);
+        Project project = projectConverter.of(request);
         Integer projectId = null;
         try {
             projectId = projectDao.insertAndReturnId(project);
@@ -84,14 +84,14 @@ public class ProjectService {
         }
 
         String newPassword = encryptPassword(request.getDataSource().getPassword()).get();
-        DataSourcePojo dataSource = dataSourcePojoConverter.of(request.getDataSource(), newPassword, projectId);
+        DataSource dataSource = dataSourceConverter.of(request.getDataSource(), newPassword, projectId);
         Integer dataSourceId = dataSourceDao.insertAndReturnId(dataSource);
 
         List<DataSourcePropertyValue> propertyValues = request.getDataSource().getProperties();
-        List<DataSourcePropertyPojo> properties = dataSourcePojoConverter.of(propertyValues, dataSourceId);
+        List<DataSourceProperty> properties = dataSourceConverter.of(propertyValues, dataSourceId);
         dataSourcePropertyDao.batchInsert(properties);
 
-        ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
+        ProjectSyncRule syncRule = projectConverter.of(request.getProjectSyncRule(), projectId);
         projectSyncRuleDao.insertAndReturnId(syncRule);
 
         var event = ProjectSaved.builder()
@@ -113,13 +113,13 @@ public class ProjectService {
         if (projectDao.exists(groupId, projectId)) {
             // update dataSource
             String newPassword = encryptPassword(request.getDataSource().getPassword()).orElse(null);
-            DataSourcePojo dataSource = dataSourcePojoConverter.of(request.getDataSource(), newPassword, projectId);
+            DataSource dataSource = dataSourceConverter.of(request.getDataSource(), newPassword, projectId);
             dataSourceDao.updateByProjectId(dataSource);
 
             // update connection property
             Integer dataSourceId = dataSourceDao.selectByProjectId(projectId).getId();
             List<DataSourcePropertyValue> propertyValues = request.getDataSource().getProperties();
-            List<DataSourcePropertyPojo> properties = dataSourcePojoConverter.of(propertyValues, dataSourceId);
+            List<DataSourceProperty> properties = dataSourceConverter.of(propertyValues, dataSourceId);
             if (properties.isEmpty()) {
                 dataSourcePropertyDao.deleteByDataSourceId(dataSourceId);
             } else {
@@ -128,12 +128,12 @@ public class ProjectService {
             }
 
             // update project sync rule
-            ProjectSyncRulePojo syncRule = projectPojoConverter.of(request.getProjectSyncRule(), projectId);
+            ProjectSyncRule syncRule = projectConverter.of(request.getProjectSyncRule(), projectId);
             projectSyncRuleDao.deleteByProjectId(projectId);
             projectSyncRuleDao.insertAndReturnId(syncRule);
 
             // update project info
-            ProjectPojo project = projectPojoConverter.of(request);
+            Project project = projectConverter.of(request);
             projectDao.updateById(project);
 
             ProjectSaved event = ProjectSaved.builder()
@@ -155,7 +155,7 @@ public class ProjectService {
         if (!StringUtils.hasText(password)) {
             return Optional.empty();
         }
-        SysKeyPojo sysKey = sysKeyDao.selectTopOne();
+        SysKey sysKey = sysKeyDao.selectTopOne();
         // String decryptedPassword = Rsa.decryptFromBase64DataByPrivateKey(password, sysKey.getRsaPrivateKey());
         return Optional.of(Aes.encryptToBase64Data(password, sysKey.getAesKey()));
     }
@@ -168,24 +168,24 @@ public class ProjectService {
     }
 
     public Page<ProjectSimpleResponse> list(Integer userId, Pageable page, ProjectListCondition condition) {
-        Page<ProjectPojo> pageData = projectDao.selectByCondition(page, condition.toCondition());
+        Page<Project> pageData = projectDao.selectByCondition(page, condition.toCondition());
         List<Integer> projectIds = pageData.getContent()
                 .stream()
-                .map(ProjectPojo::getId)
+                .map(Project::getId)
                 .collect(Collectors.toList());
-        Map<Integer, DataSourcePojo> dataSourceMapByProjectId = dataSourceDao.selectInProjectIds(projectIds)
+        Map<Integer, DataSource> dataSourceMapByProjectId = dataSourceDao.selectInProjectIds(projectIds)
                 .stream()
-                .collect(Collectors.toMap(DataSourcePojo::getProjectId, Function.identity()));
-        Map<Integer, ProjectSyncRulePojo> syncRuleMapByProjectId = projectSyncRuleDao.selectInProjectIds(projectIds)
+                .collect(Collectors.toMap(DataSource::getProjectId, Function.identity()));
+        Map<Integer, ProjectSyncRule> syncRuleMapByProjectId = projectSyncRuleDao.selectInProjectIds(projectIds)
                 .stream()
-                .collect(Collectors.toMap(ProjectSyncRulePojo::getProjectId, Function.identity()));
+                .collect(Collectors.toMap(ProjectSyncRule::getProjectId, Function.identity()));
         Set<Integer> favoriteProjectIds = userFavoriteProjectDao.selectByUserIdAndProjectIds(userId, projectIds)
                 .stream()
-                .map(UserFavoriteProjectPojo::getProjectId)
+                .map(UserFavoriteProject::getProjectId)
                 .collect(Collectors.toSet());
         return pageData.map(project -> {
-            DataSourcePojo dataSource = dataSourceMapByProjectId.get(project.getId());
-            ProjectSyncRulePojo syncRule = syncRuleMapByProjectId.get(project.getId());
+            DataSource dataSource = dataSourceMapByProjectId.get(project.getId());
+            ProjectSyncRule syncRule = syncRuleMapByProjectId.get(project.getId());
             Boolean isFavorite = favoriteProjectIds.contains(project.getId());
             return projectResponseConverter.toSimple(project, dataSource, syncRule, isFavorite);
         });
@@ -194,8 +194,8 @@ public class ProjectService {
     public void testConnection(ProjectTestConnectionRequest request) {
         String password;
         if (request.getProjectId() != null && !StringUtils.hasText(request.getPassword())) {
-            DataSourcePojo dataSource = dataSourceDao.selectByProjectId(request.getProjectId());
-            SysKeyPojo sysKey = sysKeyDao.selectTopOne();
+            DataSource dataSource = dataSourceDao.selectByProjectId(request.getProjectId());
+            SysKey sysKey = sysKeyDao.selectTopOne();
             password = Aes.decryptFromBase64Data(dataSource.getPassword(), sysKey.getAesKey());
         } else if (StringUtils.hasText(request.getPassword())) {
             password = request.getPassword();
@@ -224,7 +224,7 @@ public class ProjectService {
             log.warn("create sync task failed, it's already exists, projectId={}", projectId);
             return Optional.empty();
         }
-        ProjectSyncTaskPojo projectSyncTask = new ProjectSyncTaskPojo();
+        ProjectSyncTask projectSyncTask = new ProjectSyncTask();
         projectSyncTask.setProjectId(projectId);
         projectSyncTask.setStatus(ProjectSyncTaskStatus.NEW);
         projectSyncTask.setUserId(userId);

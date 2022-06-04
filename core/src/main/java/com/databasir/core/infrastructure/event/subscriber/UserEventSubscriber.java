@@ -7,7 +7,7 @@ import com.databasir.core.infrastructure.mail.MailSender;
 import com.databasir.core.infrastructure.mail.MailTemplateProcessor;
 import com.databasir.dao.impl.SysMailDao;
 import com.databasir.dao.impl.UserDao;
-import com.databasir.dao.tables.pojos.UserPojo;
+import com.databasir.dao.tables.pojos.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -33,7 +33,7 @@ public class UserEventSubscriber {
 
     @EventListener(classes = UserPasswordRenewed.class)
     public void onPasswordRenewed(UserPasswordRenewed event) {
-        UserPojo operator = userDao.selectById(event.getRenewByUserId());
+        User operator = userDao.selectById(event.getRenewByUserId());
         sysMailDao.selectOptionTopOne()
                 .ifPresent(mailPojo -> {
                     String renewBy = operator.getNickname();
