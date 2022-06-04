@@ -55,7 +55,7 @@ class DocumentEventSubscriberTest extends BaseTest {
         event.setNewVersion(2L);
         event.setOldVersion(1L);
         event.setProjectId(-1);
-        documentEventSubscriber.onDocumentUpdated(event);
+        documentEventSubscriber.sendMailOnUpdated(event);
         verify(mailSender, times(1)).batchSendHtml(any(), any(), any(), any());
     }
 
