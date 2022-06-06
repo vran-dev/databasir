@@ -2,6 +2,8 @@ package com.databasir.core.domain.document.converter;
 
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.data.diff.ColumnDocDiff;
+import com.databasir.core.domain.document.data.diff.TableDocDiff;
 import com.databasir.core.infrastructure.converter.JsonConverter;
 import com.databasir.dao.tables.pojos.*;
 import org.mapstruct.Mapper;
@@ -64,4 +66,47 @@ public interface DocumentResponseConverter {
     @Mapping(target = "documentVersion", source = "databaseDocument.version")
     DatabaseDocumentResponse of(DatabaseDocument databaseDocument,
                                 List<TableDocumentResponse> tables);
+
+    default TableDocumentResponse ofDiff(TableDocDiff table,
+                                         Map<String, Integer> discussionCountMap,
+                                         Map<String, String> descriptionMap) {
+        List<TableDocumentResponse.ColumnDocumentResponse> cols = toColumns(table, discussionCountMap, descriptionMap);
+        return ofDiff(table, cols, discussionCountMap, descriptionMap);
+    }
+
+    @Mapping(target = "description", expression = "java(descriptionMap.get(table.getName()))")
+    @Mapping(target = "discussionCount", expression = "java(discussionCountMap.get(table.getName()))")
+    @Mapping(target = "columns", source = "cols")
+    TableDocumentResponse ofDiff(TableDocDiff table,
+                                 List<TableDocumentResponse.ColumnDocumentResponse> cols,
+                                 Map<String, Integer> discussionCountMap,
+                                 Map<String, String> descriptionMap);
+
+    default List<TableDocumentResponse.ColumnDocumentResponse> toColumns(TableDocDiff table,
+                                                                         Map<String, Integer> discussionCountMap,
+                                                                         Map<String, String> descriptionMap) {
+        return table.getColumns()
+                .stream()
+                .map(col -> toColumn(table.getName(), col, discussionCountMap, descriptionMap))
+                .collect(Collectors.toList());
+    }
+
+    @Mapping(target = "description", expression = "java(descriptionMap.get(tableName+\".\"+diff.getName()))")
+    @Mapping(target = "discussionCount", expression = "java(discussionCountMap.get(tableName+\".\"+diff.getName()))")
+    @Mapping(target = "original",
+            expression = "java(toOriginalColumn(tableName, diff.getOriginal(), discussionCountMap, descriptionMap))")
+    TableDocumentResponse.ColumnDocumentResponse toColumn(String tableName,
+                                                          ColumnDocDiff diff,
+                                                          Map<String, Integer> discussionCountMap,
+                                                          Map<String, String> descriptionMap);
+
+    default TableDocumentResponse.ColumnDocumentResponse toOriginalColumn(String tableName,
+                                                                          ColumnDocDiff diff,
+                                                                          Map<String, Integer> discussionCountMap,
+                                                                          Map<String, String> descriptionMap) {
+        if (diff == null) {
+            return null;
+        }
+        return toColumn(tableName, diff, discussionCountMap, descriptionMap);
+    }
 }

@@ -1,6 +1,7 @@
 package com.databasir.core.domain.document.data;
 
 import com.databasir.core.diff.data.DiffType;
+import com.databasir.core.domain.document.data.diff.DiffAble;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

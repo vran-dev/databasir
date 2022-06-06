@@ -48,9 +48,11 @@ subprojects {
 
         implementation "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
         implementation "org.mapstruct:mapstruct:${mapstructVersion}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+        testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
         implementation "org.slf4j:slf4j-api:${slf4jVersion}"
         implementation "com.alibaba:easyexcel:${easyExcelVersion}"
