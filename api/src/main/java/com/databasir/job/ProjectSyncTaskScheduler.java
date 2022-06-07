@@ -1,7 +1,7 @@
 package com.databasir.job;
 
 import com.databasir.common.JsonData;
-import com.databasir.core.domain.document.service.DocumentService;
+import com.databasir.core.domain.document.service.DocumentSyncService;
 import com.databasir.core.domain.log.data.OperationLogRequest;
 import com.databasir.core.domain.log.service.OperationLogService;
 import com.databasir.dao.enums.ProjectSyncTaskStatus;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProjectSyncTaskScheduler {
 
-    private final DocumentService documentService;
+    private final DocumentSyncService documentSyncService;
 
     private final OperationLogService operationLogService;
 
@@ -64,7 +64,7 @@ public class ProjectSyncTaskScheduler {
     private void sync(Integer taskId, Integer groupId, Integer projectId, Integer userId) {
         try {
             updateSyncTaskStatus(taskId, ProjectSyncTaskStatus.RUNNING, "running");
-            documentService.syncByProjectId(projectId);
+            documentSyncService.syncByProjectId(projectId);
             updateSyncTaskStatus(taskId, ProjectSyncTaskStatus.FINISHED, "ok");
             saveOperationLog(groupId, projectId, userId, null);
         } catch (Exception e) {

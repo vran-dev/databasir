@@ -1,4 +1,4 @@
-package com.databasir.core.domain.document.data;
+package com.databasir.core.domain.document.data.diff;
 
 import com.databasir.core.diff.data.DiffType;
 
