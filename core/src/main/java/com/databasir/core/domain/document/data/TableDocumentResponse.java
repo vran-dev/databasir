@@ -74,8 +74,6 @@ public class TableDocumentResponse implements DiffAble<TableDocumentResponse> {
 
         private String defaultValue;
 
-        private Integer discussionCount;
-
         private LocalDateTime createAt;
 
         private DiffType diffType;

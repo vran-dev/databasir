@@ -9,7 +9,5 @@ public class DocumentDiscussionCountPojo {
 
     private String tableName;
 
-    private String columnName;
-
     private Integer count;
 }

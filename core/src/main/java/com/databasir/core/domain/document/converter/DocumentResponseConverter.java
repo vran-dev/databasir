@@ -41,19 +41,16 @@ public interface DocumentResponseConverter {
                              List<TableTriggerDocument> triggers);
 
     TableDocumentResponse.ColumnDocumentResponse of(TableColumnDocument pojo,
-                                                    Integer discussionCount,
                                                     String description);
 
     default List<TableDocumentResponse.ColumnDocumentResponse> of(
             List<TableColumnDocument> columns,
             String tableName,
-            Map<String, Integer> discussionCountMapByJoinName,
             Map<String, String> descriptionMapByJoinName) {
         return columns.stream()
                 .map(column -> {
-                    Integer count = discussionCountMapByJoinName.get(tableName + "." + column.getName());
                     String description = descriptionMapByJoinName.get(tableName + "." + column.getName());
-                    return of(column, count, description);
+                    return of(column, description);
                 })
                 .collect(Collectors.toList());
     }
@@ -70,7 +67,7 @@ public interface DocumentResponseConverter {
     default TableDocumentResponse ofDiff(TableDocDiff table,
                                          Map<String, Integer> discussionCountMap,
                                          Map<String, String> descriptionMap) {
-        List<TableDocumentResponse.ColumnDocumentResponse> cols = toColumns(table, discussionCountMap, descriptionMap);
+        List<TableDocumentResponse.ColumnDocumentResponse> cols = toColumns(table, descriptionMap);
         return ofDiff(table, cols, discussionCountMap, descriptionMap);
     }
 
@@ -83,30 +80,26 @@ public interface DocumentResponseConverter {
                                  Map<String, String> descriptionMap);
 
     default List<TableDocumentResponse.ColumnDocumentResponse> toColumns(TableDocDiff table,
-                                                                         Map<String, Integer> discussionCountMap,
                                                                          Map<String, String> descriptionMap) {
         return table.getColumns()
                 .stream()
-                .map(col -> toColumn(table.getName(), col, discussionCountMap, descriptionMap))
+                .map(col -> toColumn(table.getName(), col, descriptionMap))
                 .collect(Collectors.toList());
     }
 
     @Mapping(target = "description", expression = "java(descriptionMap.get(tableName+\".\"+diff.getName()))")
-    @Mapping(target = "discussionCount", expression = "java(discussionCountMap.get(tableName+\".\"+diff.getName()))")
     @Mapping(target = "original",
-            expression = "java(toOriginalColumn(tableName, diff.getOriginal(), discussionCountMap, descriptionMap))")
+            expression = "java(toOriginalColumn(tableName, diff.getOriginal(), descriptionMap))")
     TableDocumentResponse.ColumnDocumentResponse toColumn(String tableName,
                                                           ColumnDocDiff diff,
-                                                          Map<String, Integer> discussionCountMap,
                                                           Map<String, String> descriptionMap);
 
     default TableDocumentResponse.ColumnDocumentResponse toOriginalColumn(String tableName,
                                                                           ColumnDocDiff diff,
-                                                                          Map<String, Integer> discussionCountMap,
                                                                           Map<String, String> descriptionMap) {
         if (diff == null) {
             return null;
         }
-        return toColumn(tableName, diff, discussionCountMap, descriptionMap);
+        return toColumn(tableName, diff, descriptionMap);
     }
 }

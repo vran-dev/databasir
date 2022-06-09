@@ -32,21 +32,16 @@ public class DocumentDiscussionDao extends BaseDao<DocumentDiscussion> {
                 .fetchOptionalInto(DocumentDiscussion.class);
     }
 
-    public List<DocumentDiscussionCountPojo> selectTableDiscussionCount(Integer projectId) {
-        return this.selectDiscussionCount(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId)
-                .and(DOCUMENT_DISCUSSION.COLUMN_NAME.isNull()));
-    }
-
     public List<DocumentDiscussionCountPojo> selectAllDiscussionCount(Integer projectId) {
         return this.selectDiscussionCount(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId));
     }
 
     public List<DocumentDiscussionCountPojo> selectDiscussionCount(Condition condition) {
         return this.getDslContext()
-                .select(DSL.count(), DOCUMENT_DISCUSSION.TABLE_NAME, DOCUMENT_DISCUSSION.COLUMN_NAME)
+                .select(DSL.count(), DOCUMENT_DISCUSSION.TABLE_NAME)
                 .from(DOCUMENT_DISCUSSION)
                 .where(condition)
-                .groupBy(DOCUMENT_DISCUSSION.TABLE_NAME, DOCUMENT_DISCUSSION.COLUMN_NAME)
+                .groupBy(DOCUMENT_DISCUSSION.TABLE_NAME)
                 .fetchInto(DocumentDiscussionCountPojo.class);
     }
 }
