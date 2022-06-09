@@ -82,7 +82,7 @@ public class DocumentService {
 
         return documentOption.map(document -> {
             var discussionCountMapByTableName =
-                    documentDiscussionDao.selectTableDiscussionCount(projectId)
+                    documentDiscussionDao.selectAllDiscussionCount(projectId)
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getCount(), (a, b) -> a));
             var descriptionMapByTableName =
@@ -218,9 +218,7 @@ public class DocumentService {
         var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
         Map<String, Integer> discussionCountMapByJoinName = discussions.stream()
                 .collect(Collectors.toMap(
-                        d -> String.join(".",
-                                d.getTableName(),
-                                StringUtils.defaultIfBlank(d.getColumnName(), "")),
+                        d -> d.getTableName(),
                         DocumentDiscussionCountPojo::getCount,
                         (a, b) -> a));
 
@@ -246,7 +244,6 @@ public class DocumentService {
                     var columnResponses = documentResponseConverter.of(
                             subColumns,
                             table.getName(),
-                            discussionCountMapByJoinName,
                             descriptionMapByJoinName);
                     return documentResponseConverter.of(
                             table,
@@ -276,7 +273,7 @@ public class DocumentService {
             var discussions = documentDiscussionDao.selectAllDiscussionCount(projectId);
             Map<String, Integer> discussionCountMapByJoinName = discussions.stream()
                     .collect(Collectors.toMap(
-                            d -> String.join(".", d.getTableName(), d.getColumnName()),
+                            d -> d.getTableName(),
                             DocumentDiscussionCountPojo::getCount,
                             (a, b) -> a));
 

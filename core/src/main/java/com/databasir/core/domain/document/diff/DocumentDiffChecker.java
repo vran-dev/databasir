@@ -5,10 +5,7 @@ import com.databasir.core.domain.document.data.diff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,6 +34,7 @@ public class DocumentDiffChecker {
                 .map(curr -> {
                     List<ColumnDocDiff> columnDiffs =
                             doDiff(Collections.emptyList(), curr.getColumns(), ColumnDocDiff::getName);
+                    columnDiffs.sort(Comparator.comparingInt(c -> c.getId()));
                     List<IndexDocDiff> indexDiffs =
                             doDiff(Collections.emptyList(), curr.getIndexes(), IndexDocDiff::getName);
                     List<TriggerDocDiff> triggerDiffs =
@@ -65,6 +63,7 @@ public class DocumentDiffChecker {
                 .map(old -> {
                     List<ColumnDocDiff> columnDiffs =
                             doDiff(old.getColumns(), Collections.emptyList(), ColumnDocDiff::getName);
+                    columnDiffs.sort(Comparator.comparingInt(c -> c.getId()));
                     List<IndexDocDiff> indexDiffs =
                             doDiff(old.getIndexes(), Collections.emptyList(), IndexDocDiff::getName);
                     List<TriggerDocDiff> triggerDiffs =
@@ -98,6 +97,7 @@ public class DocumentDiffChecker {
 
                     List<ColumnDocDiff> columnDiffs =
                             doDiff(originalTable.getColumns(), currentTable.getColumns(), ColumnDocDiff::getName);
+                    columnDiffs.sort(Comparator.comparingInt(c -> c.getId()));
                     List<IndexDocDiff> indexDiffs =
                             doDiff(originalTable.getIndexes(), currentTable.getIndexes(), IndexDocDiff::getName);
                     List<TriggerDocDiff> triggerDiffs =
