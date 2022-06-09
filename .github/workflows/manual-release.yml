@@ -50,5 +50,6 @@ jobs:
         with:
           context: .
           file: ./local.Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/databasir:${{ github.event.inputs.tag }}
