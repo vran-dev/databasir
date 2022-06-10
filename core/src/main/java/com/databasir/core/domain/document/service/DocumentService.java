@@ -86,7 +86,7 @@ public class DocumentService {
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getCount(), (a, b) -> a));
             var descriptionMapByTableName =
-                    documentDescriptionDao.selectTableDescriptionByProjectId(projectId)
+                    documentDescriptionDao.selectByProjectId(projectId)
                             .stream()
                             .collect(Collectors.toMap(d -> d.getTableName(), d -> d.getContent(), (a, b) -> a));
             if (originalVersion != null) {

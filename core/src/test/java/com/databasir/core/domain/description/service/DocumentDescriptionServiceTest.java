@@ -40,8 +40,6 @@ class DocumentDescriptionServiceTest extends BaseTest {
         updateRequest.setColumnName("ut");
         updateRequest.setContent("update content");
         documentDescriptionService.save(groupId, projectId, userId, updateRequest);
-        var tableData = documentDescriptionDao.selectTableDescriptionByProjectId(projectId);
-        Assertions.assertEquals(0, tableData.size());
         List<DocumentDescription> descriptionData = documentDescriptionDao.selectByProjectId(projectId);
         Assertions.assertEquals(1, descriptionData.size());
     }
