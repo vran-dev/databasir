@@ -50,8 +50,7 @@ public class DocumentDescriptionDao extends BaseDao<DocumentDescription> {
     }
 
     public List<DocumentDescription> selectTableDescriptionByProjectId(Integer projectId) {
-        return selectByCondition(DOCUMENT_DESCRIPTION.PROJECT_ID.eq(projectId)
-                .and(DOCUMENT_DESCRIPTION.COLUMN_NAME.isNull()));
+        return selectByCondition(DOCUMENT_DESCRIPTION.PROJECT_ID.eq(projectId));
     }
 
     public List<DocumentDescription> selectByCondition(Condition condition) {
