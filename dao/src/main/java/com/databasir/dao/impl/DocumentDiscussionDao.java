@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.databasir.dao.Tables.DOCUMENT_DISCUSSION;
 
@@ -23,13 +22,6 @@ public class DocumentDiscussionDao extends BaseDao<DocumentDiscussion> {
 
     public DocumentDiscussionDao() {
         super(DOCUMENT_DISCUSSION, DocumentDiscussion.class);
-    }
-
-    public Optional<DocumentDiscussion> selectByProjectIdAndId(Integer projectId, Integer id) {
-        return this.getDslContext()
-                .selectFrom(DOCUMENT_DISCUSSION).where(DOCUMENT_DISCUSSION.PROJECT_ID.eq(projectId)
-                        .and(DOCUMENT_DISCUSSION.ID.eq(id)))
-                .fetchOptionalInto(DocumentDiscussion.class);
     }
 
     public List<DocumentDiscussionCountPojo> selectAllDiscussionCount(Integer projectId) {
