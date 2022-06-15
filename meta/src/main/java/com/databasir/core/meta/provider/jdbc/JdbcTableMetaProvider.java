@@ -38,8 +38,9 @@ public class JdbcTableMetaProvider implements TableMetaProvider {
     private List<TableMeta> doSelect(Connection connection, Condition condition) throws SQLException {
         List<TableMeta> tableMetas = new ArrayList<>();
         String databaseName = condition.getDatabaseName();
+        String[] tableTypes = {"TABLE", "VIEW"};
         ResultSet tablesResult = connection.getMetaData()
-                .getTables(databaseName, condition.getSchemaName(), null, new String[]{"TABLE"});
+                .getTables(databaseName, condition.getSchemaName(), null, tableTypes);
         try {
             while (tablesResult.next()) {
                 String tableName = tablesResult.getString("TABLE_NAME");
