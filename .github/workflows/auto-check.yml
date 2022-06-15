@@ -6,7 +6,7 @@ on:
       - 'common/**'
       - 'core/**'
       - 'dao/**'
-      - 'plugin/**'
+      - 'meta/**'
       - 'gradle/**'
       - 'config/**'
 
