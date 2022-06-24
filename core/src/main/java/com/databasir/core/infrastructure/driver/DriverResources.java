@@ -39,7 +39,7 @@ public class DriverResources {
         if (driverFile.exists()) {
             return new DriverResult(localPath, driverFile);
         } else {
-            throw DomainErrors.UPLOAD_DRIVER_FILE_ERROR.exception();
+            throw DomainErrors.LOAD_DRIVER_FAILED.exception();
         }
     }
 

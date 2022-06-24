@@ -47,8 +47,8 @@ public enum DomainErrors implements DatabasirErrors {
     DRIVER_CLASS_NOT_FOUND("A_10031", "获取驱动类名失败"),
     DATABASE_DOCUMENT_DUPLICATE_KEY("A_10032", "文档版本重复"),
     UPLOAD_DRIVER_FILE_ERROR("A_10033", "上传失败，请检查后重新上传"),
-
     DRIVER_URL_AND_PATH_MUST_NOT_BE_ALL_BLANK("A_10034", "请填写下载驱动的地址或手动上传驱动文件"),
+    LOAD_DRIVER_FAILED("A_10045", "驱动加载失败，请检查后重试")
     ;
 
     private final String errCode;
