@@ -116,7 +116,7 @@ public class SystemStartedEventSubscriber {
         map.put("comment", "注释");
         map.put("description", "描述");
         map.put("size", "长度");
-        map.put("decimalDigits", "浮点精度");
+        map.put("decimalDigits", "小数位");
         map.put("isPrimaryKey", "主键");
         map.put("nullable", "可空");
         map.put("autoIncrement", "自增");
