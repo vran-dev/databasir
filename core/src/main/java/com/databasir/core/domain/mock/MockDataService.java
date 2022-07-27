@@ -18,6 +18,7 @@ import com.databasir.dao.tables.pojos.TableColumnDocument;
 import com.databasir.dao.tables.pojos.TableDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Function;
@@ -41,6 +42,8 @@ public class MockDataService {
 
     private final MockDataValidator mockDataValidator;
 
+    @Transactional
+
     public String generateMockInsertSql(Integer projectId, MockDataGenerateCondition condition) {
         mockDataValidator.validProject(projectId);
         DatabaseDocument databaseDoc =
@@ -49,6 +52,8 @@ public class MockDataService {
                 mockDataValidator.validAndGetTableDocument(databaseDoc.getId(), condition.getTableId());
         return mockDataGenerator.createInsertSql(projectId, databaseDoc.getId(), tableDoc.getName());
     }
+
+    @Transactional
 
     public void saveMockRules(Integer projectId,
                               Integer tableId,

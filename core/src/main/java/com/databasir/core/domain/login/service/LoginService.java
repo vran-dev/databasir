@@ -15,6 +15,7 @@ import com.databasir.dao.tables.pojos.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -37,6 +38,8 @@ public class LoginService {
     private final UserRoleDao userRoleDao;
 
     private final JwtTokens jwtTokens;
+
+    @Transactional
 
     public AccessTokenRefreshResponse refreshAccessTokens(AccessTokenRefreshRequest request) {
         Login login = loginDao.selectByRefreshToken(request.getRefreshToken())
@@ -70,6 +73,8 @@ public class LoginService {
         long accessTokenExpireAtMilli = instant.toEpochMilli();
         return new AccessTokenRefreshResponse(accessToken, accessTokenExpireAtMilli);
     }
+
+    @Transactional
 
     public LoginKeyResponse generate(Integer userId) {
         User user = userDao.selectById(userId);

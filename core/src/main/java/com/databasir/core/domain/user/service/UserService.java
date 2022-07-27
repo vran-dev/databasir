@@ -143,11 +143,14 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void removeSysOwnerFrom(Integer userId) {
         if (userRoleDao.hasRole(userId, SYS_OWNER)) {
             userRoleDao.deleteRole(userId, SYS_OWNER);
         }
     }
+
+    @Transactional
 
     public void addSysOwnerTo(Integer userId) {
         if (!userRoleDao.hasRole(userId, SYS_OWNER)) {
@@ -158,6 +161,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void updatePassword(Integer userId, UserPasswordUpdateRequest request) {
         if (!Objects.equals(request.getNewPassword(), request.getConfirmNewPassword())) {
             throw DomainErrors.UPDATE_PASSWORD_CONFIRM_FAILED.exception();
@@ -171,6 +175,7 @@ public class UserService {
         loginDao.deleteByUserId(userId);
     }
 
+    @Transactional
     public void updateNickname(Integer userId, UserNicknameUpdateRequest request) {
         User user = userDao.selectById(userId);
         user.setNickname(request.getNickname());

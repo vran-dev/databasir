@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class DocumentDiscussionService {
 
     private final EventPublisher eventPublisher;
 
+    @Transactional
     public void deleteById(Integer groupId,
                            Integer projectId,
                            Integer discussionId) {
@@ -73,6 +75,7 @@ public class DocumentDiscussionService {
         }
     }
 
+    @Transactional
     public void create(Integer groupId, Integer projectId, Integer userId, DiscussionCreateRequest request) {
         if (projectDao.exists(groupId, projectId)) {
             DocumentDiscussion pojo = new DocumentDiscussion();
