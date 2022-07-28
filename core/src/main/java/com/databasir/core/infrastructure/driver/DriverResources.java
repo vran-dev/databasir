@@ -60,7 +60,7 @@ public class DriverResources {
         try {
             Files.createDirectories(parentDirPath);
         } catch (IOException e) {
-            log.error("下载驱动时创建目录失败", e);
+            log.error("create directory for driver failed", e);
             throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e);
         }
 
@@ -97,8 +97,9 @@ public class DriverResources {
                 }
             });
         } catch (RestClientException e) {
-            log.error(parentDir + " download driver error", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+            String msg = String.format("download driver from %s to %s failed", driverFileUrl, parentDir);
+            log.error(msg, e);
+            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(msg);
         }
     }
 
