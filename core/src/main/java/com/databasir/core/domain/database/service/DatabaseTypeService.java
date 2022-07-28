@@ -71,7 +71,6 @@ public class DatabaseTypeService {
         }
     }
 
-    @Transactional
     public void update(DatabaseTypeUpdateRequest request) {
         databaseTypeUpdateValidator.validRequestRequiredParams(request);
         databaseTypeDao.selectOptionalById(request.getId()).ifPresent(data -> {
@@ -111,6 +110,7 @@ public class DatabaseTypeService {
         return result;
     }
 
+    @Transactional
     public void deleteById(Integer id) {
         databaseTypeDao.selectOptionalById(id).ifPresent(data -> {
             if (DatabaseTypes.has(data.getDatabaseType())) {

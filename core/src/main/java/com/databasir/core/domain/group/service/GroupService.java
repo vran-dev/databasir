@@ -84,6 +84,7 @@ public class GroupService {
         eventPublisher.publish(new GroupUpdated(request.getId(), request.getName(), request.getDescription()));
     }
 
+    @Transactional
     public void delete(Integer groupId) {
         groupDao.deleteById(groupId);
         userRoleDao.deleteByGroupId(groupId);
@@ -130,10 +131,12 @@ public class GroupService {
         return groupResponseConverter.toResponse(group, users);
     }
 
+    @Transactional
     public void removeMember(Integer groupId, Integer userId) {
         userRoleDao.deleteByUserIdAndGroupId(userId, groupId);
     }
 
+    @Transactional
     public void addMember(Integer groupId, GroupMemberCreateRequest request) {
         if (userRoleDao.hasRole(request.getUserId(), groupId)) {
             throw DomainErrors.USER_ROLE_DUPLICATE.exception();
@@ -145,6 +148,7 @@ public class GroupService {
         userRoleDao.insertAndReturnId(pojo);
     }
 
+    @Transactional
     public void changeMemberRole(Integer groupId, Integer userId, String role) {
         if (!userRoleDao.hasRole(userId, groupId, role)) {
             // TODO 最多 20 个组长

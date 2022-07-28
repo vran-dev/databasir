@@ -76,6 +76,8 @@ public class UserProjectService {
         }
     }
 
+    @Transactional
+
     public void removeFavorites(Integer projectId, Integer userId) {
         if (userFavoriteProjectDao.exists(userId, projectId)) {
             userFavoriteProjectDao.delete(userId, projectId);

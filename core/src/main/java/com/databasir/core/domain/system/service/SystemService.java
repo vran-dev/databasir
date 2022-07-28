@@ -7,6 +7,7 @@ import com.databasir.dao.impl.SysMailDao;
 import com.databasir.dao.tables.pojos.SysMail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
@@ -39,6 +40,8 @@ public class SystemService {
             sysMailDao.deleteById(d.getId());
         });
     }
+
+    @Transactional
 
     public void updateEmailSetting(SystemEmailUpdateRequest request) {
         SysMail sysMail = new SysMail();

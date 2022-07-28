@@ -236,6 +236,8 @@ public class ProjectService {
         return projectSimpleTaskResponseConverter.of(tasks);
     }
 
+    @Transactional
+
     public void cancelTask(Integer projectId, Integer taskId) {
         if (!projectDao.existsById(projectId)) {
             throw DomainErrors.PROJECT_NOT_FOUND.exception();
