@@ -1,4 +1,4 @@
-package com.databasir.core.render.markdown;
+package com.databasir.core.domain.document.generator.markdown;
 
 import java.util.List;
 
@@ -58,8 +58,8 @@ public class MarkdownBuilder {
         // build rows
         for (List<String> row : rows) {
             builder.append("| ");
-            for (String column : row) {
-                builder.append(column).append(" | ");
+            for (String data : row) {
+                builder.append(convertNewLineToBr(data)).append(" | ");
             }
             builder.append(LINE);
         }
@@ -102,7 +102,17 @@ public class MarkdownBuilder {
         return this;
     }
 
+    private String convertNewLineToBr(String content) {
+        if (content == null) {
+            return "";
+        }
+        return content
+                .replace("\r\n", "<br/>")
+                .replace("\n", "<br/>");
+    }
+
     public String build() {
         return builder.toString();
     }
+
 }

@@ -3,13 +3,9 @@ package com.databasir.core;
 import com.databasir.core.meta.data.DatabaseMeta;
 import com.databasir.core.meta.provider.MetaProviders;
 import com.databasir.core.meta.provider.condition.Condition;
-import com.databasir.core.render.Render;
-import com.databasir.core.render.RenderConfig;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +35,6 @@ public class Databasir {
         return MetaProviders
                 .of(connection)
                 .select(connection, condition);
-    }
-
-    public void renderAsMarkdown(DatabaseMeta meta, OutputStream out) throws IOException {
-        renderAsMarkdown(new RenderConfig(), meta, out);
-    }
-
-    public void renderAsMarkdown(RenderConfig config, DatabaseMeta meta, OutputStream stream) throws IOException {
-        Render.markdownRender(config).rendering(meta, stream);
     }
 
     public static Databasir of() {
