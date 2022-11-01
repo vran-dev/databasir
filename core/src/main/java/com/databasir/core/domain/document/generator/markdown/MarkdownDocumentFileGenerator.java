@@ -1,12 +1,13 @@
-package com.databasir.core.domain.document.generator;
+package com.databasir.core.domain.document.generator.markdown;
 
 import com.alibaba.excel.util.StringUtils;
 import com.databasir.common.SystemException;
 import com.databasir.core.domain.document.data.DatabaseDocumentResponse;
 import com.databasir.core.domain.document.data.DocumentTemplatePropertiesResponse;
 import com.databasir.core.domain.document.data.TableDocumentResponse;
+import com.databasir.core.domain.document.generator.DocumentFileGenerator;
+import com.databasir.core.domain.document.generator.DocumentFileType;
 import com.databasir.core.domain.document.service.DocumentTemplateService;
-import com.databasir.core.render.markdown.MarkdownBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -82,9 +83,22 @@ public class MarkdownDocumentFileGenerator implements DocumentFileGenerator {
         // table document build
         doc.getTables().forEach(table -> {
             if (StringUtils.isNotBlank(table.getComment())) {
-                builder.secondTitle(table.getName() + " /\\*" + table.getComment() + "\\*/");
+                String convertedComment = table.getComment()
+                        .replace("\r\n", " ")
+                        .replace("\n", " ");
+                String comment;
+                if (convertedComment.length() > 30) {
+                    comment = convertedComment.substring(0, 30) + "...";
+                } else {
+                    comment = convertedComment;
+                }
+                builder.secondTitle(table.getName() + " /\\*" + comment + "\\*/");
             } else {
                 builder.secondTitle(table.getName());
+            }
+            builder.secondTitle(table.getName());
+            if (StringUtils.isNotBlank(table.getComment())) {
+                builder.blockquotes(table.getComment());
             }
             columnBuild(builder, table, columnTitleMap);
             indexBuild(builder, table, indexTitleMap);
