@@ -7,6 +7,7 @@ package com.databasir.dao;
 import com.databasir.dao.tables.DataSourcePropertyTable;
 import com.databasir.dao.tables.DocumentDiscussionTable;
 import com.databasir.dao.tables.DocumentFullTextTable;
+import com.databasir.dao.tables.OauthAppPropertyTable;
 import com.databasir.dao.tables.ProjectSyncTaskTable;
 import com.databasir.dao.tables.TableColumnDocumentTable;
 import com.databasir.dao.tables.TableDocumentTable;
@@ -41,6 +42,7 @@ public class Indexes {
     public static final Index TABLE_INDEX_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableIndexDocumentTable.TABLE_INDEX_DOCUMENT, new OrderField[] { TableIndexDocumentTable.TABLE_INDEX_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index TABLE_TRIGGER_DOCUMENT_IDX_DATABASE_DOCUMENT_ID = Internal.createIndex(DSL.name("idx_database_document_id"), TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT, new OrderField[] { TableTriggerDocumentTable.TABLE_TRIGGER_DOCUMENT.DATABASE_DOCUMENT_ID }, false);
     public static final Index DOCUMENT_FULL_TEXT_IDX_GROUP_ID = Internal.createIndex(DSL.name("IDX_GROUP_ID"), DocumentFullTextTable.DOCUMENT_FULL_TEXT, new OrderField[] { DocumentFullTextTable.DOCUMENT_FULL_TEXT.GROUP_ID }, false);
+    public static final Index OAUTH_APP_PROPERTY_IDX_OAUTH_APP_ID = Internal.createIndex(DSL.name("idx_oauth_app_id"), OauthAppPropertyTable.OAUTH_APP_PROPERTY, new OrderField[] { OauthAppPropertyTable.OAUTH_APP_PROPERTY.OAUTH_APP_ID }, false);
     public static final Index DOCUMENT_DISCUSSION_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), DocumentDiscussionTable.DOCUMENT_DISCUSSION, new OrderField[] { DocumentDiscussionTable.DOCUMENT_DISCUSSION.PROJECT_ID }, false);
     public static final Index DOCUMENT_FULL_TEXT_IDX_PROJECT_ID = Internal.createIndex(DSL.name("IDX_PROJECT_ID"), DocumentFullTextTable.DOCUMENT_FULL_TEXT, new OrderField[] { DocumentFullTextTable.DOCUMENT_FULL_TEXT.PROJECT_ID }, false);
     public static final Index PROJECT_SYNC_TASK_IDX_PROJECT_ID = Internal.createIndex(DSL.name("idx_project_id"), ProjectSyncTaskTable.PROJECT_SYNC_TASK, new OrderField[] { ProjectSyncTaskTable.PROJECT_SYNC_TASK.PROJECT_ID }, false);
