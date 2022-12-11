@@ -19,7 +19,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -75,31 +75,6 @@ public class OauthAppTable extends TableImpl<OauthAppRecord> {
      * The column <code>databasir.oauth_app.app_type</code>. github, gitlab
      */
     public final TableField<OauthAppRecord, OAuthAppType> APP_TYPE = createField(DSL.name("app_type"), SQLDataType.VARCHAR(64).nullable(false), this, "github, gitlab", new OAuthAppTypeConverter());
-
-    /**
-     * The column <code>databasir.oauth_app.client_id</code>.
-     */
-    public final TableField<OauthAppRecord, String> CLIENT_ID = createField(DSL.name("client_id"), SQLDataType.VARCHAR(256), this, "");
-
-    /**
-     * The column <code>databasir.oauth_app.client_secret</code>.
-     */
-    public final TableField<OauthAppRecord, String> CLIENT_SECRET = createField(DSL.name("client_secret"), SQLDataType.VARCHAR(256), this, "");
-
-    /**
-     * The column <code>databasir.oauth_app.auth_url</code>.
-     */
-    public final TableField<OauthAppRecord, String> AUTH_URL = createField(DSL.name("auth_url"), SQLDataType.VARCHAR(256), this, "");
-
-    /**
-     * The column <code>databasir.oauth_app.resource_url</code>.
-     */
-    public final TableField<OauthAppRecord, String> RESOURCE_URL = createField(DSL.name("resource_url"), SQLDataType.VARCHAR(256), this, "");
-
-    /**
-     * The column <code>databasir.oauth_app.scope</code>.
-     */
-    public final TableField<OauthAppRecord, String> SCOPE = createField(DSL.name("scope"), SQLDataType.VARCHAR(256), this, "");
 
     /**
      * The column <code>databasir.oauth_app.update_at</code>.
@@ -191,11 +166,11 @@ public class OauthAppTable extends TableImpl<OauthAppRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row7<Integer, String, String, String, OAuthAppType, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
