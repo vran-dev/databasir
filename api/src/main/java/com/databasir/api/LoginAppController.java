@@ -33,6 +33,13 @@ public class LoginAppController {
 
     private final OpenAuthHandlers openAuthHandlers;
 
+    @GetMapping(Routes.OAuth2App.LIST_PLATFORMS)
+    @ResponseBody
+    @Operation(summary = "获取支持的 OAuth2 应用列表")
+    public JsonData<List<OAuthAppPlatformResponse>> listPlatforms() {
+        return JsonData.ok(openAuthAppService.listPlatforms());
+    }
+
     /**
      * 无需授权
      */

@@ -4,6 +4,8 @@ import com.databasir.dao.enums.OAuthAppType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class OAuthAppDetailResponse {
@@ -18,13 +20,7 @@ public class OAuthAppDetailResponse {
 
     private String registrationId;
 
-    private String clientId;
-
-    private String clientSecret;
-
-    private String authUrl;
-
-    private String resourceUrl;
+    private List<OauthAppPropertyData> properties = new ArrayList<>();
 
     private LocalDateTime updateAt;
 

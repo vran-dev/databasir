@@ -154,6 +154,8 @@ public interface Routes {
 
         String GET_ONE = BASE + "/oauth2_apps/{id}";
 
+        String LIST_PLATFORMS = BASE + "/oauth2_apps/platforms";
+
     }
 
     interface DatabaseType {
