@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record12;
-import org.jooq.Row12;
+import org.jooq.Record7;
+import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
  * oauth app info
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implements Record12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> {
+public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implements Record7<Integer, String, String, String, OAuthAppType, LocalDateTime, LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -96,101 +96,31 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     /**
-     * Setter for <code>databasir.oauth_app.client_id</code>.
-     */
-    public void setClientId(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.client_id</code>.
-     */
-    public String getClientId() {
-        return (String) get(5);
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.client_secret</code>.
-     */
-    public void setClientSecret(String value) {
-        set(6, value);
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.client_secret</code>.
-     */
-    public String getClientSecret() {
-        return (String) get(6);
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.auth_url</code>.
-     */
-    public void setAuthUrl(String value) {
-        set(7, value);
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.auth_url</code>.
-     */
-    public String getAuthUrl() {
-        return (String) get(7);
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.resource_url</code>.
-     */
-    public void setResourceUrl(String value) {
-        set(8, value);
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.resource_url</code>.
-     */
-    public String getResourceUrl() {
-        return (String) get(8);
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.scope</code>.
-     */
-    public void setScope(String value) {
-        set(9, value);
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.scope</code>.
-     */
-    public String getScope() {
-        return (String) get(9);
-    }
-
-    /**
      * Setter for <code>databasir.oauth_app.update_at</code>.
      */
     public void setUpdateAt(LocalDateTime value) {
-        set(10, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>databasir.oauth_app.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
-        return (LocalDateTime) get(10);
+        return (LocalDateTime) get(5);
     }
 
     /**
      * Setter for <code>databasir.oauth_app.create_at</code>.
      */
     public void setCreateAt(LocalDateTime value) {
-        set(11, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>databasir.oauth_app.create_at</code>.
      */
     public LocalDateTime getCreateAt() {
-        return (LocalDateTime) get(11);
+        return (LocalDateTime) get(6);
     }
 
     // -------------------------------------------------------------------------
@@ -203,17 +133,17 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     // -------------------------------------------------------------------------
-    // Record12 type implementation
+    // Record7 type implementation
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row7<Integer, String, String, String, OAuthAppType, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 
     @Override
-    public Row12<Integer, String, String, String, OAuthAppType, String, String, String, String, String, LocalDateTime, LocalDateTime> valuesRow() {
-        return (Row12) super.valuesRow();
+    public Row7<Integer, String, String, String, OAuthAppType, LocalDateTime, LocalDateTime> valuesRow() {
+        return (Row7) super.valuesRow();
     }
 
     @Override
@@ -242,37 +172,12 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public Field<String> field6() {
-        return OauthAppTable.OAUTH_APP.CLIENT_ID;
-    }
-
-    @Override
-    public Field<String> field7() {
-        return OauthAppTable.OAUTH_APP.CLIENT_SECRET;
-    }
-
-    @Override
-    public Field<String> field8() {
-        return OauthAppTable.OAUTH_APP.AUTH_URL;
-    }
-
-    @Override
-    public Field<String> field9() {
-        return OauthAppTable.OAUTH_APP.RESOURCE_URL;
-    }
-
-    @Override
-    public Field<String> field10() {
-        return OauthAppTable.OAUTH_APP.SCOPE;
-    }
-
-    @Override
-    public Field<LocalDateTime> field11() {
+    public Field<LocalDateTime> field6() {
         return OauthAppTable.OAUTH_APP.UPDATE_AT;
     }
 
     @Override
-    public Field<LocalDateTime> field12() {
+    public Field<LocalDateTime> field7() {
         return OauthAppTable.OAUTH_APP.CREATE_AT;
     }
 
@@ -302,37 +207,12 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public String component6() {
-        return getClientId();
-    }
-
-    @Override
-    public String component7() {
-        return getClientSecret();
-    }
-
-    @Override
-    public String component8() {
-        return getAuthUrl();
-    }
-
-    @Override
-    public String component9() {
-        return getResourceUrl();
-    }
-
-    @Override
-    public String component10() {
-        return getScope();
-    }
-
-    @Override
-    public LocalDateTime component11() {
+    public LocalDateTime component6() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime component12() {
+    public LocalDateTime component7() {
         return getCreateAt();
     }
 
@@ -362,37 +242,12 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public String value6() {
-        return getClientId();
-    }
-
-    @Override
-    public String value7() {
-        return getClientSecret();
-    }
-
-    @Override
-    public String value8() {
-        return getAuthUrl();
-    }
-
-    @Override
-    public String value9() {
-        return getResourceUrl();
-    }
-
-    @Override
-    public String value10() {
-        return getScope();
-    }
-
-    @Override
-    public LocalDateTime value11() {
+    public LocalDateTime value6() {
         return getUpdateAt();
     }
 
     @Override
-    public LocalDateTime value12() {
+    public LocalDateTime value7() {
         return getCreateAt();
     }
 
@@ -427,49 +282,19 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     }
 
     @Override
-    public OauthAppRecord value6(String value) {
-        setClientId(value);
-        return this;
-    }
-
-    @Override
-    public OauthAppRecord value7(String value) {
-        setClientSecret(value);
-        return this;
-    }
-
-    @Override
-    public OauthAppRecord value8(String value) {
-        setAuthUrl(value);
-        return this;
-    }
-
-    @Override
-    public OauthAppRecord value9(String value) {
-        setResourceUrl(value);
-        return this;
-    }
-
-    @Override
-    public OauthAppRecord value10(String value) {
-        setScope(value);
-        return this;
-    }
-
-    @Override
-    public OauthAppRecord value11(LocalDateTime value) {
+    public OauthAppRecord value6(LocalDateTime value) {
         setUpdateAt(value);
         return this;
     }
 
     @Override
-    public OauthAppRecord value12(LocalDateTime value) {
+    public OauthAppRecord value7(LocalDateTime value) {
         setCreateAt(value);
         return this;
     }
 
     @Override
-    public OauthAppRecord values(Integer value1, String value2, String value3, String value4, OAuthAppType value5, String value6, String value7, String value8, String value9, String value10, LocalDateTime value11, LocalDateTime value12) {
+    public OauthAppRecord values(Integer value1, String value2, String value3, String value4, OAuthAppType value5, LocalDateTime value6, LocalDateTime value7) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -477,11 +302,6 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
         value5(value5);
         value6(value6);
         value7(value7);
-        value8(value8);
-        value9(value9);
-        value10(value10);
-        value11(value11);
-        value12(value12);
         return this;
     }
 
@@ -499,7 +319,7 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
     /**
      * Create a detached, initialised OauthAppRecord
      */
-    public OauthAppRecord(Integer id, String registrationId, String appName, String appIcon, OAuthAppType appType, String clientId, String clientSecret, String authUrl, String resourceUrl, String scope, LocalDateTime updateAt, LocalDateTime createAt) {
+    public OauthAppRecord(Integer id, String registrationId, String appName, String appIcon, OAuthAppType appType, LocalDateTime updateAt, LocalDateTime createAt) {
         super(OauthAppTable.OAUTH_APP);
 
         setId(id);
@@ -507,11 +327,6 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
         setAppName(appName);
         setAppIcon(appIcon);
         setAppType(appType);
-        setClientId(clientId);
-        setClientSecret(clientSecret);
-        setAuthUrl(authUrl);
-        setResourceUrl(resourceUrl);
-        setScope(scope);
         setUpdateAt(updateAt);
         setCreateAt(createAt);
     }
@@ -528,11 +343,6 @@ public class OauthAppRecord extends UpdatableRecordImpl<OauthAppRecord> implemen
             setAppName(value.getAppName());
             setAppIcon(value.getAppIcon());
             setAppType(value.getAppType());
-            setClientId(value.getClientId());
-            setClientSecret(value.getClientSecret());
-            setAuthUrl(value.getAuthUrl());
-            setResourceUrl(value.getResourceUrl());
-            setScope(value.getScope());
             setUpdateAt(value.getUpdateAt());
             setCreateAt(value.getCreateAt());
         }

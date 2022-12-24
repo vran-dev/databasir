@@ -18,12 +18,6 @@ public class OAuthAppPageResponse {
 
     private String registrationId;
 
-    private String clientId;
-
-    private String authUrl;
-
-    private String resourceUrl;
-
     private LocalDateTime updateAt;
 
     private LocalDateTime createAt;

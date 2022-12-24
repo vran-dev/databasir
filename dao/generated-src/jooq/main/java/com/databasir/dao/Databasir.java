@@ -15,6 +15,7 @@ import com.databasir.dao.tables.DocumentTemplatePropertyTable;
 import com.databasir.dao.tables.GroupTable;
 import com.databasir.dao.tables.LoginTable;
 import com.databasir.dao.tables.MockDataRuleTable;
+import com.databasir.dao.tables.OauthAppPropertyTable;
 import com.databasir.dao.tables.OauthAppTable;
 import com.databasir.dao.tables.OperationLogTable;
 import com.databasir.dao.tables.ProjectSyncRuleTable;
@@ -111,6 +112,11 @@ public class Databasir extends SchemaImpl {
      * oauth app info
      */
     public final OauthAppTable OAUTH_APP = OauthAppTable.OAUTH_APP;
+
+    /**
+     * The table <code>databasir.oauth_app_property</code>.
+     */
+    public final OauthAppPropertyTable OAUTH_APP_PROPERTY = OauthAppPropertyTable.OAUTH_APP_PROPERTY;
 
     /**
      * The table <code>databasir.operation_log</code>.
@@ -210,6 +216,7 @@ public class Databasir extends SchemaImpl {
             LoginTable.LOGIN,
             MockDataRuleTable.MOCK_DATA_RULE,
             OauthAppTable.OAUTH_APP,
+            OauthAppPropertyTable.OAUTH_APP_PROPERTY,
             OperationLogTable.OPERATION_LOG,
             ProjectTable.PROJECT,
             ProjectSyncRuleTable.PROJECT_SYNC_RULE,

@@ -28,12 +28,17 @@ public class DatabasirUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return loadUserByUsername(username, null);
+    }
+
+    public UserDetails loadUserByUsername(String username, String registrationId) throws UsernameNotFoundException {
         User user = userDao.selectByEmailOrUsername(username)
                 .orElseThrow(() -> {
-                    operationLogService.saveLoginFailedLog(username, "用户名不存在");
+                    String operationName = registrationId == null ? "登录" : registrationId + " 登录";
+                    operationLogService.saveLoginFailedLog(username, operationName, "用户名不存在");
                     return new UsernameNotFoundException("用户名或密码错误");
                 });
         List<UserRole> roles = userRoleDao.selectByUserIds(Collections.singletonList(user.getId()));
-        return new DatabasirUserDetails(user, roles);
+        return new DatabasirUserDetails(user, roles, registrationId);
     }
 }

@@ -23,11 +23,6 @@ public class OauthApp implements Serializable {
     private String        appName;
     private String        appIcon;
     private OAuthAppType  appType;
-    private String        clientId;
-    private String        clientSecret;
-    private String        authUrl;
-    private String        resourceUrl;
-    private String        scope;
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
 
@@ -39,11 +34,6 @@ public class OauthApp implements Serializable {
         this.appName = value.appName;
         this.appIcon = value.appIcon;
         this.appType = value.appType;
-        this.clientId = value.clientId;
-        this.clientSecret = value.clientSecret;
-        this.authUrl = value.authUrl;
-        this.resourceUrl = value.resourceUrl;
-        this.scope = value.scope;
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
     }
@@ -54,11 +44,6 @@ public class OauthApp implements Serializable {
         String        appName,
         String        appIcon,
         OAuthAppType  appType,
-        String        clientId,
-        String        clientSecret,
-        String        authUrl,
-        String        resourceUrl,
-        String        scope,
         LocalDateTime updateAt,
         LocalDateTime createAt
     ) {
@@ -67,11 +52,6 @@ public class OauthApp implements Serializable {
         this.appName = appName;
         this.appIcon = appIcon;
         this.appType = appType;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.authUrl = authUrl;
-        this.resourceUrl = resourceUrl;
-        this.scope = scope;
         this.updateAt = updateAt;
         this.createAt = createAt;
     }
@@ -147,76 +127,6 @@ public class OauthApp implements Serializable {
     }
 
     /**
-     * Getter for <code>databasir.oauth_app.client_id</code>.
-     */
-    public String getClientId() {
-        return this.clientId;
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.client_id</code>.
-     */
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.client_secret</code>.
-     */
-    public String getClientSecret() {
-        return this.clientSecret;
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.client_secret</code>.
-     */
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.auth_url</code>.
-     */
-    public String getAuthUrl() {
-        return this.authUrl;
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.auth_url</code>.
-     */
-    public void setAuthUrl(String authUrl) {
-        this.authUrl = authUrl;
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.resource_url</code>.
-     */
-    public String getResourceUrl() {
-        return this.resourceUrl;
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.resource_url</code>.
-     */
-    public void setResourceUrl(String resourceUrl) {
-        this.resourceUrl = resourceUrl;
-    }
-
-    /**
-     * Getter for <code>databasir.oauth_app.scope</code>.
-     */
-    public String getScope() {
-        return this.scope;
-    }
-
-    /**
-     * Setter for <code>databasir.oauth_app.scope</code>.
-     */
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    /**
      * Getter for <code>databasir.oauth_app.update_at</code>.
      */
     public LocalDateTime getUpdateAt() {
@@ -253,11 +163,6 @@ public class OauthApp implements Serializable {
         sb.append(", ").append(appName);
         sb.append(", ").append(appIcon);
         sb.append(", ").append(appType);
-        sb.append(", ").append(clientId);
-        sb.append(", ").append(clientSecret);
-        sb.append(", ").append(authUrl);
-        sb.append(", ").append(resourceUrl);
-        sb.append(", ").append(scope);
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
 

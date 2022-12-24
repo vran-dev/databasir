@@ -5,6 +5,8 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class OAuthAppCreateRequest {
@@ -20,17 +22,6 @@ public class OAuthAppCreateRequest {
 
     private String appIcon;
 
-    @NotBlank
-    private String authUrl;
+    private List<OauthAppPropertyData> properties = new ArrayList<>();
 
-    @NotBlank
-    private String resourceUrl;
-
-    @NotBlank
-    private String clientId;
-
-    @NotBlank
-    private String clientSecret;
-
-    private String scope;
 }

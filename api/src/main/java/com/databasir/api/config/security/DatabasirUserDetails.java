@@ -21,6 +21,9 @@ public class DatabasirUserDetails implements UserDetails {
     @Getter
     private final List<UserRole> roles;
 
+    @Getter
+    private final String registrationId;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

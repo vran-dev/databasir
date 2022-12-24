@@ -50,13 +50,17 @@ public class OperationLogService {
     }
 
     public void saveLoginFailedLog(String username, String msg) {
+        saveLoginFailedLog(username, "登录", msg);
+    }
+
+    public void saveLoginFailedLog(String username, String name, String msg) {
         try {
             JsonData result = JsonData.error("-1", Objects.requireNonNullElse(msg, "登录失败"));
             OperationLogRequest log = OperationLogRequest.builder()
                     .isSuccess(false)
                     .operationCode("login")
                     .operationModule(AuditLog.Modules.LOGIN)
-                    .operationName("登录")
+                    .operationName(name)
                     .operatorNickname(username)
                     .operatorUsername(username)
                     .operatorUserId(-1)
@@ -70,6 +74,10 @@ public class OperationLogService {
     }
 
     public void saveLoginLog(User user, Boolean success, String msg) {
+        this.saveLoginLog(user, success, "登录", msg);
+    }
+
+    public void saveLoginLog(User user, Boolean success, String name, String msg) {
         try {
             JsonData result;
             if (success) {
@@ -82,7 +90,7 @@ public class OperationLogService {
                     .involvedUserId(user.getId())
                     .operationCode("login")
                     .operationModule(AuditLog.Modules.LOGIN)
-                    .operationName("登录")
+                    .operationName(name)
                     .operatorNickname(user.getNickname())
                     .operatorUsername(user.getUsername())
                     .operatorUserId(user.getId())

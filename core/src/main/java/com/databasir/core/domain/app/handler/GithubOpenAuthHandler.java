@@ -1,10 +1,13 @@
 package com.databasir.core.domain.app.handler;
 
 import com.databasir.core.domain.DomainErrors;
+import com.databasir.core.domain.app.common.CommonProperties;
+import com.databasir.core.domain.app.common.GithubProperties;
 import com.databasir.core.domain.app.exception.DatabasirAuthenticationException;
 import com.databasir.core.infrastructure.remote.github.GithubRemoteService;
 import com.databasir.dao.enums.OAuthAppType;
 import com.databasir.dao.tables.pojos.OauthApp;
+import com.databasir.dao.tables.pojos.OauthAppProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.jooq.tools.StringUtils;
@@ -12,6 +15,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -26,13 +30,16 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public String authorizationUrl(OauthApp app, Map<String, String[]> requestParams) {
-        String authUrl = app.getAuthUrl();
-        String clientId = app.getClientId();
+    public String authorizationUrl(OauthApp app,
+                                   List<OauthAppProperty> properties,
+                                   Map<String, String[]> requestParams) {
+        String authUrl = CommonProperties.INSTANCE.getAuthHost(properties);
+        String clientId = CommonProperties.INSTANCE.get(properties, GithubProperties.CLIENT_ID);
         String authorizeUrl = authUrl + "/login/oauth/authorize";
-        String url = UriComponentsBuilder.fromUriString(authorizeUrl)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(authorizeUrl)
                 .queryParam("client_id", clientId)
-                .queryParam("scope", "read:user user:email")
+                .queryParam("scope", "read:user user:email");
+        String url = builder
                 .encode()
                 .build()
                 .toUriString();
@@ -40,10 +47,12 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
     }
 
     @Override
-    public OAuthProcessResult process(OauthApp app, Map<String, String[]> requestParams) {
-        String clientId = app.getClientId();
-        String clientSecret = app.getClientSecret();
-        String authUrl = app.getAuthUrl();
+    public OAuthProcessResult process(OauthApp app,
+                                      List<OauthAppProperty> properties,
+                                      Map<String, String[]> requestParams) {
+        String authUrl = CommonProperties.INSTANCE.getAuthHost(properties);
+        String clientId = CommonProperties.INSTANCE.get(properties, GithubProperties.CLIENT_ID);
+        String clientSecret = CommonProperties.INSTANCE.get(properties, GithubProperties.CLIENT_SECRET);
 
         String code = requestParams.get("code")[0];
         JsonNode tokenNode = githubRemoteService.getToken(authUrl, clientId, clientSecret, code)
@@ -55,7 +64,8 @@ public class GithubOpenAuthHandler implements OpenAuthHandler {
         if (StringUtils.isBlank(accessToken)) {
             throw new CredentialsExpiredException("授权失效，请重新登陆");
         }
-        String resourceUrl = app.getResourceUrl();
+
+        String resourceUrl = CommonProperties.INSTANCE.get(properties, GithubProperties.RESOURCE_HOST);
         String email = null;
         for (JsonNode node : githubRemoteService.getEmail(resourceUrl, accessToken)) {
             if (node.get("primary").asBoolean()) {

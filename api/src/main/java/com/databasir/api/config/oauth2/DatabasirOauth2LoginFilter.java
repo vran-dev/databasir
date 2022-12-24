@@ -51,10 +51,11 @@ public class DatabasirOauth2LoginFilter extends AbstractAuthenticationProcessing
         Map<String, String[]> params = request.getParameterMap();
         String registrationId = new AntPathMatcher().extractPathWithinPattern(OAUTH_LOGIN_URI, request.getRequestURI());
         UserDetailResponse userDetailResponse = openAuthAppService.oauthCallback(registrationId, params);
-        UserDetails details = databasirUserDetailService.loadUserByUsername(userDetailResponse.getUsername());
+        String username = userDetailResponse.getUsername();
+        UserDetails details = databasirUserDetailService.loadUserByUsername(username, registrationId);
         DatabasirOAuth2Authentication authentication = new DatabasirOAuth2Authentication(details);
         if (!userDetailResponse.getEnabled()) {
-            operationLogService.saveLoginFailedLog(userDetailResponse.getUsername(), "用户被禁用");
+            operationLogService.saveLoginFailedLog(username, registrationId + " 登录", "用户被禁用");
             throw new DisabledException("账号已禁用");
         }
         authentication.setAuthenticated(true);
