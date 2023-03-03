@@ -3,7 +3,7 @@ package com.databasir.core.domain.mock.script;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +15,7 @@ public class SpelScriptEvaluator implements MockScriptEvaluator {
     @Override
     public String evaluate(String script, ScriptContext context) {
         Expression expression = spelExpressionParser.parseExpression(script);
-        StandardEvaluationContext spelContext = new StandardEvaluationContext(context);
+        SimpleEvaluationContext spelContext = SimpleEvaluationContext.forReadOnlyDataBinding().build();
         return expression.getValue(spelContext, String.class);
     }
 }
