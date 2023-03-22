@@ -39,7 +39,7 @@ public class DriverResources {
         if (driverFile.exists()) {
             return new DriverResult(localPath, driverFile);
         } else {
-            throw DomainErrors.LOAD_DRIVER_FAILED.exception();
+            throw DomainErrors.DRIVER_LOAD_FAILED.exception();
         }
     }
 
@@ -49,7 +49,7 @@ public class DriverResources {
             dirPath = Files.createTempDirectory("databasir-drivers");
         } catch (IOException e) {
             log.error("load driver error cause create temp dir failed", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception();
+            throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception();
         }
         File file = download(remoteUrl, dirPath.toString());
         return new DriverResult(file.getAbsolutePath(), file);
@@ -61,7 +61,7 @@ public class DriverResources {
             Files.createDirectories(parentDirPath);
         } catch (IOException e) {
             log.error("create directory for driver failed", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e);
+            throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception(e);
         }
 
         // download
@@ -90,7 +90,7 @@ public class DriverResources {
                     return targetFile;
                 } else {
                     log.error("{} download error from {}: {} ", parentDir, driverFileUrl, response);
-                    throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动下载失败："
+                    throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception("驱动下载失败："
                             + response.getStatusCode()
                             + ", "
                             + response.getStatusText());
@@ -99,7 +99,7 @@ public class DriverResources {
         } catch (RestClientException e) {
             String msg = String.format("download driver from %s to %s failed", driverFileUrl, parentDir);
             log.error(msg, e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(msg);
+            throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception(msg);
         }
     }
 
@@ -183,7 +183,7 @@ public class DriverResources {
             );
         } catch (MalformedURLException e) {
             log.error("load driver jar error ", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+            throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception(e.getMessage());
         }
 
         try {
@@ -211,7 +211,7 @@ public class DriverResources {
             return targetFile;
         } catch (IOException e) {
             log.error("copy driver file error", e);
-            throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception(e.getMessage());
+            throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception(e.getMessage());
         }
     }
 

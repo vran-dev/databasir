@@ -45,14 +45,14 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         URLClassLoader loader = null;
         try {
             loader = new URLClassLoader(
-                    new URL[]{
-                            driverFile.toURI().toURL()
-                    },
-                    this.getClass().getClassLoader()
+                new URL[]{
+                    driverFile.toURI().toURL()
+                },
+                this.getClass().getClassLoader()
             );
         } catch (MalformedURLException e) {
             log.error("load driver error " + context, e);
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage());
+            throw DomainErrors.DATABASE_CONNECT_FAILED.exception(e.getMessage());
         }
         // retrieve the driver class
         Class<?> clazz = null;
@@ -62,13 +62,13 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             driver = (Driver) clazz.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             log.error("init driver error", e);
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常, 请检查驱动类名：" + e.getMessage());
+            throw DomainErrors.DRIVER_CLASS_NOT_FOUND.exception(e);
         } catch (InvocationTargetException
                  | InstantiationException
                  | IllegalAccessException
                  | NoSuchMethodException e) {
             log.error("init driver error", e);
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception("驱动初始化异常：" + e.getMessage());
+            throw DomainErrors.DATABASE_CONNECT_FAILED.exception(e);
         }
 
         Properties info = new Properties();
@@ -79,9 +79,9 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
         }
         String urlPattern = type.getUrlPattern();
         String jdbcUrl = urlPattern.replace("{{jdbc.protocol}}", type.getJdbcProtocol())
-                .replace("{{db.url}}", context.getUrl())
-                .replace("{{db.name}}", context.getDatabaseName())
-                .replace("{{db.schema}}", context.getSchemaName());
+            .replace("{{db.url}}", context.getUrl())
+            .replace("{{db.name}}", context.getDatabaseName())
+            .replace("{{db.schema}}", context.getSchemaName());
         return driver.connect(jdbcUrl, info);
     }
 
@@ -96,6 +96,6 @@ public class CustomDatabaseConnectionFactory implements DatabaseConnectionFactor
             return Paths.get(targetFile).toFile();
         }
         String databaseType = type.getDatabaseType();
-        throw DomainErrors.DOWNLOAD_DRIVER_ERROR.exception("驱动加载失败, database=" + databaseType);
+        throw DomainErrors.DRIVER_DOWNLOAD_FAILED.exception("驱动加载失败, database=" + databaseType);
     }
 }

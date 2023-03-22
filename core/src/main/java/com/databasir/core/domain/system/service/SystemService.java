@@ -59,7 +59,7 @@ public class SystemService {
 
         if (idOpt.isPresent()) {
             if (!StringUtils.hasText(request.getPassword())) {
-                throw DomainErrors.CONNECT_DATABASE_FAILED.exception();
+                throw DomainErrors.DATABASE_CONNECT_FAILED.exception();
             }
             sysMailDao.updateById(sysMail);
         } else {

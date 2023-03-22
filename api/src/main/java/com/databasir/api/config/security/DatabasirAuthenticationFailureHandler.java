@@ -6,6 +6,7 @@ import com.databasir.core.domain.log.service.OperationLogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,12 +14,14 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +31,10 @@ public class DatabasirAuthenticationFailureHandler implements AuthenticationFail
     private final ObjectMapper objectMapper;
 
     private final OperationLogService operationLogService;
+
+    private final MessageSource messageSource;
+
+    private final LocaleResolver localeResolver;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
@@ -50,7 +57,9 @@ public class DatabasirAuthenticationFailureHandler implements AuthenticationFail
             response.getOutputStream().write(jsonString.getBytes(StandardCharsets.UTF_8));
         } else if (exception instanceof DatabasirAuthenticationException) {
             DatabasirAuthenticationException bizException = (DatabasirAuthenticationException) exception;
-            JsonData<Void> data = JsonData.error(bizException.getErrCode(), bizException.getErrMessage());
+            Locale locale = localeResolver.resolveLocale(request);
+            String msg = messageSource.getMessage(bizException.getErrCode(), bizException.getArgs(), locale);
+            JsonData<Void> data = JsonData.error(bizException.getErrCode(), msg);
             saveLoginFailedLog(username, data.getErrMessage());
             String jsonString = objectMapper.writeValueAsString(data);
             response.setStatus(HttpStatus.OK.value());

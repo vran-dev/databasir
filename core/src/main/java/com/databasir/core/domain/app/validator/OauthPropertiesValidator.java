@@ -23,47 +23,43 @@ public class OauthPropertiesValidator {
 
     public void validate(OAuthAppCreateRequest request, List<OAuthAppPlatformResponse> platforms) {
         Map<String, OauthAppPropertyData> propertyMapByName = request.getProperties()
-                .stream()
-                .collect(Collectors.toMap(OauthAppPropertyData::getName, i -> i));
+            .stream()
+            .collect(Collectors.toMap(OauthAppPropertyData::getName, i -> i));
         platforms.stream()
-                .filter(platform -> platform.getAuthAppType() == request.getAppType())
-                .forEach(platform -> {
-                    List<OAuthAppPlatformProperty> properties = platform.getProperties();
-                    properties.forEach(property -> {
-                        if (Objects.equals(true, property.getRequired())) {
-                            if (!propertyMapByName.containsKey(property.getName())) {
-                                throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(
-                                        property.getLabel() + " 不能为空");
-                            }
-                            if (StringUtils.isBlank(propertyMapByName.get(property.getName()).getValue())) {
-                                throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(
-                                        property.getLabel() + " 不能为空");
-                            }
+            .filter(platform -> platform.getAuthAppType() == request.getAppType())
+            .forEach(platform -> {
+                List<OAuthAppPlatformProperty> properties = platform.getProperties();
+                properties.forEach(property -> {
+                    if (Objects.equals(true, property.getRequired())) {
+                        if (!propertyMapByName.containsKey(property.getName())) {
+                            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(property.getLabel());
                         }
-                    });
+                        if (StringUtils.isBlank(propertyMapByName.get(property.getName()).getValue())) {
+                            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(property.getLabel());
+                        }
+                    }
                 });
+            });
     }
 
     public void validate(OAuthAppUpdateRequest request, List<OAuthAppPlatformResponse> platforms) {
         Map<String, OauthAppPropertyData> propertyMapByName = request.getProperties()
-                .stream()
-                .collect(Collectors.toMap(OauthAppPropertyData::getName, i -> i));
+            .stream()
+            .collect(Collectors.toMap(OauthAppPropertyData::getName, i -> i));
         platforms.stream()
-                .filter(platform -> platform.getAuthAppType() == request.getAppType())
-                .forEach(platform -> {
-                    List<OAuthAppPlatformProperty> properties = platform.getProperties();
-                    properties.forEach(property -> {
-                        if (Objects.equals(true, property.getRequired())) {
-                            if (!propertyMapByName.containsKey(property.getName())) {
-                                throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(
-                                        property.getLabel() + " 不能为空");
-                            }
-                            if (StringUtils.isBlank(propertyMapByName.get(property.getName()).getValue())) {
-                                throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(
-                                        property.getLabel() + " 不能为空");
-                            }
+            .filter(platform -> platform.getAuthAppType() == request.getAppType())
+            .forEach(platform -> {
+                List<OAuthAppPlatformProperty> properties = platform.getProperties();
+                properties.forEach(property -> {
+                    if (Objects.equals(true, property.getRequired())) {
+                        if (!propertyMapByName.containsKey(property.getName())) {
+                            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(property.getLabel());
                         }
-                    });
+                        if (StringUtils.isBlank(propertyMapByName.get(property.getName()).getValue())) {
+                            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception(property.getLabel());
+                        }
+                    }
                 });
+            });
     }
 }

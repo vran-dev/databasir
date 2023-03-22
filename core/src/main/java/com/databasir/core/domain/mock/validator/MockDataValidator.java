@@ -42,9 +42,9 @@ public class MockDataValidator {
 
     public TableDocument validAndGetTableDocument(Integer databaseDocId, Integer tableId) {
         Optional<TableDocument> tableOption =
-                tableDocumentDao.selectByDatabaseDocumentIdAndId(databaseDocId, tableId);
+            tableDocumentDao.selectByDatabaseDocumentIdAndId(databaseDocId, tableId);
         if (tableOption.isEmpty()) {
-            throw DomainErrors.DATABASE_META_NOT_FOUND.exception("表数据不存在");
+            throw DomainErrors.DATABASE_META_NOT_FOUND.exception();
         }
         return tableOption.get();
     }

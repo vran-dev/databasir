@@ -13,27 +13,15 @@ public class DatabasirException extends RuntimeException {
     private String errCode;
 
     @Getter
-    private String errMessage;
+    private Object[] args = new Object[0];
 
     /**
      * @param errorCodeMessage 错误信息
      */
     public DatabasirException(DatabasirErrors errorCodeMessage) {
-        super(errorCodeMessage.getErrMessage());
+        super(errorCodeMessage.getErrCode());
         this.errorCodeMessage = errorCodeMessage;
         this.errCode = errorCodeMessage.getErrCode();
-        this.errMessage = errorCodeMessage.getErrMessage();
-    }
-
-    /**
-     * @param errorCodeMessage 错误信息
-     * @param overrideMessage  覆盖 message
-     */
-    public DatabasirException(DatabasirErrors errorCodeMessage, String overrideMessage) {
-        super(overrideMessage);
-        this.errorCodeMessage = errorCodeMessage;
-        this.errCode = errorCodeMessage.getErrCode();
-        this.errMessage = overrideMessage;
     }
 
     /**
@@ -41,16 +29,21 @@ public class DatabasirException extends RuntimeException {
      * @param cause            root cause
      */
     public DatabasirException(DatabasirErrors errorCodeMessage, Throwable cause) {
-        super(errorCodeMessage.getErrMessage(), cause);
+        super(errorCodeMessage.getErrCode(), cause);
         this.errorCodeMessage = errorCodeMessage;
         this.errCode = errorCodeMessage.getErrCode();
-        this.errMessage = errorCodeMessage.getErrMessage();
+    }
+
+    public DatabasirException(DatabasirErrors errorCodeMessage, Object... args) {
+        super(errorCodeMessage.getErrCode());
+        this.errorCodeMessage = errorCodeMessage;
+        this.errCode = errorCodeMessage.getErrCode();
+        this.args = args;
     }
 
     public DatabasirException(DatabasirErrors errorCodeMessage, String overrideMessage, Throwable cause) {
         super(overrideMessage, cause);
         this.errorCodeMessage = errorCodeMessage;
         this.errCode = errorCodeMessage.getErrCode();
-        this.errMessage = overrideMessage;
     }
 }

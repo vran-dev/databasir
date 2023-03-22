@@ -112,7 +112,7 @@ public class DocumentSyncService {
         databasirConfig.setIgnoreTableColumnNameRegex(jsonConverter.fromJson(rule.getIgnoreColumnNameRegexArray()));
         try {
             if (jdbcConnection == null) {
-                throw DomainErrors.CONNECT_DATABASE_FAILED.exception();
+                throw DomainErrors.DATABASE_CONNECT_FAILED.exception();
             }
             DatabaseMeta databaseMeta = Databasir.of(databasirConfig)
                     .get(jdbcConnection, dataSource.getDatabaseName(), dataSource.getSchemaName())

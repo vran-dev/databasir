@@ -114,7 +114,7 @@ public class DatabaseTypeService {
     public void deleteById(Integer id) {
         databaseTypeDao.selectOptionalById(id).ifPresent(data -> {
             if (DatabaseTypes.has(data.getDatabaseType())) {
-                throw DomainErrors.MUST_NOT_MODIFY_SYSTEM_DEFAULT_DATABASE_TYPE.exception();
+                throw DomainErrors.DATABASE_MUST_NOT_MODIFY_SYSTEM_DEFAULT_TYPE.exception();
             }
             databaseTypeDao.deleteById(id);
             driverResources.deleteByDatabaseType(data.getDatabaseType());
@@ -172,7 +172,7 @@ public class DatabaseTypeService {
             return path;
         } catch (IOException e) {
             log.error("upload driver file error", e);
-            throw DomainErrors.UPLOAD_DRIVER_FILE_ERROR.exception();
+            throw DomainErrors.DRIVER_UPLOAD_FAILED.exception();
         }
     }
 }

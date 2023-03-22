@@ -33,21 +33,21 @@ public class DatabaseConnectionService {
         dataSourceProperties.forEach(prop -> info.put(prop.getKey(), prop.getValue()));
         try {
             DatabaseConnectionFactory.Context context = DatabaseConnectionFactory.Context.builder()
-                    .username(username)
-                    .password(password)
-                    .url(url)
-                    .databaseName(dataSource.getDatabaseName())
-                    .schemaName(dataSource.getSchemaName())
-                    .properties(info)
-                    .databaseType(dataSource.getDatabaseType())
-                    .build();
+                .username(username)
+                .password(password)
+                .url(url)
+                .databaseName(dataSource.getDatabaseName())
+                .schemaName(dataSource.getSchemaName())
+                .properties(info)
+                .databaseType(dataSource.getDatabaseType())
+                .build();
             return factories.stream()
-                    .filter(factory -> factory.support(dataSource.getDatabaseType()))
-                    .findFirst()
-                    .orElseThrow(DomainErrors.NOT_SUPPORT_DATABASE_TYPE::exception)
-                    .getConnection(context);
+                .filter(factory -> factory.support(dataSource.getDatabaseType()))
+                .findFirst()
+                .orElseThrow(DomainErrors.DATABASE_TYPE_NOT_SUPPORT::exception)
+                .getConnection(context);
         } catch (SQLException e) {
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage(), e);
+            throw DomainErrors.DATABASE_CONNECT_FAILED.exception(e);
         }
     }
 
@@ -60,21 +60,21 @@ public class DatabaseConnectionService {
                                Properties properties) {
         try {
             DatabaseConnectionFactory.Context context = DatabaseConnectionFactory.Context.builder()
-                    .username(username)
-                    .password(password)
-                    .url(url)
-                    .databaseName(databaseName)
-                    .schemaName(schemaName)
-                    .properties(properties)
-                    .databaseType(databaseType)
-                    .build();
+                .username(username)
+                .password(password)
+                .url(url)
+                .databaseName(databaseName)
+                .schemaName(schemaName)
+                .properties(properties)
+                .databaseType(databaseType)
+                .build();
             factories.stream()
-                    .filter(factory -> factory.support(databaseType))
-                    .findFirst()
-                    .orElseThrow(DomainErrors.NOT_SUPPORT_DATABASE_TYPE::exception)
-                    .getConnection(context);
+                .filter(factory -> factory.support(databaseType))
+                .findFirst()
+                .orElseThrow(DomainErrors.DATABASE_TYPE_NOT_SUPPORT::exception)
+                .getConnection(context);
         } catch (SQLException e) {
-            throw DomainErrors.CONNECT_DATABASE_FAILED.exception(e.getMessage(), e);
+            throw DomainErrors.DATABASE_CONNECT_FAILED.exception(e);
         }
     }
 }
