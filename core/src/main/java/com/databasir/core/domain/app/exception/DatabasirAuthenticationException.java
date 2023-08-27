@@ -10,15 +10,16 @@ public class DatabasirAuthenticationException extends AuthenticationException {
     private final DatabasirException databasirException;
 
     public DatabasirAuthenticationException(DatabasirException databasirException) {
-        super(databasirException.getErrMessage(), databasirException);
+        super(databasirException.getErrCode(), databasirException);
         this.databasirException = databasirException;
-    }
-
-    public String getErrMessage() {
-        return databasirException.getErrMessage();
     }
 
     public String getErrCode() {
         return databasirException.getErrCode();
     }
+
+    public Object[] getArgs() {
+        return databasirException.getArgs();
+    }
+
 }

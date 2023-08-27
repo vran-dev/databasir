@@ -32,7 +32,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
                                    List<OauthAppProperty> properties,
                                    Map<String, String[]> params) {
         if (!params.containsKey("redirect_uri")) {
-            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception("缺少参数 redirect_uri", null);
+            throw DomainErrors.MISS_REDIRECT_URI.exception();
         }
 
         String authUrl = CommonProperties.INSTANCE.getAuthHost(properties);
@@ -40,15 +40,15 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
         String authorizeUrl = authUrl + "/oauth/authorize";
         String redirectUri = params.get("redirect_uri")[0];
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(authorizeUrl)
-                .queryParam("client_id", clientId)
-                .queryParam("redirect_uri", redirectUri)
-                .queryParam("state", redirectUri)
-                .queryParam("response_type", "code")
-                .queryParam("scope", "read_user");
+            .queryParam("client_id", clientId)
+            .queryParam("redirect_uri", redirectUri)
+            .queryParam("state", redirectUri)
+            .queryParam("response_type", "code")
+            .queryParam("scope", "read_user");
         return builder
-                .encode()
-                .build()
-                .toUriString();
+            .encode()
+            .build()
+            .toUriString();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
                                       List<OauthAppProperty> properties,
                                       Map<String, String[]> requestParams) {
         if (!requestParams.containsKey("redirect_uri")) {
-            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception("缺少参数 redirect_uri", null);
+            throw DomainErrors.MISS_REDIRECT_URI.exception();
         }
 
         String url = CommonProperties.INSTANCE.getAuthHost(properties);
@@ -66,7 +66,7 @@ public class GitlabOpenAuthHandler implements OpenAuthHandler {
         String clientId = CommonProperties.INSTANCE.get(properties, GitlabProperties.CLIENT_ID);
         String secret = CommonProperties.INSTANCE.get(properties, GitlabProperties.CLIENT_SECRET);
         JsonNode accessTokenData =
-                gitlabRemoteService.getAccessToken(url, code, clientId, secret, redirectUri);
+            gitlabRemoteService.getAccessToken(url, code, clientId, secret, redirectUri);
         if (accessTokenData == null) {
             throw new DatabasirAuthenticationException(DomainErrors.NETWORK_ERROR.exception());
         }

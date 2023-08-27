@@ -6,6 +6,7 @@ import com.databasir.core.meta.data.*;
 import com.databasir.dao.tables.pojos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = JsonConverter.class)
 public interface DatabaseMetaConverter {
+
+    public static final DatabaseMetaConverter converter = Mappers.getMapper(DatabaseMetaConverter.class);
 
     default DatabaseMeta of(DatabaseDocument database,
                             List<TableDocument> tables,

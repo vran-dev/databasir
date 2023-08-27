@@ -5,8 +5,10 @@ import com.databasir.common.JsonData;
 import com.databasir.common.SystemException;
 import com.databasir.common.exception.Forbidden;
 import com.databasir.common.exception.InvalidTokenException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +32,19 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolationException(
-            ConstraintViolationException constraintViolationException, WebRequest request) {
+        ConstraintViolationException constraintViolationException, WebRequest request) {
 
         String errorMsg = "";
         String path = getPath(request);
@@ -46,17 +52,20 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
         for (ConstraintViolation<?> item : violations) {
             errorMsg = item.getMessage();
             log.warn("ConstraintViolationException, request: {}, exception: {}, invalid value: {}",
-                    path, errorMsg, item.getInvalidValue());
+                path, errorMsg, item.getInvalidValue());
             break;
         }
         return handleNon200Response(errorMsg, HttpStatus.BAD_REQUEST, path);
     }
 
     @ExceptionHandler({InvalidTokenException.class})
-    protected ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException ex,
+                                                                 WebRequest request,
+                                                                 Locale locale) {
         String path = getPath(request);
         log.warn("handle InvalidTokenException " + path + ", " + ex);
-        JsonData<Object> data = JsonData.error(ex.getErrCode(), ex.getErrMessage());
+        String msg = messageSource.getMessage(ex.getErrCode(), ex.getArgs(), locale);
+        JsonData<Object> data = JsonData.error(ex.getErrCode(), msg);
         return handleNon200Response(ex.getMessage(), HttpStatus.UNAUTHORIZED, path, data);
     }
 
@@ -82,17 +91,21 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = DatabasirException.class)
-    public ResponseEntity<Object> handleBusinessException(
-            DatabasirException databasirException, WebRequest request) {
+    public ResponseEntity<Object> handleBusinessException(DatabasirException databasirException,
+                                                          WebRequest request,
+                                                          Locale locale) {
 
         String path = getPath(request);
-        JsonData<Void> body = JsonData.error(databasirException.getErrCode(), databasirException.getErrMessage());
+        String msg = messageSource.getMessage(databasirException.getErrCode(), databasirException.getArgs(), locale);
+        JsonData<Void> body = JsonData.error(databasirException.getErrCode(), msg);
         if (databasirException.getCause() == null) {
-            log.warn("BusinessException, request: {}, exception: {}", path, databasirException.getErrMessage());
+            log.warn("BusinessException, request: {}, exception: {}", path, msg);
         } else {
             log.warn("BusinessException, request: " + path, databasirException);
         }
-        return ResponseEntity.ok().body(body);
+        return ResponseEntity.ok()
+            .header("X-Error-Code", databasirException.getErrCode())
+            .body(body);
     }
 
     @ExceptionHandler({SystemException.class})
@@ -101,7 +114,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
         String path = getPath(request);
         if (systemException.getCause() != null) {
             log.error("SystemException, request: " + path
-                    + ", exception: " + systemException.getMessage() + ", caused by:", systemException.getCause());
+                + ", exception: " + systemException.getMessage() + ", caused by:", systemException.getCause());
         } else {
             log.error("SystemException, request: " + path + ", exception: " + systemException.getMessage());
         }
@@ -119,7 +132,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleBindException(
-            BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String errorMsg = buildMessages(ex.getBindingResult());
         log.warn("BindException, request: {}, exception: {}", getPath(request), errorMsg);
@@ -128,7 +141,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String errorMsg = buildMessages(ex.getBindingResult());
         log.warn("MethodArgumentNotValidException, request: {}, exception: {}", getPath(request), errorMsg);
@@ -137,7 +150,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleTypeMismatch(
-            TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         log.warn("TypeMismatchException, request: {}, exception: {}", getPath(request), ex.getMessage());
         return handleOverriddenException(ex, headers, status, request, ex.getMessage());
@@ -145,16 +158,16 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         log.warn("MissingServletRequestParameterException, request: {}, exception: {}",
-                getPath(request), ex.getMessage());
+            getPath(request), ex.getMessage());
         return handleOverriddenException(ex, headers, status, request, ex.getMessage());
     }
 
     @Override
     public ResponseEntity<Object> handleMissingServletRequestPart(
-            MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         log.warn("MissingServletRequestPartException, request: {}, exception: {}", getPath(request), ex.getMessage());
         return handleOverriddenException(ex, headers, status, request, ex.getMessage());
@@ -162,7 +175,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String errorMsg = ex.getMostSpecificCause().getMessage();
 
@@ -172,7 +185,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleServletRequestBindingException(
-            ServletRequestBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ServletRequestBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         log.warn("ServletRequestBindingException, request: {}, exception: {}", getPath(request), ex.getMessage());
         return handleOverriddenException(ex, headers, status, request, ex.getMessage());
@@ -180,7 +193,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String errorMsg = ex.getMessage();
         log.warn("HttpRequestMethodNotSupportedException, request: {}, exception: {}", getPath(request), errorMsg);
@@ -222,7 +235,7 @@ public class DatabasirExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleOverriddenException(
-            Exception ex, HttpHeaders headers, HttpStatus status, WebRequest request, String errorMsg) {
+        Exception ex, HttpHeaders headers, HttpStatus status, WebRequest request, String errorMsg) {
         return handleExceptionInternal(ex, null, headers, status, request);
     }
 

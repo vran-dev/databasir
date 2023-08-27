@@ -43,7 +43,6 @@ class LoginServiceTest extends BaseTest {
         DatabasirException err = Assertions.assertThrows(DatabasirException.class,
                 () -> loginService.refreshAccessTokens(request));
         Assertions.assertEquals(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.getErrCode(), err.getErrCode());
-        Assertions.assertEquals("invalid user", err.getMessage());
     }
 
     @Test
@@ -54,7 +53,6 @@ class LoginServiceTest extends BaseTest {
         DatabasirException err = Assertions.assertThrows(DatabasirException.class,
                 () -> loginService.refreshAccessTokens(request));
         Assertions.assertEquals(DomainErrors.INVALID_REFRESH_TOKEN_OPERATION.getErrCode(), err.getErrCode());
-        Assertions.assertEquals("invalid user status", err.getMessage());
     }
 
     @Test

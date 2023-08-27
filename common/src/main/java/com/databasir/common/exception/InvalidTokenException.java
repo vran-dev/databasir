@@ -9,16 +9,8 @@ public class InvalidTokenException extends DatabasirException {
         super(errorCodeMessage);
     }
 
-    public InvalidTokenException(DatabasirErrors errorCodeMessage, String overrideMessage) {
-        super(errorCodeMessage, overrideMessage);
-    }
-
-    public InvalidTokenException(DatabasirErrors errorCodeMessage, Throwable cause) {
-        super(errorCodeMessage, cause);
-    }
-
     @Override
     public String toString() {
-        return getErrCode() + ": " + getErrMessage();
+        return "InvalidTokenException:" + getErrCode();
     }
 }

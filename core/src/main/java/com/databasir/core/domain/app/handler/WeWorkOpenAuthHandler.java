@@ -36,13 +36,13 @@ public class WeWorkOpenAuthHandler implements OpenAuthHandler {
         String authUrl = INSTANCE.getAuthHost(properties);
         String authorizeUrl = authUrl + "/wwopen/sso/qrConnect";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(authorizeUrl)
-                .queryParam("appid", INSTANCE.get(properties, WeWorkProperties.APP_ID))
-                .queryParam("agentid", INSTANCE.get(properties, WeWorkProperties.AGENT_ID))
-                .queryParam("redirect_uri", INSTANCE.get(properties, WeWorkProperties.REDIRECT_URL));
+            .queryParam("appid", INSTANCE.get(properties, WeWorkProperties.APP_ID))
+            .queryParam("agentid", INSTANCE.get(properties, WeWorkProperties.AGENT_ID))
+            .queryParam("redirect_uri", INSTANCE.get(properties, WeWorkProperties.REDIRECT_URL));
         String url = builder
-                .encode()
-                .build()
-                .toUriString();
+            .encode()
+            .build()
+            .toUriString();
         return url;
     }
 
@@ -51,7 +51,7 @@ public class WeWorkOpenAuthHandler implements OpenAuthHandler {
                                       List<OauthAppProperty> properties,
                                       Map<String, String[]> requestParams) {
         if (!requestParams.containsKey("redirect_uri")) {
-            throw DomainErrors.MISS_REQUIRED_PARAMETERS.exception("缺少参数 redirect_uri", null);
+            throw DomainErrors.MISS_REDIRECT_URI.exception();
         }
         String code = requestParams.get("code")[0];
 

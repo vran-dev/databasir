@@ -2,23 +2,23 @@ package com.databasir.api.validator;
 
 import org.springframework.stereotype.Component;
 
-import static com.databasir.core.domain.DomainErrors.INVALID_DATABASE_TYPE_URL_PATTERN;
+import static com.databasir.core.domain.DomainErrors.*;
 
 @Component
 public class DatabaseTypeValidator {
 
     public void isValidUrlPattern(String urlPattern) {
         if (urlPattern == null) {
-            throw INVALID_DATABASE_TYPE_URL_PATTERN.exception("url pattern 不能为空");
+            throw INVALID_DATABASE_TYPE_URL_PATTERN.exception();
         }
         if (!urlPattern.contains("{{jdbc.protocol}}")) {
-            throw INVALID_DATABASE_TYPE_URL_PATTERN.exception("必须包含变量{{jdbc.protocol}}");
+            throw MISS_JDBC_PROTOCOL.exception();
         }
         if (!urlPattern.contains("{{db.url}}")) {
-            throw INVALID_DATABASE_TYPE_URL_PATTERN.exception("必须包含变量{{db.url}}不能为空");
+            throw MISS_DB_URL.exception();
         }
         if (!urlPattern.contains("{{db.schema}}") && !urlPattern.contains("{{db.name}}")) {
-            throw INVALID_DATABASE_TYPE_URL_PATTERN.exception("{{db.schema}} 和 {{db.name}} 至少设置一个");
+            throw MISS_DB_SCHEMA.exception();
         }
     }
 }

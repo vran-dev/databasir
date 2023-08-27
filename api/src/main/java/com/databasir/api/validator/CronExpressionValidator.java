@@ -27,7 +27,7 @@ public class CronExpressionValidator {
         try {
             new CronExpression(cron);
         } catch (ParseException pe) {
-            throw DomainErrors.INVALID_CRON_EXPRESSION.exception("错误的 CRON 表达式：" + pe.getMessage(), pe);
+            throw DomainErrors.INVALID_CRON_EXPRESSION.exception(pe);
         }
     }
 }
