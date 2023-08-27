@@ -13,6 +13,8 @@ public class SystemEmailUpdateRequest {
 
     private String password;
 
+    private String mailFrom;
+
     @NotBlank
     private String smtpHost;
 

@@ -2,6 +2,7 @@ package com.databasir.core.infrastructure.mail;
 
 import com.databasir.common.SystemException;
 import com.databasir.dao.tables.pojos.SysMail;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -31,7 +32,11 @@ public class MailSender {
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setFrom(mail.getUsername());
+            if (StringUtils.isNotBlank(mail.getMailFrom())) {
+                helper.setFrom(mail.getMailFrom());
+            } else {
+                helper.setFrom(mail.getUsername());
+            }
             helper.setTo(to.toArray(new String[0]));
             helper.setSubject(subject);
             helper.setText(content, true);
