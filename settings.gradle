@@ -1,16 +1,6 @@
-pluginManagement {
-    repositories {
-        maven { url 'https://repo.spring.io/release' }
-        maven { url 'https://repo.spring.io/milestone' }
-        maven { url 'https://repo.spring.io/snapshot' }
-        gradlePluginPortal()
-    }
-}
-
 rootProject.name = 'databasir'
 include 'meta'
 include 'api'
 include 'common'
 include 'dao'
 include 'core'
-

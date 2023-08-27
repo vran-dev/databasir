@@ -24,15 +24,16 @@ public class SystemService {
 
     public Optional<SystemEmailResponse> getEmailSetting() {
         return sysMailDao.selectOptionTopOne()
-                .map(mail -> {
-                    SystemEmailResponse response = new SystemEmailResponse();
-                    response.setSmtpHost(mail.getSmtpHost());
-                    response.setSmtpPort(mail.getSmtpPort());
-                    response.setUsername(mail.getUsername());
-                    response.setCreateAt(mail.getCreateAt());
-                    response.setUseSSL(mail.getUseSsl());
-                    return response;
-                });
+            .map(mail -> {
+                SystemEmailResponse response = new SystemEmailResponse();
+                response.setSmtpHost(mail.getSmtpHost());
+                response.setSmtpPort(mail.getSmtpPort());
+                response.setUsername(mail.getUsername());
+                response.setCreateAt(mail.getCreateAt());
+                response.setMailFrom(mail.getMailFrom());
+                response.setUseSSL(mail.getUseSsl());
+                return response;
+            });
     }
 
     public void deleteSystemEmail() {
@@ -42,12 +43,12 @@ public class SystemService {
     }
 
     @Transactional
-
     public void updateEmailSetting(SystemEmailUpdateRequest request) {
         SysMail sysMail = new SysMail();
         sysMail.setSmtpHost(request.getSmtpHost());
         sysMail.setSmtpPort(request.getSmtpPort());
         sysMail.setUsername(request.getUsername());
+        sysMail.setMailFrom(request.getMailFrom());
         sysMail.setUseSsl(request.getUseSSL());
 
         Optional<Integer> idOpt = sysMailDao.selectOptionTopOne().map(SysMail::getId);

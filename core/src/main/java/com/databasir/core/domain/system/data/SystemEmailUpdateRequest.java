@@ -8,10 +8,12 @@ import javax.validation.constraints.*;
 public class SystemEmailUpdateRequest {
 
     @NotBlank
-    @Email
     private String username;
 
     private String password;
+
+    @Email
+    private String mailFrom;
 
     @NotBlank
     private String smtpHost;

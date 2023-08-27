@@ -9,6 +9,8 @@ public class SystemEmailResponse {
 
     private String username;
 
+    private String mailFrom;
+
     private String smtpHost;
 
     private Integer smtpPort;
