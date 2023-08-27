@@ -15,7 +15,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -86,6 +86,11 @@ public class SysMailTable extends TableImpl<SysMailRecord> {
      * The column <code>databasir.sys_mail.create_at</code>.
      */
     public final TableField<SysMailRecord, LocalDateTime> CREATE_AT = createField(DSL.name("create_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>databasir.sys_mail.mail_from</code>.
+     */
+    public final TableField<SysMailRecord, String> MAIL_FROM = createField(DSL.name("mail_from"), SQLDataType.VARCHAR(512), this, "");
 
     private SysMailTable(Name alias, Table<SysMailRecord> aliased) {
         this(alias, aliased, null);
@@ -162,11 +167,11 @@ public class SysMailTable extends TableImpl<SysMailRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, Integer, Boolean, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, String, String, Integer, Boolean, LocalDateTime, LocalDateTime, String> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }
