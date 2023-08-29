@@ -17,5 +17,7 @@ public class SystemEmailResponse {
 
     private Boolean useSSL;
 
+    private Boolean useTls;
+
     private LocalDateTime createAt;
 }

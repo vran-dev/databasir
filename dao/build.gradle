@@ -52,7 +52,7 @@ jooq {
                         forcedTypes {
                             forcedType {
                                 name = 'BOOLEAN'
-                                includeExpression = 'deleted|enabled|is.*|use_ssl'
+                                includeExpression = 'deleted|enabled|is.*|use_ssl|use_tls'
                                 includeTypes = '.*'
                             }
                             forcedType {

@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Properties;
 
 @Component
 public class MailSender {
@@ -54,10 +55,18 @@ public class MailSender {
         }
         sender.setUsername(properties.getUsername());
         sender.setPassword(properties.getPassword());
+        Properties props = sender.getJavaMailProperties();
+        props.put("mail.smtp.auth", "true");
+
         if (properties.getUseSsl()) {
             sender.setProtocol("smtps");
+            props.put("mail.smtp.ssl.enable", "true");
         } else {
             sender.setProtocol("smtp");
+        }
+
+        if (properties.getUseTls()) {
+            props.put("mail.smtp.starttls.enable", "true");
         }
         sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return sender;

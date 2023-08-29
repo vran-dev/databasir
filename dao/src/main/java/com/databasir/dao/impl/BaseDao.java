@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import org.jooq.Record;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;

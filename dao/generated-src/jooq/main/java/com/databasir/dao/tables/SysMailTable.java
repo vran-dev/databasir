@@ -15,7 +15,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -92,6 +92,11 @@ public class SysMailTable extends TableImpl<SysMailRecord> {
      */
     public final TableField<SysMailRecord, String> MAIL_FROM = createField(DSL.name("mail_from"), SQLDataType.VARCHAR(512), this, "");
 
+    /**
+     * The column <code>databasir.sys_mail.use_tls</code>.
+     */
+    public final TableField<SysMailRecord, Boolean> USE_TLS = createField(DSL.name("use_tls"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
+
     private SysMailTable(Name alias, Table<SysMailRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -167,11 +172,11 @@ public class SysMailTable extends TableImpl<SysMailRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, String, Integer, Boolean, LocalDateTime, LocalDateTime, String> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, String, String, String, Integer, Boolean, LocalDateTime, LocalDateTime, String, Boolean> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }
