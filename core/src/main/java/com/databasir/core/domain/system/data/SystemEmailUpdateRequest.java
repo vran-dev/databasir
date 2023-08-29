@@ -26,4 +26,7 @@ public class SystemEmailUpdateRequest {
     @NotNull
     private Boolean useSSL;
 
+    @NotNull
+    private Boolean useTls;
+
 }

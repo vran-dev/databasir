@@ -25,6 +25,7 @@ public class SysMail implements Serializable {
     private LocalDateTime updateAt;
     private LocalDateTime createAt;
     private String        mailFrom;
+    private Boolean       useTls;
 
     public SysMail() {}
 
@@ -38,6 +39,7 @@ public class SysMail implements Serializable {
         this.updateAt = value.updateAt;
         this.createAt = value.createAt;
         this.mailFrom = value.mailFrom;
+        this.useTls = value.useTls;
     }
 
     public SysMail(
@@ -49,7 +51,8 @@ public class SysMail implements Serializable {
         Boolean       useSsl,
         LocalDateTime updateAt,
         LocalDateTime createAt,
-        String        mailFrom
+        String        mailFrom,
+        Boolean       useTls
     ) {
         this.id = id;
         this.username = username;
@@ -60,6 +63,7 @@ public class SysMail implements Serializable {
         this.updateAt = updateAt;
         this.createAt = createAt;
         this.mailFrom = mailFrom;
+        this.useTls = useTls;
     }
 
     /**
@@ -188,6 +192,20 @@ public class SysMail implements Serializable {
         this.mailFrom = mailFrom;
     }
 
+    /**
+     * Getter for <code>databasir.sys_mail.use_tls</code>.
+     */
+    public Boolean getUseTls() {
+        return this.useTls;
+    }
+
+    /**
+     * Setter for <code>databasir.sys_mail.use_tls</code>.
+     */
+    public void setUseTls(Boolean useTls) {
+        this.useTls = useTls;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SysMail (");
@@ -201,6 +219,7 @@ public class SysMail implements Serializable {
         sb.append(", ").append(updateAt);
         sb.append(", ").append(createAt);
         sb.append(", ").append(mailFrom);
+        sb.append(", ").append(useTls);
 
         sb.append(")");
         return sb.toString();
