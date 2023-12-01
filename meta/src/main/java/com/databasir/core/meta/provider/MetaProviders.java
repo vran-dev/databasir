@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.PriorityQueue;
 
 @Slf4j
 public class MetaProviders {
@@ -73,6 +74,7 @@ public class MetaProviders {
     }
 
     private static DatabaseMetaProvider sqlServer() {
+        SqlServerColumnMetaProvider var = new SqlServerColumnMetaProvider();
         var columnMetaProvider = new SqlServerColumnMetaProvider();
         var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
         var indexMetaProvider = new JdbcIndexMetaProvider();
@@ -87,6 +89,9 @@ public class MetaProviders {
     }
 
     private static DatabaseMetaProvider postgresql() {
+        var queue = new PriorityQueue<Integer>();
+        queue.offer(1);
+
         var columnMetaProvider = new JdbcColumnMetaProvider();
         var foreignKeyMetaProvider = new JdbcForeignKeyMetaProvider();
         var indexMetaProvider = new JdbcIndexMetaProvider();
