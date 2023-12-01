@@ -109,10 +109,21 @@ public class DocumentDiffChecker {
 
                     BaseTypeFieldEqualFunction eq = new BaseTypeFieldEqualFunction(IGNORE_FIELDS);
                     DiffType diffType = eq.apply(currentTable, originalTable) ? DiffType.NONE : DiffType.MODIFIED;
+                    boolean indexModified = indexDiffs.stream()
+                            .anyMatch(indexDiff -> indexDiff.getDiffType() != DiffType.NONE);
+                    boolean triggerModified = triggerDiffs.stream()
+                            .anyMatch(triggerDiff -> triggerDiff.getDiffType() != DiffType.NONE);
+                    boolean fkModified = fkDiffs.stream()
+                            .anyMatch(fkDiff -> fkDiff.getDiffType() != DiffType.NONE);
+                    if (indexModified || triggerModified || fkModified) {
+                        diffType = DiffType.MODIFIED;
+                    }
+
                     // workaround for diffType = NONE
                     if (diffType == DiffType.NONE) {
                         originalTable = null;
                     }
+
                     return TableDocDiff.builder()
                             .id(currentTable.getId())
                             .diffType(diffType)
