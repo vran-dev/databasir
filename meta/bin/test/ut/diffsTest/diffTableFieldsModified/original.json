@@ -1,0 +1,472 @@
+{
+  "tables": [
+    {
+      "name": "departments",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "dept_no",
+          "type": "CHAR",
+          "size": 4,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "dept_name",
+          "type": "VARCHAR",
+          "size": 40,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "dept_name",
+          "isUniqueKey": true,
+          "columnNames": [
+            "dept_name"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "dept_no"
+          ]
+        }
+      ],
+      "foreignKeys": [],
+      "triggers": []
+    },
+    {
+      "name": "dept_emp",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "emp_no",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "dept_no",
+          "type": "CHAR",
+          "size": 4,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "from_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "to_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "dept_no",
+          "isUniqueKey": false,
+          "columnNames": [
+            "dept_no"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "emp_no",
+            "dept_no"
+          ]
+        }
+      ],
+      "foreignKeys": [
+        {
+          "fkName": "dept_emp_ibfk_2",
+          "fkTableName": "dept_emp",
+          "fkColumnName": "dept_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "departments",
+          "pkColumnName": "dept_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        },
+        {
+          "fkName": "dept_emp_ibfk_1",
+          "fkTableName": "dept_emp",
+          "fkColumnName": "emp_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "employees",
+          "pkColumnName": "emp_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        }
+      ],
+      "triggers": [{
+        "name": "before_insert",
+        "timing": "BEFORE",
+        "manipulation": "INSERT",
+        "statement": "set null",
+        "createAt": "2022-01-01"
+      }]
+    },
+    {
+      "name": "dept_manager",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "emp_no",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "dept_no",
+          "type": "CHAR",
+          "size": 4,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "from_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "to_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "dept_no",
+          "isUniqueKey": false,
+          "columnNames": [
+            "dept_no"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "emp_no",
+            "dept_no"
+          ]
+        }
+      ],
+      "foreignKeys": [
+        {
+          "fkName": "dept_manager_ibfk_2",
+          "fkTableName": "dept_manager",
+          "fkColumnName": "dept_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "departments",
+          "pkColumnName": "dept_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        },
+        {
+          "fkName": "dept_manager_ibfk_1",
+          "fkTableName": "dept_manager",
+          "fkColumnName": "emp_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "employees",
+          "pkColumnName": "emp_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        }
+      ],
+      "triggers": []
+    },
+    {
+      "name": "employees",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "emp_no",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "birth_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR",
+          "size": 14,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR",
+          "size": 16,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "gender",
+          "type": "ENUM",
+          "size": 1,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "hire_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "emp_no"
+          ]
+        }
+      ],
+      "foreignKeys": [],
+      "triggers": []
+    },
+    {
+      "name": "salaries",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "emp_no",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "salary",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "from_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "to_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "emp_no",
+            "from_date"
+          ]
+        }
+      ],
+      "foreignKeys": [
+        {
+          "fkName": "salaries_ibfk_1",
+          "fkTableName": "salaries",
+          "fkColumnName": "emp_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "employees",
+          "pkColumnName": "emp_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        }
+      ],
+      "triggers": []
+    },
+    {
+      "name": "titles",
+      "type": "TABLE",
+      "comment": "",
+      "columns": [
+        {
+          "name": "emp_no",
+          "type": "INT",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR",
+          "size": 50,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "from_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": true,
+          "nullable": "NO",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        },
+        {
+          "name": "to_date",
+          "type": "DATE",
+          "size": 10,
+          "decimalDigits": null,
+          "comment": "",
+          "isPrimaryKey": false,
+          "nullable": "YES",
+          "autoIncrement": "NO",
+          "defaultValue": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "isUniqueKey": true,
+          "columnNames": [
+            "emp_no",
+            "title",
+            "from_date"
+          ]
+        }
+      ],
+      "foreignKeys": [
+        {
+          "fkName": "titles_ibfk_1",
+          "fkTableName": "titles",
+          "fkColumnName": "emp_no",
+          "pkName": "PRIMARY",
+          "pkTableName": "employees",
+          "pkColumnName": "emp_no",
+          "updateRule": "CASCADE",
+          "deleteRule": "CASCADE"
+        }
+      ],
+      "triggers": []
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+[
+  {
+    "authAppType": "GITLAB",
+    "authAppName": "Gitlab",
+    "properties": [
+      {
+        "name": "auth_host",
+        "label": "认证服务地址",
+        "description": "用于登录认证",
+        "required": true
+      },
+      {
+        "name": "resource_host",
+        "label": "资源服务地址",
+        "description": "用于用户信息等资源查询",
+        "required": true
+      },
+      {
+        "name": "client_id",
+        "label": "Client ID",
+        "description": "",
+        "required": true,
+        "stage": "AUTHORIZATION"
+      },
+      {
+        "name": "client_secret",
+        "label": "Client Secret",
+        "description": "",
+        "required": true
+      }
+    ]
+  },
+  {
+    "authAppType": "GITHUB",
+    "authAppName": "Github",
+    "properties": [
+      {
+        "name": "auth_host",
+        "label": "认证服务地址",
+        "description": "用于登录认证",
+        "required": true
+      },
+      {
+        "name": "resource_host",
+        "label": "资源服务地址",
+        "description": "用于用户信息等资源查询",
+        "required": true
+      },
+      {
+        "name": "client_id",
+        "label": "Client ID",
+        "description": "",
+        "required": true
+      },
+      {
+        "name": "client_secret",
+        "label": "Client Secret",
+        "description": "",
+        "required": true
+      }
+    ]
+  },
+  {
+    "authAppType": "WE_WORK",
+    "authAppName": "企业微信",
+    "properties": [
+      {
+        "name": "auth_host",
+        "label": "认证服务地址",
+        "description": "用于登录认证",
+        "required": true,
+        "defaultValue": "https://open.work.weixin.qq.com"
+      },
+      {
+        "name": "resource_host",
+        "label": "资源服务地址",
+        "description": "用于用户信息等资源查询",
+        "required": true,
+        "defaultValue": "https://qyapi.weixin.qq.com"
+      },
+      {
+        "name": "redirect_uri",
+        "label": "登录成功回跳地址",
+        "description": "",
+        "defaultValue": "javaScript:window.location.protocol + '//' +window.location.host+'/login/oauth2/'+formData.registrationId",
+        "required": true
+      },
+      {
+        "name": "appid",
+        "label": "企业 ID",
+        "description": "",
+        "required": true
+      },
+      {
+        "name": "agentid",
+        "label": "应用 agentID",
+        "description": "",
+        "required": true
+      },
+      {
+        "name": "secret",
+        "label": "应用 secret",
+        "description": "应用密钥",
+        "required": true
+      }
+    ]
+  }
+]
